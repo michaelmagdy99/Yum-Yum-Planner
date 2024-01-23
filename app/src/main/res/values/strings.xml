@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Yum Yum Planner</string>
+    <string name="skip">Skip</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="please_sign_in_to_your_existing_account">Please sign in to your existing account</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="don_t_have_an_account">Don’t have an account?</string>
+    <string name="or">Or</string>
+    <string name="facebook_login">facebook_login</string>
+    <string name="twitter_login">twitter_login</string>
+    <string name="google_input">google_input</string>
+    <string name="please_sign_up_to_get_started">Please sign up to get started</string>
+    <string name="name">Name</string>
+    <string name="re_type_password">Re-Type Password</string>
+</resources>

@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.YumYumPlanner" parent="Theme.MaterialComponents.Light.NoActionBar">
+            <item name="colorPrimary">@color/primaryColor</item>
+            <!--   darker variant for the status bar and contextual app bars -->
+            <item name="colorPrimaryDark">@color/primaryColor</item>
+            <!--   theme UI controls like checkboxes and text fields -->
+            <item name="colorAccent">@color/black</item>
+    </style>
+
+    <style name="Theme.YumYumPlanner" parent="Base.Theme.YumYumPlanner" />
+
+
+    <style name="Rounded" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="boxStrokeColor">@color/primaryColor</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+</resources>

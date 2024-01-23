@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "603633507261",
+    "project_id": "yumyum-planner",
+    "storage_bucket": "yumyum-planner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:603633507261:android:82b47b8d9b35feba2550d4",
+        "android_client_info": {
+          "package_name": "com.example.yumyumplanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2GJfdLC9NU6KxS2t2OEFskoRvZibF-KM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
