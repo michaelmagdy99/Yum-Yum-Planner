@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import com.example.yumyumplanner.R;
-import com.example.yumyumplanner.authentication.view.authenticationactivity.AuthenticationActivity;
+import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.ramotion.paperonboarding.PaperOnboardingFragment;
 import com.ramotion.paperonboarding.PaperOnboardingPage;
 
@@ -25,30 +25,54 @@ public class SplashActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
 
     private TextView skipBtn;
+
+    private TextView getStartedBtn;
+    private TextView exitBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
         skipBtn = findViewById(R.id.skip_btn);
+        getStartedBtn = findViewById(R.id.get_started_btn);
+        exitBtn = findViewById(R.id.exit_btn);
+
+        getStartedBtn.setVisibility(View.INVISIBLE);
         skipBtn.setVisibility(View.INVISIBLE);
+        exitBtn.setVisibility(View.INVISIBLE);
 
         skipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SplashActivity.this , AuthenticationActivity.class);
-                startActivity(intent);
+                goToAutoActivity();
+            }
+        });
+        getStartedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToAutoActivity();
+            }
+        });
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 
         setSplashScreenTimeOut();
+    }
+    private void goToAutoActivity(){
+        Intent intent = new Intent(SplashActivity.this , AuthenticationActivity.class);
+        startActivity(intent);
     }
 
     private void setSplashScreenTimeOut(){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                exitBtn.setVisibility(View.VISIBLE);
+                getStartedBtn.setVisibility(View.VISIBLE);
                 skipBtn.setVisibility(View.VISIBLE);
                 fragmentManager = getSupportFragmentManager();
                 final PaperOnboardingFragment paperOnboardingFragment = PaperOnboardingFragment.newInstance(getDataforOnboarding());
