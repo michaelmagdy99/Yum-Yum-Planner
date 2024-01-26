@@ -5,9 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.view.MenuItem;
 import android.os.Bundle;
+import android.view.View;
+
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.home.calendar.CalendarFragment;
 import com.example.yumyumplanner.home.favourite.FavouriteFragment;
@@ -25,39 +31,44 @@ public class HomeActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
+        NavController navController = Navigation.findNavController(this, R.id.home_fragment);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.mealDetailsFragment) {
+                bottomNavigationView.setVisibility(View.GONE);
+            } else {
+                bottomNavigationView.setVisibility(View.VISIBLE);
+            }
+        });
+
         if (savedInstanceState == null) {
-            replaceFragment(new HomeFragment());
+            navController.navigate(R.id.homeFragment);
         }
 
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.home) {
-                    replaceFragment(new HomeFragment());
-                } else if (itemId == R.id.search) {
-                    replaceFragment(new SearchFragment());
-                } else if (itemId == R.id.profile) {
-                    replaceFragment(new ProfileFragment());
-                } else if (itemId == R.id.calendar) {
-                    replaceFragment(new CalendarFragment());
-                } else if (itemId == R.id.favourite) {
-                    replaceFragment(new FavouriteFragment());
-                }
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.home) {
+                navController.navigate(R.id.homeFragment);
                 return true;
+            } else if (itemId == R.id.search) {
+                navController.navigate(R.id.searchFragment);
+                return true;
+            } else if (itemId == R.id.calendar) {
+                navController.navigate(R.id.calendarFragment);
+                return true;
+            } else if (itemId == R.id.favourite) {
+                navController.navigate(R.id.favouriteFragment);
+                return true;
+            } else {
+                return false;
             }
+
         });
 
 
     }
-
-    private void replaceFragment(Fragment fragment){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.home_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
 
 }

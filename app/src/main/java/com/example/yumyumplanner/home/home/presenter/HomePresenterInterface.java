@@ -5,4 +5,8 @@ import com.example.yumyumplanner.model.data.MealsItem;
 public interface HomePresenterInterface {
     public void getMeals();
     public void addToFav(MealsItem meal);
+
+    void getIngredients();
+    void getCategories();
+    void getCountry();
 }

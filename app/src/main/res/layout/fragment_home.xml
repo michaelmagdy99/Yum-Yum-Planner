@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.home.view.HomeFragment">
 
@@ -11,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="35dp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="24sp"
@@ -27,74 +32,156 @@
         app:layout_constraintTop_toBottomOf="@+id/txt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:elevation="10dp"
+        android:elevation="2dp"
         app:cardCornerRadius="10dp"
-        android:padding="8dp"
         android:layout_margin="15dp"
         >
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/item_constrian"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="16dp"
             >
 
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
                 android:id="@+id/image_meal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:padding="10dp"
-                android:elevation="10dp"
-                app:circularflow_defaultRadius="10dp"
+                android:layout_height="250dp"
+                android:elevation="2dp"
                 android:src="@drawable/ic_launcher_foreground"
-                app:circularflow_radiusInDP="50"
-                app:layout_constraintCircleRadius="25dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/name_meal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="25dp"
-                android:text="Name"
-                android:textSize="18sp"
+                android:text="@string/name"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="26sp"
                 app:layout_constraintTop_toBottomOf="@id/image_meal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 />
+
+            <TextView
+                android:id="@+id/country_meal_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/country_"
+                android:textStyle="italic"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/category_meal_view"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
 
             <TextView
                 android:id="@+id/country_meal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
+                android:text="@string/country"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@id/country_meal_view"
+                app:layout_constraintTop_toTopOf="@id/country_meal_view" />
+
+            <TextView
+                android:id="@+id/category_meal_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Country"
-                android:textSize="18sp"
+                android:textStyle="italic"
+                android:text="@string/category"
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@id/name_meal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 />
+
+
+            <TextView
+                android:id="@+id/category_meal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:text="@string/category_"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/category_meal_view"
+                app:layout_constraintTop_toTopOf="@id/category_meal_view" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
+
+    <TextView
+        android:id="@+id/ingredients_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/ingrediens"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/meal_card_view" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/meals_recycler_view"
+        android:id="@+id/ingredients_recycler_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/meal_card_view"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ingredients_view"
+        tools:listitem="@layout/ingredients_home_items" />
+
+
+    <TextView
+        android:id="@+id/category_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/categories_the_different_food"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ingredients_recycler_home" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/category_recycler_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_view"
+        tools:listitem="@layout/ingredients_home_items" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

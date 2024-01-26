@@ -2,6 +2,9 @@ package com.example.yumyumplanner.model.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MealsItem{
 
 	@SerializedName("strImageSource")
@@ -374,4 +377,87 @@ public class MealsItem{
 	public String getStrMeasure15(){
 		return strMeasure15;
 	}
+
+	public List<String> getAllIngredients() {
+		List<String> ingredientsList = new ArrayList<>();
+
+		// Add all ingredients
+		for (int i = 1; i <= 20; i++) {
+			String ingredient = getIngredient(i);
+			if (ingredient != null && !ingredient.isEmpty()) {
+				ingredientsList.add(ingredient);
+			}
+		}
+
+
+
+		return ingredientsList;
+	}
+
+	public List<String> getAllMeaurse() {
+		List<String> measureList = new ArrayList<>();
+
+		// Add all measures
+		for (int i = 1; i <= 20; i++) {
+			String measure = getMeasure(i);
+			if (measure != null && !measure.isEmpty()) {
+				measureList.add(measure);
+			}
+		}
+		return measureList;
+	}
+
+
+		private String getIngredient(int index) {
+		switch (index) {
+			case 1: return strIngredient1;
+			case 2: return strIngredient2;
+			case 3: return strIngredient3;
+			case 4: return strIngredient4;
+			case 5: return strIngredient5;
+			case 6: return strIngredient6;
+			case 7: return strIngredient7;
+			case 8: return strIngredient8;
+			case 9: return strIngredient9;
+			case 10: return strIngredient10;
+			case 11: return strIngredient11;
+			case 12: return strIngredient12;
+			case 13: return strIngredient13;
+			case 14: return strIngredient14;
+			case 15: return strIngredient15;
+			case 16: return strIngredient16;
+			case 17: return strIngredient17;
+			case 18: return strIngredient18;
+			case 19: return strIngredient19;
+			case 20: return strIngredient20;
+			default: return null;
+		}
+	}
+
+	private String getMeasure(int index) {
+		switch (index) {
+			case 1: return strMeasure1;
+			case 2: return strMeasure2;
+			case 3: return strMeasure3;
+			case 4: return strMeasure4;
+			case 5: return strMeasure5;
+			case 6: return strMeasure6;
+			case 7: return strMeasure7;
+			case 8: return strMeasure8;
+			case 9: return strMeasure9;
+			case 10: return strMeasure10;
+			case 11: return strMeasure11;
+			case 12: return strMeasure12;
+			case 13: return strMeasure13;
+			case 14: return strMeasure14;
+			case 15: return strMeasure15;
+			case 16: return strMeasure16;
+			case 17: return strMeasure17;
+			case 18: return strMeasure18;
+			case 19: return strMeasure19;
+			case 20: return strMeasure20;
+			default: return null;
+		}
+	}
+
 }

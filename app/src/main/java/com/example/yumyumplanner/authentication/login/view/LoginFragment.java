@@ -35,8 +35,6 @@ public class LoginFragment extends Fragment implements LoginView {
 
     private ImageButton facebookSignIn;
 
-    private ImageButton twitterSignIn;
-
     private TextView gustModeBtn;
 
 
@@ -97,12 +95,6 @@ public class LoginFragment extends Fragment implements LoginView {
             }
         });
 
-        twitterSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         return view;
     }
@@ -118,7 +110,6 @@ public class LoginFragment extends Fragment implements LoginView {
         loginUpBtn = view.findViewById(R.id.login_btn);
         googleSignIn = view.findViewById(R.id.google_icon_btn);
         facebookSignIn = view.findViewById(R.id.facebook_icon_btn);
-        twitterSignIn = view.findViewById(R.id.twitter_icon_btn);
     }
 
     @Override

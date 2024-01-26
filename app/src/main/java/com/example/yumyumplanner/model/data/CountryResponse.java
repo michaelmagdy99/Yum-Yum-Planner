@@ -3,7 +3,12 @@ package com.example.yumyumplanner.model.data;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class MealResponse{
+public class CountryResponse{
+
 	@SerializedName("meals")
-	public List<MealsItem> meals;
+	private List<CountryItem> country;
+
+	public List<CountryItem> getCountry(){
+		return country;
+	}
 }

@@ -212,23 +212,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginStart="45dp"
         android:src="@drawable/facebook_icon"
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="@+id/text_do_not_have_account"
         app:layout_constraintTop_toBottomOf="@id/or"
         android:contentDescription="@string/facebook_login" />
 
-    <ImageButton
-        android:id="@+id/twitter_icon_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/twitter_icon"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toEndOf="@+id/facebook_icon_btn"
-        app:layout_constraintTop_toBottomOf="@id/or"
-        android:contentDescription="@string/twitter_login" />
+
 
     <ImageButton
         android:id="@+id/google_icon_btn"
@@ -238,7 +229,7 @@
         android:layout_marginStart="16dp"
         android:src="@drawable/google_icon"
         android:background="@android:color/transparent"
-        app:layout_constraintStart_toEndOf="@+id/twitter_icon_btn"
+        app:layout_constraintStart_toEndOf="@+id/facebook_icon_btn"
         app:layout_constraintTop_toBottomOf="@id/or"
         android:contentDescription="@string/google_input" />
 </androidx.constraintlayout.widget.ConstraintLayout>

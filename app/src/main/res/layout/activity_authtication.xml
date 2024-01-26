@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".authentication.AuthenticationActivity">
 
-
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/auth_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"

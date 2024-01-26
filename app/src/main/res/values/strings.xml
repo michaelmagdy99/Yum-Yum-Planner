@@ -18,7 +18,15 @@
     <string name="please_sign_up_to_get_started">Please sign up to get started</string>
     <string name="name">Name</string>
     <string name="re_type_password">Re-Type Password</string>
-    <string name="daily_inspiration">Daily Inspiration</string>
+    <string name="daily_inspiration">Daily Inspiration for you </string>
     <string name="get_started">Get Started</string>
     <string name="exit">Exit</string>
+    <string name="country">Country</string>
+    <string name="category">Category :</string>
+    <string name="country_">You will eat today from :</string>
+    <string name="category_">Category</string>
+    <string name="meal_instructions">Meal Instructions</string>
+    <string name="add_to_plan">Add To Plan</string>
+    <string name="ingrediens">Ingredients which you like :)</string>
+    <string name="categories_the_different_food">Categories the different food :)</string>
 </resources>
