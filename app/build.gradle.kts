@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id ("androidx.navigation.safeargs")
+
 }
 
 android {
@@ -75,5 +77,8 @@ dependencies {
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
     //rounded images
     implementation ("com.makeramen:roundedimageview:2.3.0")
+    //animation
+    implementation ("com.airbnb.android:lottie:3.4.0")
+
 }
 

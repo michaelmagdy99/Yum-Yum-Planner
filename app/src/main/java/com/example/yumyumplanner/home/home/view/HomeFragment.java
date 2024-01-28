@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
+import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.home.presenter.HomePresenter;
 import com.example.yumyumplanner.home.meal_details.IngrdientsAdapter;
 import com.example.yumyumplanner.model.data.CategoriesItem;
@@ -33,6 +34,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements HomeView, OnClickListener{
 
+    private Boolean favFalg = false;
 
     private View view;
     private TextView nameMeal;
@@ -40,6 +42,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     private TextView countryMeal;
     private ImageView mealImage;
     private TextView categoryMeal;
+    private List<MealsItem> mealsItems;
     private ConstraintLayout itemConstraint;
     public static final String TAG = "Home Fragment";
 
@@ -52,6 +55,8 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     private RecyclerView categoryRecyclerView;
 
     private ProgressDialog progressDialog;
+
+    private ImageView favBtn;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -81,7 +86,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         categoryHomeAdapter = new CategoryHomeAdapter(getContext(), new ArrayList<>(), this);
         homepresenter =new HomePresenter(this,
                 HomeRepositryImp.getInstance(
-                MealsRemoteDataSourceImp.getInstance()));
+                MealsRemoteDataSourceImp.getInstance(), MealsLocalDataSourceImp.getInstance(getContext())));
         //ingradientsRV
         ingradientRecyclerView.setLayoutManager(IngrlayoutManager);
         ingradientRecyclerView.setAdapter(ingtrdientsHomeAdapter);
@@ -95,6 +100,20 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         //categoty
         homepresenter.getCategories();
 
+
+        favBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (favFalg) {
+                    favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
+                } else {
+                    favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
+                    homepresenter.addToFav(mealsItems.get(0));
+                }
+                favFalg =! favFalg;
+            }
+        });
+
         return view;
     }
     private void intitUI(View view){
@@ -105,6 +124,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         itemConstraint = view.findViewById(R.id.item_constrian);
         ingradientRecyclerView = view.findViewById(R.id.ingredients_recycler_home);
         categoryRecyclerView = view.findViewById(R.id.category_recycler_home);
+        favBtn = view.findViewById(R.id.fav_btn_home);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Please wait... It is downloading");
@@ -116,6 +136,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     @Override
     public void showData(List<MealsItem> mealsItems) {
         hideProgressBar();
+        this.mealsItems = mealsItems; // Assign mealsItems
 
         Glide.with(getContext())
                 .load(mealsItems.get(0).getStrMealThumb())
@@ -169,13 +190,12 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     @Override
     public void showErrorMsg(String error) {
         hideProgressBar();
-
         Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void addMeal(MealsItem mealsItem) {
-
+        homepresenter.addToFav(mealsItem);
     }
 
     @Override

@@ -4,6 +4,8 @@
     
     import androidx.annotation.NonNull;
     import androidx.fragment.app.Fragment;
+    import androidx.navigation.NavController;
+    import androidx.navigation.Navigation;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +13,7 @@
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
+    import android.widget.ImageButton;
     import android.widget.ImageView;
     import android.widget.TextView;
 
@@ -20,7 +23,6 @@
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
-    import java.util.ArrayList;
     import java.util.List;
 
     public class MealDetailsFragment extends Fragment {
@@ -37,6 +39,10 @@
         private IngrdientsAdapter ingtrdientsAdapter;
         private RecyclerView ingradientRecyclerView;
         LinearLayoutManager layoutManager;
+        private ImageButton favBtn;
+        private ImageButton backBtn;
+
+        private Boolean favFalg = false;
 
         public MealDetailsFragment() {
             // Required empty public constructor
@@ -97,6 +103,28 @@
             ingradientRecyclerView.setLayoutManager(layoutManager);
             ingradientRecyclerView.setAdapter(ingtrdientsAdapter);
 
+            backBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Navigation.findNavController(view).navigateUp();
+                }
+            });
+
+
+
+            favBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (favFalg) {
+                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
+                    } else {
+                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
+                    }
+                    favFalg =! favFalg;
+                }
+            });
+
+
             return view;
         }
     
@@ -108,6 +136,8 @@
             youTubePlayerView = view.findViewById(R.id.youtube_player);
             instrucationText = view.findViewById(R.id.meal_instructions_view_deatils);
             ingradientRecyclerView = view.findViewById(R.id.ingredients_recycler_view);
+            backBtn = view.findViewById(R.id.back_btn_deatils);
+            favBtn = view.findViewById(R.id.fav_btn_deatils);
         }
     
         public String getId(String link) {

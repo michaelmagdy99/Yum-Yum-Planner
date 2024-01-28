@@ -1,25 +1,16 @@
 package com.example.yumyumplanner.home;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import android.view.MenuItem;
+
 import android.os.Bundle;
 import android.view.View;
 
 import com.example.yumyumplanner.R;
-import com.example.yumyumplanner.home.calendar.CalendarFragment;
-import com.example.yumyumplanner.home.favourite.FavouriteFragment;
-import com.example.yumyumplanner.home.home.view.HomeFragment;
-import com.example.yumyumplanner.home.profile.ProfileFragment;
-import com.example.yumyumplanner.home.search.SearchFragment;
 
 
 public class HomeActivity extends AppCompatActivity {

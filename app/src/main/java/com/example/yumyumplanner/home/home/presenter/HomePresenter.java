@@ -26,7 +26,7 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
 
     @Override
     public void addToFav(MealsItem meal) {
-
+            mealsRepositry.insertMeal(meal);
     }
 
     @Override

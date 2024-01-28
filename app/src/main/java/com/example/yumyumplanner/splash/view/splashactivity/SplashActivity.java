@@ -20,7 +20,7 @@ import com.ramotion.paperonboarding.PaperOnboardingPage;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int SPLASH_SCREEN_TIME_OUT = 3000;
+    private static final int SPLASH_SCREEN_TIME_OUT = 6000;
 
     private FragmentManager fragmentManager;
 
@@ -65,6 +65,7 @@ public class SplashActivity extends AppCompatActivity {
     private void goToAutoActivity(){
         Intent intent = new Intent(SplashActivity.this , AuthenticationActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void setSplashScreenTimeOut(){
@@ -74,6 +75,7 @@ public class SplashActivity extends AppCompatActivity {
                 exitBtn.setVisibility(View.VISIBLE);
                 getStartedBtn.setVisibility(View.VISIBLE);
                 skipBtn.setVisibility(View.VISIBLE);
+
                 fragmentManager = getSupportFragmentManager();
                 final PaperOnboardingFragment paperOnboardingFragment = PaperOnboardingFragment.newInstance(getDataforOnboarding());
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

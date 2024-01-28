@@ -31,7 +31,7 @@
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/favouriteFragment"
-        android:name="com.example.yumyumplanner.home.favourite.FavouriteFragment"
+        android:name="com.example.yumyumplanner.home.favourite.view.FavouriteFragment"
         android:label="fragment_favourite"
         tools:layout="@layout/fragment_favourite" />
 </navigation>
