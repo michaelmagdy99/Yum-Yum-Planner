@@ -1,7 +1,7 @@
 package com.example.yumyumplanner.model.authentication_repo;
 
-import com.example.yumyumplanner.firebase.LoginFirebase;
-import com.example.yumyumplanner.firebase.RegisterFirebase;
+import com.example.yumyumplanner.remote.firebase.LoginFirebase;
+import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
 
 public interface AuthenticationRepositry {
 

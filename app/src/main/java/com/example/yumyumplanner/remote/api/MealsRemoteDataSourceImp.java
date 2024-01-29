@@ -1,5 +1,5 @@
 // MealsRemoteDataSourceImp.java
-package com.example.yumyumplanner.network;
+package com.example.yumyumplanner.remote.api;
 
 import com.example.yumyumplanner.model.data.CategoriesResponse;
 import com.example.yumyumplanner.model.data.CountryResponse;

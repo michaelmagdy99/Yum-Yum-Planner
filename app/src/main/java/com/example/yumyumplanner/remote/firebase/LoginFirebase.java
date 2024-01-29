@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.firebase;
+package com.example.yumyumplanner.remote.firebase;
 
 public interface LoginFirebase {
     void onLoginSuccess();

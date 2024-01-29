@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData;
 
 import com.example.yumyumplanner.database.MealsLocalDataSource;
 import com.example.yumyumplanner.model.data.MealsItem;
-import com.example.yumyumplanner.network.MealsRemoteDataSource;
-import com.example.yumyumplanner.network.NetworkCallBack;
+import com.example.yumyumplanner.remote.api.MealsRemoteDataSource;
+import com.example.yumyumplanner.remote.api.NetworkCallBack;
 
 import java.util.List;
 

@@ -17,10 +17,11 @@ import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.ramotion.paperonboarding.PaperOnboardingFragment;
 import com.ramotion.paperonboarding.PaperOnboardingPage;
+import com.ramotion.paperonboarding.listeners.PaperOnboardingOnChangeListener;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int SPLASH_SCREEN_TIME_OUT = 6000;
+    private static final int SPLASH_SCREEN_TIME_OUT = 3000;
 
     private FragmentManager fragmentManager;
 
@@ -72,8 +73,6 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                exitBtn.setVisibility(View.VISIBLE);
-                getStartedBtn.setVisibility(View.VISIBLE);
                 skipBtn.setVisibility(View.VISIBLE);
 
                 fragmentManager = getSupportFragmentManager();
@@ -81,6 +80,19 @@ public class SplashActivity extends AppCompatActivity {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.splash_fragment, paperOnboardingFragment);
                 fragmentTransaction.commit();
+
+                paperOnboardingFragment.setOnChangeListener(new PaperOnboardingOnChangeListener() {
+                    @Override
+                    public void onPageChanged(int oldIndex, int newIndex) {
+                        if (newIndex == getDataforOnboarding().size() - 1) {
+                            exitBtn.setVisibility(View.VISIBLE);
+                            getStartedBtn.setVisibility(View.VISIBLE);
+                        } else {
+                            exitBtn.setVisibility(View.INVISIBLE);
+                            getStartedBtn.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
 
             }
         }, SPLASH_SCREEN_TIME_OUT);

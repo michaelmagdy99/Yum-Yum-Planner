@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.network;
+package com.example.yumyumplanner.remote.api;
 
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;

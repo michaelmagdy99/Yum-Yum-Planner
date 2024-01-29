@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.network;
+package com.example.yumyumplanner.remote.api;
 
 public interface NetworkCallBack<T> {
     void onSuccessResult(T result);

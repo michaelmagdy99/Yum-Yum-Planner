@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,10 +17,10 @@ import android.widget.Toast;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.favourite.presenter.FavouritePresenter;
-import com.example.yumyumplanner.home.home.presenter.HomePresenter;
+import com.example.yumyumplanner.home.home.view.HomeFragmentDirections;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
-import com.example.yumyumplanner.network.MealsRemoteDataSourceImp;
+import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,7 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
                 favAdapter.notifyDataSetChanged();
             }
         });
+
     }
 
     @Override
@@ -98,5 +100,12 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
     public void onItemClick(MealsItem mealsItem) {
         deleteMeals(mealsItem);
         Toast.makeText(getContext(), "removed", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onDetailsItemClick(MealsItem mealsItem) {
+        FavouriteFragmentDirections.ActionFavouriteToMealDetailsFragment action =
+                FavouriteFragmentDirections.actionFavouriteToMealDetailsFragment();
+        action.setMealDetails(mealsItem);
+        Navigation.findNavController(view).navigate(action);
     }
 }

@@ -8,11 +8,12 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "meal")
-public class MealsItem{
+public class MealsItem implements Serializable {
 
 
 	@PrimaryKey
@@ -638,9 +639,6 @@ public class MealsItem{
 				ingredientsList.add(ingredient);
 			}
 		}
-
-
-
 		return ingredientsList;
 	}
 

@@ -1,7 +1,7 @@
 package com.example.yumyumplanner.authentication.register.presenter;
 
 import com.example.yumyumplanner.authentication.register.view.RegisterView;
-import com.example.yumyumplanner.firebase.RegisterFirebase;
+import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositry;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
 

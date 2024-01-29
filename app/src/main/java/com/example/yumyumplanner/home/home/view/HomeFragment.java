@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +22,11 @@ import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.home.presenter.HomePresenter;
-import com.example.yumyumplanner.home.meal_details.IngrdientsAdapter;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.IngredientItem;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
-import com.example.yumyumplanner.network.MealsRemoteDataSourceImp;
+import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,6 @@ import java.util.List;
 public class HomeFragment extends Fragment implements HomeView, OnClickListener{
 
     private Boolean favFalg = false;
-
     private View view;
     private TextView nameMeal;
     private HomePresenter homepresenter;
@@ -49,7 +47,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     private IngrdientsHomeAdapter ingtrdientsHomeAdapter;
     private RecyclerView ingradientRecyclerView;
     LinearLayoutManager IngrlayoutManager;
-    LinearLayoutManager caterlayoutManager;
+    GridLayoutManager caterlayoutManager;
 
     private CategoryHomeAdapter categoryHomeAdapter;
     private RecyclerView categoryRecyclerView;
@@ -81,8 +79,8 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         IngrlayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         ingtrdientsHomeAdapter = new IngrdientsHomeAdapter(getContext(), new ArrayList<>(),this);
         //object of categoryHomeAdapter
-        caterlayoutManager = new LinearLayoutManager(getContext());
-        caterlayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        caterlayoutManager = new GridLayoutManager(getContext(), 2);
+        caterlayoutManager.setOrientation(RecyclerView.VERTICAL);
         categoryHomeAdapter = new CategoryHomeAdapter(getContext(), new ArrayList<>(), this);
         homepresenter =new HomePresenter(this,
                 HomeRepositryImp.getInstance(
@@ -148,22 +146,14 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         nameMeal.setText(mealsItems.get(0).getStrMeal());
         countryMeal.setText(mealsItems.get(0).getStrArea());
         categoryMeal.setText(mealsItems.get(0).getStrCategory());
+
         itemConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-
-                bundle.putString("mealName", mealsItems.get(0).getStrMeal());
-                bundle.putString("categoryName", mealsItems.get(0).getStrCategory());
-                bundle.putString("countryMeal", mealsItems.get(0).getStrArea());
-                bundle.putString("instructionMeal", mealsItems.get(0).getStrInstructions());
-                bundle.putString("imageMeal", mealsItems.get(0).getStrMealThumb());
-                bundle.putString("videoMeal",mealsItems.get(0).getStrYoutube());
-                bundle.putStringArrayList("ingredientsList", new ArrayList<>(mealsItems.get(0).getAllIngredients()));
-                bundle.putStringArrayList("measureList", new ArrayList<>(mealsItems.get(0).getAllMeaurse()));
-
-
-                Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_mealDetailsFragment, bundle);
+                HomeFragmentDirections.ActionHomeFragmentToMealDetailsFragment action =
+                        HomeFragmentDirections.actionHomeFragmentToMealDetailsFragment();
+                action.setMealDetails(mealsItems.get(0));
+                Navigation.findNavController(view).navigate(action);
             }
         });
     }
@@ -209,11 +199,11 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         if (item instanceof CategoriesItem) {
             CategoriesItem categoriesItem = (CategoriesItem) item;
             //logic
-            Toast.makeText(getContext(), categoriesItem.getStrCategory(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), categoriesItem.getIdCategory(), Toast.LENGTH_SHORT).show();
         } else if (item instanceof IngredientItem) {
             IngredientItem ingredientItem = (IngredientItem) item;
             //logic
-            Toast.makeText(getContext(), ingredientItem.getStrIngredient(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), ingredientItem.getIdIngredient(), Toast.LENGTH_SHORT).show();
         }
     }
 

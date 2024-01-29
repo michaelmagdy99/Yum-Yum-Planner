@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.firebase;
+package com.example.yumyumplanner.remote.firebase;
 
 import com.google.firebase.auth.FirebaseAuth;
 

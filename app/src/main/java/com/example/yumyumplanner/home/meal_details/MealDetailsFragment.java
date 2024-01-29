@@ -61,40 +61,39 @@
             View view = inflater.inflate(R.layout.fragment_meal_details, container, false);
             intitUI(view);
 
-            Bundle args = getArguments();
             List<String> ingredientsList = null;
             List<String> meaurseList =null;
-            if (args != null) {
+            String mealid = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getIdMeal();
 
-                String mealName = args.getString("mealName", "unknown");
-                String categoryName = args.getString("categoryName", "UnKnown");
-                String country = args.getString("countryMeal", "Unknown");
-                String instruction = args.getString("instructionMeal", "UnKnown");
-                String image = args.getString("imageMeal", "unknown");
-                String urlVideo = args.getString("videoMeal", "unKnown");
-                ingredientsList = args.getStringArrayList("ingredientsList");
-                meaurseList = args.getStringArrayList("measureList");
+            String mealName = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrMeal();
+            String categoryName = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrCategory();
+            String country = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrArea();
+            String instruction = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrInstructions();
+            String image = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrMealThumb();
+            String urlVideo = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrYoutube();
+            ingredientsList = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getAllIngredients();
+            meaurseList = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getAllMeaurse();
 
-                Log.i(TAG, "onCreateView: " + urlVideo);
-                nameMeal.setText(mealName);
-                categoryMeal.setText(categoryName);
-                countryMeal.setText(country);
-                instrucationText.setText(instruction);
+            Log.i(TAG, "onCreateView: " + urlVideo);
+            nameMeal.setText(mealName);
+            categoryMeal.setText(categoryName);
+            countryMeal.setText(country);
+            instrucationText.setText(instruction);
 
-                Glide.with(getContext())
-                        .load(image)
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_launcher_foreground)
-                        .into(mealImage);
+            Glide.with(getContext())
+                    .load(image)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(mealImage);
 
-                youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                     @Override
                     public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                         String videoId = getId(urlVideo);
                         youTubePlayer.loadVideo(videoId, 0);
                     }
                 });
-            }
+
 
 
             layoutManager = new LinearLayoutManager(getContext());

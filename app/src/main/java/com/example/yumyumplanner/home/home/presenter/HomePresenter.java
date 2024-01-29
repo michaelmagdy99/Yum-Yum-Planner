@@ -5,7 +5,7 @@ import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.IngredientItem;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
-import com.example.yumyumplanner.network.NetworkCallBack;
+import com.example.yumyumplanner.remote.api.NetworkCallBack;
 
 import java.util.List;
 

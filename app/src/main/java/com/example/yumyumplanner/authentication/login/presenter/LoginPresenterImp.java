@@ -1,7 +1,7 @@
 package com.example.yumyumplanner.authentication.login.presenter;
 
 import com.example.yumyumplanner.authentication.login.view.LoginView;
-import com.example.yumyumplanner.firebase.LoginFirebase;
+import com.example.yumyumplanner.remote.firebase.LoginFirebase;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositry;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
 

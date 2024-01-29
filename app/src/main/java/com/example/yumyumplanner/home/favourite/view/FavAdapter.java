@@ -10,6 +10,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -61,6 +62,12 @@ public class FavAdapter  extends RecyclerView.Adapter<FavAdapter.FavViewHolder> 
                 listener.onItemClick(mealsItemList.get(position));
             }
         });
+        holder.itemConstraint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onDetailsItemClick(mealsItemList.get(position));
+            }
+        });
     }
 
     @Override
@@ -80,6 +87,8 @@ public class FavAdapter  extends RecyclerView.Adapter<FavAdapter.FavViewHolder> 
         private View view;
 
         private ImageView favBtn;
+        private ConstraintLayout itemConstraint;
+
 
         public FavViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,6 +98,8 @@ public class FavAdapter  extends RecyclerView.Adapter<FavAdapter.FavViewHolder> 
             country = itemView.findViewById(R.id.country_meal);
             category = itemView.findViewById(R.id.category_meal);
             favBtn = itemView.findViewById(R.id.fav_btn_home);
+            itemConstraint = view.findViewById(R.id.item_constrian);
+
         }
     }
 }

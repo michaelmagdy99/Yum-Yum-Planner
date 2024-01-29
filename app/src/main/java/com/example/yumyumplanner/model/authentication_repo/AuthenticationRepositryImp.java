@@ -4,9 +4,9 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.example.yumyumplanner.firebase.LoginFirebase;
-import com.example.yumyumplanner.firebase.UserFirebaseModel;
-import com.example.yumyumplanner.firebase.RegisterFirebase;
+import com.example.yumyumplanner.remote.firebase.LoginFirebase;
+import com.example.yumyumplanner.remote.firebase.UserFirebaseModel;
+import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

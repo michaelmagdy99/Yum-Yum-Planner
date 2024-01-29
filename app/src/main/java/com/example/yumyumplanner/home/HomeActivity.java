@@ -34,31 +34,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        if (savedInstanceState == null) {
-            navController.navigate(R.id.homeFragment);
-        }
-
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.home) {
-                navController.navigate(R.id.homeFragment);
-                return true;
-            } else if (itemId == R.id.search) {
-                navController.navigate(R.id.searchFragment);
-                return true;
-            } else if (itemId == R.id.calendar) {
-                navController.navigate(R.id.calendarFragment);
-                return true;
-            } else if (itemId == R.id.favourite) {
-                navController.navigate(R.id.favouriteFragment);
-                return true;
-            } else {
-                return false;
-            }
-
-        });
-
 
     }
 
