@@ -30,4 +30,11 @@
     <string name="ingrediens">Ingredients which you like :)</string>
     <string name="categories_the_different_food">Categories the different food :)</string>
     <string name="ingredients">Ingredients</string>
+    <string name="favourite_meals">Favourite Meals</string>
+    <string name="meal_plan">Meal Plan</string>
+    <string name="save">Save</string>
+    <string name="planner">Planner</string>
+    <string name="yum_yum">Yum Yum</string>
+    <string name="default_web_client_id">603633507261-6h2prlbg2e3f518n493b7ip6a7ftpcph.apps.googleusercontent.com</string>
+    <string name="web_client_secret">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</string>
 </resources>

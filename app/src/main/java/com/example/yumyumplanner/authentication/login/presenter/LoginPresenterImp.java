@@ -1,11 +1,13 @@
 package com.example.yumyumplanner.authentication.login.presenter;
 
+import android.app.Activity;
+
 import com.example.yumyumplanner.authentication.login.view.LoginView;
 import com.example.yumyumplanner.remote.firebase.LoginFirebase;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositry;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
 
-public class LoginPresenterImp implements LoginPresenter, LoginFirebase{
+public class LoginPresenterImp implements LoginPresenter, LoginFirebase {
     private  LoginView loginView;
     private AuthenticationRepositry authenticationRepositry;
     private static LoginPresenterImp loginPresenterImp;
@@ -33,6 +35,8 @@ public class LoginPresenterImp implements LoginPresenter, LoginFirebase{
 
     }
 
+
+
     @Override
     public void onLoginSuccess() {
         loginView.hideProgress();
@@ -44,4 +48,5 @@ public class LoginPresenterImp implements LoginPresenter, LoginFirebase{
         loginView.hideProgress();
         loginView.showLoginErrorMessage(errorMessage);
     }
+
 }

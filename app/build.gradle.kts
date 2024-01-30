@@ -79,6 +79,12 @@ dependencies {
     implementation ("com.makeramen:roundedimageview:2.3.0")
     //animation
     implementation ("com.airbnb.android:lottie:3.4.0")
+    //circle image
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation ("com.google.firebase:firebase-auth:19.4.0")
+    implementation ("com.google.android.gms:play-services-auth:18.1.0")
+    implementation ("com.github.bumptech.glide:glide:4.11.0")
 
 }
 

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,8 @@ import android.widget.Toast;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.authentication.register.presenter.RegisterPresenterImp;
 import com.example.yumyumplanner.home.HomeActivity;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class RegisterFragment extends Fragment implements RegisterView{
 
@@ -31,12 +35,8 @@ public class RegisterFragment extends Fragment implements RegisterView{
     private EditText rePasswEditText;
     private Button signUpBtn;
     private RegisterPresenterImp registerPresenter;
-    private String email, password, name, re_password;
-
     private View view;
     private ImageButton backBtn;
-
-    private TextView gustModeBtn;
 
 
     public RegisterFragment() {
@@ -58,23 +58,22 @@ public class RegisterFragment extends Fragment implements RegisterView{
         view =  inflater.inflate(R.layout.fragment_register, container, false);
         initUI(view);
 
-        gustModeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity() , HomeActivity.class);
-                startActivity(intent);
-            }
-        });
         registerPresenter = RegisterPresenterImp.getInstance(this);
 
         //sign up action
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerPresenter.register(
+
+                if (!valiadation()) {
+                    Toast.makeText(getContext(), "Check Your Data", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    registerPresenter.register(
                         emailEditText.getText().toString(),
                         passwordEditText.getText().toString()
-                );
+                    );
+                }
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +95,6 @@ public class RegisterFragment extends Fragment implements RegisterView{
         progressbar =view.findViewById(R.id.loading_sing_up);
         signUpBtn = view.findViewById(R.id.sign_up_btn);
         backBtn = view.findViewById(R.id.back_btn);
-        gustModeBtn = view.findViewById(R.id.gust_btn_sign_up);
     }
 
     @Override
@@ -120,5 +118,37 @@ public class RegisterFragment extends Fragment implements RegisterView{
     @Override
     public void showRegisterErrorMessage(String errorMessage) {
         Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    private boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+    private boolean valiadation(){
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+        String name = nameEditText.getText().toString().trim();
+        String reEnteredPassword = rePasswEditText.getText().toString().trim();
+
+        if (name.isEmpty()) {
+            nameEditText.setError("Enter your name");
+            return false;
+        }
+
+        if (email.isEmpty() || !isValidEmail(email)) {
+            emailEditText.setError("Enter a valid email address");
+            return false;
+        }
+
+        if (password.isEmpty() || password.length() < 6) {
+            passwordEditText.setError("Password must be at least 6 characters long");
+            return false;
+        }
+
+        if (!password.equals(reEnteredPassword)) {
+            rePasswEditText.setError("Passwords do not match");
+            return false;
+        }
+
+        return true;
     }
 }

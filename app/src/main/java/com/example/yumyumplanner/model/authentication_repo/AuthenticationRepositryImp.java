@@ -1,5 +1,6 @@
 package com.example.yumyumplanner.model.authentication_repo;
 
+import android.app.Activity;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -66,6 +67,5 @@ public class AuthenticationRepositryImp implements AuthenticationRepositry{
         }
 
     }
-
 
 }

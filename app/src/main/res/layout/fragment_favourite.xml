@@ -7,14 +7,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.favourite.view.FavouriteFragment">
 
+    <TextView
+        android:id="@+id/txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:text="@string/favourite_meals"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fav_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/txt"
         tools:listitem="@layout/fav_item"
         tools:itemCount="10"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
