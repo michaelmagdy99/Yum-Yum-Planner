@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.home.meal_details;
+package com.example.yumyumplanner.home.meal_details.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
-import com.example.yumyumplanner.model.data.MealsItem;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package com.example.yumyumplanner.model.meals_repo;
 import androidx.lifecycle.LiveData;
 
 import com.example.yumyumplanner.database.MealsLocalDataSource;
+import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSource;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
@@ -60,5 +61,20 @@ public class HomeRepositryImp implements HomeRepositry {
     @Override
     public LiveData<List<MealsItem>> getAllMealsFromLocal() {
         return mealsLocalDataSource.getAllMeals();
+    }
+
+    @Override
+    public void addToCalendar(MealCalendar mealCalendar) {
+        mealsLocalDataSource.insertMealToCalendar(mealCalendar);
+    }
+
+    @Override
+    public void deleteMealFromCalendar(MealCalendar mealCalendar) {
+        mealsLocalDataSource.deleteMealFromCalendar(mealCalendar);
+    }
+
+    @Override
+    public LiveData<List<MealCalendar>> getAllMealsFromCalendar(String date) {
+        return mealsLocalDataSource.getAllMealsFromCalendar(date);
     }
 }

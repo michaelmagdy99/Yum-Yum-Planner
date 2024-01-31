@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/mealDetailsFragment"
-        android:name="com.example.yumyumplanner.home.meal_details.MealDetailsFragment"
+        android:name="com.example.yumyumplanner.home.meal_details.view.MealDetailsFragment"
         android:label="Meal Details">
         <argument
             android:name="mealDetails"
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/calendar"
-        android:name="com.example.yumyumplanner.home.calendar.CalendarFragment"
+        android:name="com.example.yumyumplanner.home.calendar.view.CalendarFragment"
         android:label="Calendar"
         tools:layout="@layout/fragment_calendar" />
     <fragment

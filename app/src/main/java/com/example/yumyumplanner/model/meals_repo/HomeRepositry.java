@@ -2,6 +2,7 @@ package com.example.yumyumplanner.model.meals_repo;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
 
@@ -20,5 +21,11 @@ public interface HomeRepositry {
     void insertMeal(MealsItem mealsItem);
     void deleteMeal(MealsItem mealsItem);
     LiveData<List<MealsItem>> getAllMealsFromLocal();
+
+    void addToCalendar (MealCalendar mealCalendar);
+
+    void deleteMealFromCalendar (MealCalendar  mealCalendar);
+    LiveData<List<MealCalendar>> getAllMealsFromCalendar(String date);
+
 
 }

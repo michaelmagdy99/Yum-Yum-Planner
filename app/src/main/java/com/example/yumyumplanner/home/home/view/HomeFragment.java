@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
                     favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
                 } else {
                     favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
-                    homepresenter.addToFav(mealsItems.get(0));
+                    addMeal(mealsItems.get(0));
                 }
                 favFalg =! favFalg;
             }

@@ -6,10 +6,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
 
-@Database(entities = {MealsItem.class}, version = 1)
-
+@Database(entities = {MealsItem.class, MealCalendar.class}, version = 1)
 public abstract class MealDatabase extends RoomDatabase {
 
     private static MealDatabase instance = null;

@@ -7,6 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
 
 import java.util.List;
@@ -22,4 +23,15 @@ public interface MealDAO {
 
     @Delete
     void delete(MealsItem mealsItem);
+
+    @Query("select * from meal_plan where date = :date")
+    LiveData<List<MealCalendar>> getAllMealsFromCalendar(String date);
+
+    @Delete
+    void deleteMealFromCalendar(MealCalendar mealCalendar);
+
+    @Insert (onConflict = OnConflictStrategy.IGNORE)
+    void insertMealtoCalendar(MealCalendar mealCalendar);
+
+
 }

@@ -77,8 +77,8 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
     public void showData(LiveData<List<MealsItem>> allMealsFromLocal) {
         allMealsFromLocal.observe(this, new Observer<List<MealsItem>>() {
             @Override
-            public void onChanged(List<MealsItem> productList) {
-                favAdapter.setList(productList);
+            public void onChanged(List<MealsItem> mealsItems) {
+                favAdapter.setList(mealsItems);
                 favAdapter.notifyDataSetChanged();
             }
         });
