@@ -37,4 +37,5 @@
     <string name="yum_yum">Yum Yum</string>
     <string name="default_web_client_id">603633507261-6h2prlbg2e3f518n493b7ip6a7ftpcph.apps.googleusercontent.com</string>
     <string name="web_client_secret">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</string>
+    <string name="remove_from_plan">Remove From Plan</string>
 </resources>

@@ -81,10 +81,17 @@ dependencies {
     implementation ("com.airbnb.android:lottie:3.4.0")
     //circle image
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-
+    //sign in with google
     implementation ("com.google.firebase:firebase-auth:19.4.0")
     implementation ("com.google.android.gms:play-services-auth:18.1.0")
     implementation ("com.github.bumptech.glide:glide:4.11.0")
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-firestore")
+    //storge
+    implementation ("com.google.firebase:firebase-storage:20.0.0")
+
 
 }
 

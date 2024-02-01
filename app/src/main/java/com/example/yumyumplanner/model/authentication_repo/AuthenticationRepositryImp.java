@@ -1,16 +1,30 @@
 package com.example.yumyumplanner.model.authentication_repo;
 
-import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
+import com.example.yumyumplanner.remote.firebase.ForgotPasswordCallback;
 import com.example.yumyumplanner.remote.firebase.LoginFirebase;
 import com.example.yumyumplanner.remote.firebase.UserFirebaseModel;
 import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticationRepositryImp implements AuthenticationRepositry{
     private static final String TAG = "AuthenticationRepositry";
@@ -66,6 +80,28 @@ public class AuthenticationRepositryImp implements AuthenticationRepositry{
                     });
         }
 
+    }
+
+    @Override
+    public void forgotPassword(String email, ForgotPasswordCallback callback) {
+        userFirebaseModel.getAuth().sendPasswordResetEmail(email)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        callback.onSuccess();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        callback.onFailure(e.getMessage());
+                    }
+                });
+    }
+
+    @Override
+    public void logOut() {
+        userFirebaseModel.getAuth().signOut();
     }
 
 }

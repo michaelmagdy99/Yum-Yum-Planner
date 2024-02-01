@@ -1,16 +1,15 @@
 package com.example.yumyumplanner.home.calendar.presenter;
 
-import com.example.yumyumplanner.home.calendar.view.CalenderView;
+import com.example.yumyumplanner.home.calendar.view.CalenderViewInterface;
 import com.example.yumyumplanner.model.data.MealCalendar;
-import com.example.yumyumplanner.model.meals_repo.HomeRepositry;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 
 public class CalenderPresenter implements CalenderPresenterInterface {
 
-    private CalenderView calenderView;
+    private CalenderViewInterface calenderView;
     private HomeRepositryImp repositry;
 
-    public CalenderPresenter(CalenderView calenderView, HomeRepositryImp repositry){
+    public CalenderPresenter(CalenderViewInterface calenderView, HomeRepositryImp repositry){
         this.calenderView = calenderView;
         this.repositry = repositry;
     }

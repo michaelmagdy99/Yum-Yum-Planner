@@ -24,12 +24,21 @@
             android:defaultValue="@null"
             app:argType="com.example.yumyumplanner.model.data.MealsItem"
             app:nullable="true" />
+        <argument
+            android:name="mealCalender"
+            app:argType="com.example.yumyumplanner.model.data.MealCalendar"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/calendar"
         android:name="com.example.yumyumplanner.home.calendar.view.CalendarFragment"
         android:label="Calendar"
-        tools:layout="@layout/fragment_calendar" />
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_calendar_to_mealDetailsFragment"
+            app:destination="@id/mealDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/search"
         android:name="com.example.yumyumplanner.home.search.SearchFragment"
@@ -46,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/profile"
-        android:name="com.example.yumyumplanner.home.profile.ProfileFragment"
+        android:name="com.example.yumyumplanner.home.profile.view.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

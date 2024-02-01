@@ -93,44 +93,21 @@
                             MealsLocalDataSourceImp.getInstance(getContext())));
 
 
-
-            mealid = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getIdMeal();
-            mealName = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrMeal();
-            categoryName = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrCategory();
-            country = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrArea();
-            instruction = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrInstructions();
-            image = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrMealThumb();
-            urlVideo = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getStrYoutube();
-            ingredientsList = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getAllIngredients();
-            meaurseList = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails().getAllMeaurse();
-
-            Log.i(TAG, "onCreateView: " + urlVideo);
-            nameMeal.setText(mealName);
-            categoryMeal.setText(categoryName);
-            countryMeal.setText(country);
-            instrucationText.setText(instruction);
-
-            Glide.with(getContext())
-                    .load(image)
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .into(mealImage);
-
-            youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-                    @Override
-                    public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                        String videoId = getId(urlVideo);
-                        youTubePlayer.loadVideo(videoId, 0);
-                    }
-                });
+            MealDetailsFragmentArgs args = MealDetailsFragmentArgs.fromBundle(getArguments());
+            MealsItem mealsItem = args.getMealDetails();
+            MealCalendar mealCalendar = args.getMealCalender();
 
 
-
-            layoutManager = new LinearLayoutManager(getContext());
-            layoutManager.setOrientation(RecyclerView.HORIZONTAL);
-            ingtrdientsAdapter = new IngrdientsAdapter(getContext(), ingredientsList, meaurseList);
-            ingradientRecyclerView.setLayoutManager(layoutManager);
-            ingradientRecyclerView.setAdapter(ingtrdientsAdapter);
+            if (mealsItem != null) {
+                // Argument from HomeFragment
+                handleArgumentFromHomeFragment(mealsItem);
+            } else if (mealCalendar != null) {
+                // Argument from CalendarFragment
+                handleArgumentFromCalendarFragment(mealCalendar);
+            } else {
+                // No arguments are present
+                handleNoArguments();
+            }
 
             backBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -138,8 +115,6 @@
                     Navigation.findNavController(view).navigateUp();
                 }
             });
-
-
 
             favBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -192,8 +167,8 @@
                             mealCalendar.setStrMeal(mealName);
                             mealCalendar.setStrCategory(categoryName);
                             mealCalendar.setStrMealThumb(image);
+                            mealCalendar.setStrYoutube(String.valueOf(youTubePlayerView));
                             mealCalendar.setStrInstructions(instruction);
-
                             mealCalendar.setAllIngredients(ingredientsList);
                             mealCalendar.setAllMeasures(meaurseList);
 
@@ -240,5 +215,70 @@
         @Override
         public void addMealToCalendar(MealCalendar mealCalendar) {
             preserter.addToCalender(mealCalendar);
+        }
+
+
+
+        private void handleArgumentFromHomeFragment(MealsItem mealsItem) {
+            mealid = mealsItem.getIdMeal();
+            mealName = mealsItem.getStrMeal();
+            categoryName = mealsItem.getStrCategory();
+            country = mealsItem.getStrArea();
+            instruction = mealsItem.getStrInstructions();
+            image = mealsItem.getStrMealThumb();
+            urlVideo = mealsItem.getStrYoutube();
+            ingredientsList = mealsItem.getAllIngredients();
+            meaurseList = mealsItem.getAllMeaurse();
+
+            updateUI();
+        }
+
+        private void handleArgumentFromCalendarFragment(MealCalendar mealCalendar) {
+            mealid = mealCalendar.getIdMeal();
+            mealName = mealCalendar.getStrMeal();
+            categoryName = mealCalendar.getStrCategory();
+            country = mealCalendar.getStrArea();
+            instruction = mealCalendar.getStrInstructions();
+            image = mealCalendar.getStrMealThumb();
+            urlVideo = mealCalendar.getStrYoutube();
+            ingredientsList = mealCalendar.getAllIngredients();
+            meaurseList = mealCalendar.getAllMeaurse();
+
+            updateUI();
+        }
+
+        private void handleNoArguments() {
+            // Handle case when no arguments are present
+            Toast.makeText(getContext(), "There are some woring in data", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(view).navigateUp();
+        }
+
+        private void updateUI(){
+            Log.i(TAG, "onCreateView: " + urlVideo);
+            nameMeal.setText(mealName);
+            categoryMeal.setText(categoryName);
+            countryMeal.setText(country);
+            instrucationText.setText(instruction);
+
+            Glide.with(getContext())
+                    .load(image)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(mealImage);
+
+            youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                    String videoId = getId(urlVideo);
+                    youTubePlayer.loadVideo(videoId, 0);
+                }
+            });
+
+            layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+            ingtrdientsAdapter = new IngrdientsAdapter(getContext(), ingredientsList, meaurseList);
+            ingradientRecyclerView.setLayoutManager(layoutManager);
+            ingradientRecyclerView.setAdapter(ingtrdientsAdapter);
+
         }
     }

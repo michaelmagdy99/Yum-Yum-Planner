@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".home.profile.ProfileFragment">
+    tools:context=".home.profile.view.ProfileFragment">
 
     <ImageButton
         android:id="@+id/logout"
@@ -139,7 +139,6 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="40dp"
-        android:visibility="gone"
         android:text="@string/save"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"

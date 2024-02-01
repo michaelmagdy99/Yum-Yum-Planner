@@ -24,7 +24,7 @@ public interface MealDAO {
     @Delete
     void delete(MealsItem mealsItem);
 
-    @Query("select * from meal_plan where date = :date")
+    @Query("SELECT * FROM meal_plan WHERE date = :date")
     LiveData<List<MealCalendar>> getAllMealsFromCalendar(String date);
 
     @Delete

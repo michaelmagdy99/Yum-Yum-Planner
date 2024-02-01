@@ -42,6 +42,7 @@ public class LoginFragment extends Fragment implements LoginView  {
 
     private ProgressBar progressbar;
 
+    private TextView resetPassword;
     private EditText emailEditText ;
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth firebaseAuth;
@@ -140,6 +141,14 @@ public class LoginFragment extends Fragment implements LoginView  {
             }
         });
 
+        //forgetPassword
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //loginPresenter.forgotPassword(emailEditText.getText().toString());
+            }
+        });
+
 
         return view;
     }
@@ -153,6 +162,7 @@ public class LoginFragment extends Fragment implements LoginView  {
         loginUpBtn = view.findViewById(R.id.login_btn);
         googleSignIn = view.findViewById(R.id.google_icon_btn);
         facebookSignIn = view.findViewById(R.id.facebook_icon_btn);
+        resetPassword = view.findViewById(R.id.Reset_Password);
     }
 
     @Override
@@ -219,6 +229,7 @@ public class LoginFragment extends Fragment implements LoginView  {
     private void goToHome(){
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
+        getActivity().finish();
     }
 
 }
