@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,9 @@ import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.example.yumyumplanner.authentication.login.presenter.LoginPresenterImp;
 import com.example.yumyumplanner.home.profile.presenter.ProfilePresenterImp;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
+import com.example.yumyumplanner.model.backup_repo.BackUpRepository;
+import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
+import com.example.yumyumplanner.model.data.UserProfile;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +54,8 @@ public class ProfileFragment extends Fragment implements ProfileView{
     EditText email;
     EditText name;
     Button saveEdit;
+    private ProgressBar progressbar;
+
     ImageButton logout;
     ImageButton editImage;
     ProfilePresenterImp profilePresenter;
@@ -73,6 +80,13 @@ public class ProfileFragment extends Fragment implements ProfileView{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        profilePresenter.onViewCreated();
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -86,10 +100,15 @@ public class ProfileFragment extends Fragment implements ProfileView{
         saveEdit = view.findViewById(R.id.save_edit);
         nameTv = view.findViewById(R.id.user_name_settings);
         emailTv = view.findViewById(R.id.user_email_settings);
+        progressbar =view.findViewById(R.id.loading);
 
-         profilePresenter = ProfilePresenterImp.getInstance(this);
-         // load data
-         loadUserDataFromFirestore();
+
+
+        profilePresenter = ProfilePresenterImp.getInstance(this,
+                 BackUpRepositoryImp.getInstance(getContext()));
+
+        profilePresenter.onViewCreated();
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,124 +157,45 @@ public class ProfileFragment extends Fragment implements ProfileView{
         startActivity(new Intent(getActivity(), AuthenticationActivity.class));
     }
 
-    private void saveUserDataToFirestore(String name, String email, String imageUrl) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
+    @Override
+    public void displayUserData(UserProfile userProfile) {
+        if (isAdded() && getContext() != null) {
 
-            Map<String, Object> userData = new HashMap<>();
-            userData.put("name", name);
-            userData.put("email", email);
-            userData.put("profileImage", imageUrl);
+            name.setText(userProfile.getName());
+            email.setText(userProfile.getEmail());
+            nameTv.setText(userProfile.getName());
+            emailTv.setText(userProfile.getEmail());
 
-            FirebaseFirestore.getInstance().collection("users")
-                    .document(userId)
-                    .set(userData)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "User data saved successfully", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to save user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(getContext(), "Must Login First to can edit Data", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getActivity().getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-
-    private void loadUserDataFromFirestore() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-
-            FirebaseFirestore.getInstance().collection("users")
-                    .document(userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String userName = documentSnapshot.getString("name");
-                            String userEmail = documentSnapshot.getString("email");
-                            String userProfileImage = documentSnapshot.getString("profileImage");
-
-                            name.setText(userName);
-                            email.setText(userEmail);
-
-                            nameTv.setText(userName);
-                            emailTv.setText(userEmail);
-                            if (userProfileImage != null && !userProfileImage.isEmpty()) {
-                                Glide.with(requireContext()).load(userProfileImage).into(profileImage);
-                            }
-                        } else {
-                            Toast.makeText(getContext(), "User data not found", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to retrieve user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(getContext(), "Must Login First to can get Data", Toast.LENGTH_SHORT).show();
+            Log.i("TAG", "displayUserData: " + userProfile.getProfileImageURL());
+            if (userProfile.getProfileImageURL() != null && !userProfile.getProfileImageURL().isEmpty()) {
+                Glide.with(requireContext())
+                        .load(userProfile.getProfileImageURL())
+                        .placeholder(R.drawable.profile)
+                        .error(R.drawable.profile)
+                        .into(profileImage);
+            } else {
+                Toast.makeText(getContext(), "Data not Found", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
+
+    @Override
+    public void showImageChooser() {
+        openFileChooser();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
 
     private void saveUserData() {
         String userName = name.getText().toString();
         String userEmail = email.getText().toString();
+        UserProfile userProfile = new UserProfile(userName, userEmail, "");
+        profilePresenter.onSaveEditClicked(userProfile, imageUri);
 
-        // Check if a new image is selected
-        if (imageUri != null) {
-            // If a new image is selected, upload it and update the URL
-            uploadImageAndUpdateUserData(userName, userEmail);
-        } else {
-            // If no new image is selected, retrieve the existing image URL from Firestore
-            loadExistingImageUrl(userName, userEmail);
-        }
-    }
-
-    private void uploadImageAndUpdateUserData(String userName, String userEmail) {
-        StorageReference fileReference = FirebaseStorage.getInstance().getReference()
-                .child("profile_images")
-                .child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
-
-        fileReference.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                        String imageUrl = uri.toString();
-                        saveUserDataToFirestore(userName, userEmail, imageUrl);
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void loadExistingImageUrl(String userName, String userEmail) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-
-            FirebaseFirestore.getInstance().collection("users")
-                    .document(userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String existingImageUrl = documentSnapshot.getString("profileImage");
-                            saveUserDataToFirestore(userName, userEmail, existingImageUrl);
-                        } else {
-                            Toast.makeText(getContext(), "User data not found", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to retrieve user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(getContext(), "Must Login First to can get Data", Toast.LENGTH_SHORT).show();
-        }
     }
 
 }

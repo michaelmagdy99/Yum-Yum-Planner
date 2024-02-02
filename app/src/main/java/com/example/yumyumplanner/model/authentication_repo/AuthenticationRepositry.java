@@ -15,7 +15,4 @@ public interface AuthenticationRepositry {
     void register(String email, String pass, RegisterFirebase registerFirebase);
     void forgotPassword(String email, ForgotPasswordCallback callback);
 
-    void logOut();
-
-
 }

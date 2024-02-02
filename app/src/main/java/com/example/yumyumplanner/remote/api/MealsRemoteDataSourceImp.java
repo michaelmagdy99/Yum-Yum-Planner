@@ -6,6 +6,11 @@ import com.example.yumyumplanner.model.data.CountryResponse;
 import com.example.yumyumplanner.model.data.IngredientsResponse;
 import com.example.yumyumplanner.model.data.MealResponse;
 
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,6 +35,7 @@ public class MealsRemoteDataSourceImp implements MealsRemoteDataSource {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
 
         mealsRemoteWebService = retrofit.create(MealsRemoteWebService.class);
@@ -37,89 +43,56 @@ public class MealsRemoteDataSourceImp implements MealsRemoteDataSource {
 
     @Override
     public void makeRandomMealCall(NetworkCallBack networkCallBack) {
-        Call<MealResponse> randomMealCall = mealsRemoteWebService.getRandomMeal();
-        randomMealCall.enqueue(new Callback<MealResponse>() {
-            @Override
-            public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
-                if (response.isSuccessful()) {
-                    networkCallBack.onSuccessResult(response.body().meals);
-                } else {
-                    networkCallBack.onFailureResult("Failed to get random meal. " +
-                            "Response code: " + response.code());
-                }
-            }
+        Single<MealResponse> randomMealCall = mealsRemoteWebService.getRandomMeal();
+        randomMealCall.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(response -> {
+                                networkCallBack.onSuccessResult(response.meals);
 
-            @Override
-            public void onFailure(Call<MealResponse> call, Throwable t) {
-                networkCallBack.onFailureResult("Network request failed. " +
-                        "Error: " + t.getMessage());
-            }
-        });
+                            }, error ->
+                                networkCallBack.onFailureResult("Network request failed. " +
+                                        "Error: " + error.getMessage()));
     }
 
     @Override
     public void makeIngredientsCall(NetworkCallBack networkCallBack) {
-        Call<IngredientsResponse> ingredientsCall = mealsRemoteWebService.getIngredients();
-        ingredientsCall.enqueue(new Callback<IngredientsResponse>() {
-            @Override
-            public void onResponse(Call<IngredientsResponse> call, Response<IngredientsResponse> response) {
-                if (response.isSuccessful()) {
-                    networkCallBack.onSuccessResult(response.body().ingredientItems);
-                } else {
-                    networkCallBack.onFailureResult("Failed to get ingredients. " +
-                            "Response code: " + response.code());
-                }
-            }
+        Single<IngredientsResponse> ingredientsCall = mealsRemoteWebService.getIngredients();
 
-            @Override
-            public void onFailure(Call<IngredientsResponse> call, Throwable t) {
-                networkCallBack.onFailureResult("Network request failed. " +
-                        "Error: " + t.getMessage());
-            }
-        });
+
+        ingredientsCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.ingredientItems);
+
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
     }
 
     @Override
     public void makeCategoriesCall(NetworkCallBack networkCallBack) {
-        Call<CategoriesResponse> categoriesCall = mealsRemoteWebService.getCategories();
-        categoriesCall.enqueue(new Callback<CategoriesResponse>() {
-            @Override
-            public void onResponse(Call<CategoriesResponse> call, Response<CategoriesResponse> response) {
-                if (response.isSuccessful()) {
-                    networkCallBack.onSuccessResult(response.body().getCategories());
-                } else {
-                    networkCallBack.onFailureResult("Failed to get categories. " +
-                            "Response code: " + response.code());
-                }
-            }
+        Single<CategoriesResponse> categoriesCall = mealsRemoteWebService.getCategories();
 
-            @Override
-            public void onFailure(Call<CategoriesResponse> call, Throwable t) {
-                networkCallBack.onFailureResult("Network request failed. " +
-                        "Error: " + t.getMessage());
-            }
-        });
+        categoriesCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.getCategories());
+
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
     }
 
     @Override
     public void makeCountryCall(NetworkCallBack networkCallBack) {
-        Call<CountryResponse> cuisinesCall = mealsRemoteWebService.getCuisines();
-        cuisinesCall.enqueue(new Callback<CountryResponse>() {
-            @Override
-            public void onResponse(Call<CountryResponse> call, Response<CountryResponse> response) {
-                if (response.isSuccessful()) {
-                    networkCallBack.onSuccessResult(response.body().getCountry());
-                } else {
-                    networkCallBack.onFailureResult("Failed to get cuisines. " +
-                            "Response code: " + response.code());
-                }
-            }
+        Single<CountryResponse> countryCall = mealsRemoteWebService.getCuisines();
+        countryCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.getCountry());
 
-            @Override
-            public void onFailure(Call<CountryResponse> call, Throwable t) {
-                networkCallBack.onFailureResult("Network request failed. " +
-                        "Error: " + t.getMessage());
-            }
-        });
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
     }
 }

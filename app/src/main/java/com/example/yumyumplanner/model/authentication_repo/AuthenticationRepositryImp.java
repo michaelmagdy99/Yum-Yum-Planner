@@ -99,9 +99,6 @@ public class AuthenticationRepositryImp implements AuthenticationRepositry{
                 });
     }
 
-    @Override
-    public void logOut() {
-        userFirebaseModel.getAuth().signOut();
-    }
+
 
 }
