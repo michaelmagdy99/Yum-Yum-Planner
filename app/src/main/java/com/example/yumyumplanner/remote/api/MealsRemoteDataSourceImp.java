@@ -3,8 +3,13 @@ package com.example.yumyumplanner.remote.api;
 
 import com.example.yumyumplanner.model.data.CategoriesResponse;
 import com.example.yumyumplanner.model.data.CountryResponse;
+import com.example.yumyumplanner.model.data.FilterItem;
+import com.example.yumyumplanner.model.data.FilterMealResponse;
 import com.example.yumyumplanner.model.data.IngredientsResponse;
 import com.example.yumyumplanner.model.data.MealResponse;
+import com.example.yumyumplanner.model.data.MealsItem;
+
+import java.util.List;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -44,6 +49,7 @@ public class MealsRemoteDataSourceImp implements MealsRemoteDataSource {
     @Override
     public void makeRandomMealCall(NetworkCallBack networkCallBack) {
         Single<MealResponse> randomMealCall = mealsRemoteWebService.getRandomMeal();
+
         randomMealCall.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(response -> {
@@ -85,11 +91,70 @@ public class MealsRemoteDataSourceImp implements MealsRemoteDataSource {
 
     @Override
     public void makeCountryCall(NetworkCallBack networkCallBack) {
-        Single<CountryResponse> countryCall = mealsRemoteWebService.getCuisines();
+        Single<CountryResponse> countryCall = mealsRemoteWebService.getArea();
+
         countryCall.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     networkCallBack.onSuccessResult(response.getCountry());
+
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
+    }
+
+
+    @Override
+    public void getMealFromIngredintsCall(NetworkCallBack<List<FilterItem>> networkCallBack,String ingredint) {
+        Single<FilterMealResponse> ingtCall = mealsRemoteWebService.getMealsByIngredient(ingredint);
+
+        ingtCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.getFilter());
+
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
+
+    }
+
+    @Override
+    public void getMealFromCountryCall(NetworkCallBack<List<FilterItem>> networkCallBack, String country) {
+        Single<FilterMealResponse> countryCall = mealsRemoteWebService.getMealsByArea(country);
+
+        countryCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.getFilter());
+
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
+    }
+
+    @Override
+    public void getMealFromCategoryCall(NetworkCallBack<List<FilterItem>> networkCallBack, String category) {
+        Single<FilterMealResponse> mealsByCategoryCall = mealsRemoteWebService.getMealsByCategory(category);
+
+        mealsByCategoryCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.getFilter());
+
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
+    }
+
+    @Override
+    public void getMealbyIdCall(NetworkCallBack networkCallBack, String id) {
+        Single<MealResponse> mealsByIdCall = mealsRemoteWebService.getMealById(id);
+
+        mealsByIdCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.meals);
 
                 }, error ->
                         networkCallBack.onFailureResult("Network request failed. " +

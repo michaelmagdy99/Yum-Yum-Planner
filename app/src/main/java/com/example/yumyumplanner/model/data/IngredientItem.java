@@ -2,7 +2,9 @@ package com.example.yumyumplanner.model.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class IngredientItem{
+import java.io.Serializable;
+
+public class IngredientItem implements Serializable {
 
 	@SerializedName("strDescription")
 	private String strDescription;

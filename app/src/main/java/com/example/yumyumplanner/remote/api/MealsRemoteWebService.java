@@ -19,14 +19,14 @@ public interface MealsRemoteWebService {
     @GET("categories.php")
     Single<CategoriesResponse> getCategories();
     @GET("list.php?a=list")
-    Single<CountryResponse> getCuisines();
+    Single<CountryResponse> getArea();
 
     @GET("filter.php")
     Single<FilterMealResponse> getMealsByIngredient(@Query("i") String ingredient);
     @GET("filter.php")
     Single<FilterMealResponse> getMealsByCategory(@Query("c") String category);
     @GET("filter.php")
-    Single<FilterMealResponse> getMealsByArea(@Query("a") String cuisine);
+    Single<FilterMealResponse> getMealsByArea(@Query("a") String area);
 
     @GET("lookup.php")
     Single<MealResponse> getMealById(@Query("i") String id);

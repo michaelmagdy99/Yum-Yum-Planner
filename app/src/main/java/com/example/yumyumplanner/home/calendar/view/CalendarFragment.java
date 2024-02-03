@@ -60,7 +60,6 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
         view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view_planner_meals);
-        addToPlan = view.findViewById(R.id.add_to_plan_calender);
         calendarViwe = view.findViewById(R.id.calendar_view);
 
         layoutManager = new LinearLayoutManager(getContext());

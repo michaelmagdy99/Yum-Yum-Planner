@@ -7,4 +7,7 @@ public interface MealDetailsPresenterInterface {
     public void addToFav(MealsItem meal);
     public void addToCalender(MealCalendar mealCalendar);
 
+    public void getMealDetails(String id);
+
+
 }

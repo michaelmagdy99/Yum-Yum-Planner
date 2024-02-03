@@ -3,6 +3,7 @@
     import static android.app.ProgressDialog.show;
 
     import android.app.DatePickerDialog;
+    import android.app.ProgressDialog;
     import android.content.Intent;
     import android.os.Bundle;
     
@@ -30,8 +31,10 @@
     import com.example.yumyumplanner.home.home.presenter.HomePresenter;
     import com.example.yumyumplanner.home.meal_details.preseter.MealDetailsPresenterInterface;
     import com.example.yumyumplanner.home.meal_details.preseter.MealDetailsPreserter;
+    import com.example.yumyumplanner.model.data.FilterItem;
     import com.example.yumyumplanner.model.data.MealCalendar;
     import com.example.yumyumplanner.model.data.MealsItem;
+    import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
     import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
     import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -46,6 +49,7 @@
     
         View view;
         private MealDetailsPreserter preserter;
+        private ProgressDialog progressDialog;
 
         public static final String TAG = "meal deatils Fragment";
         private TextView nameMeal;
@@ -90,20 +94,26 @@
             preserter = new MealDetailsPreserter(this,
                             HomeRepositryImp.getInstance(
                             MealsRemoteDataSourceImp.getInstance(),
-                            MealsLocalDataSourceImp.getInstance(getContext())));
+                            MealsLocalDataSourceImp.getInstance(getContext())),
+                            FilterRepoImp.getInstance(MealsRemoteDataSourceImp.getInstance())
+                    );
 
 
             MealDetailsFragmentArgs args = MealDetailsFragmentArgs.fromBundle(getArguments());
             MealsItem mealsItem = args.getMealDetails();
             MealCalendar mealCalendar = args.getMealCalender();
+            FilterItem filterItem = args.getFilterItem();
 
 
             if (mealsItem != null) {
-                // Argument from HomeFragment
+                // arga from HomeFragment
                 handleArgumentFromHomeFragment(mealsItem);
             } else if (mealCalendar != null) {
-                // Argument from CalendarFragment
+                // args from CalendarFragment
                 handleArgumentFromCalendarFragment(mealCalendar);
+            }else if (filterItem != null){
+              //args from meal search
+                preserter.getMealDetails(filterItem.getIdMeal());
             } else {
                 // No arguments are present
                 handleNoArguments();
@@ -198,6 +208,12 @@
             backBtn = view.findViewById(R.id.back_btn_deatils);
             favBtn = view.findViewById(R.id.fav_btn_deatils);
             addToCalender = view.findViewById(R.id.add_to_calender);
+
+
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setMessage("Please wait... It is downloading");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
         }
     
         public String getId(String link) {
@@ -217,6 +233,32 @@
             preserter.addToCalender(mealCalendar);
         }
 
+        @Override
+        public void showEmptyDataMessage() {
+            hideProgressBar();
+        }
+
+        @Override
+        public void showData(List<MealsItem> mealsItems) {
+            hideProgressBar();
+            mealid = mealsItems.get(0).getIdMeal();
+            mealName = mealsItems.get(0).getStrMeal();
+            categoryName =mealsItems.get(0).getStrCategory();
+            country = mealsItems.get(0).getStrArea();
+            instruction = mealsItems.get(0).getStrInstructions();
+            image = mealsItems.get(0).getStrMealThumb();
+            urlVideo = mealsItems.get(0).getStrYoutube();
+            ingredientsList = mealsItems.get(0).getAllIngredients();
+            meaurseList = mealsItems.get(0).getAllMeaurse();
+
+            updateUI();
+        }
+
+        @Override
+        public void showErrorMsg(String error) {
+            hideProgressBar();
+            Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+        }
 
 
         private void handleArgumentFromHomeFragment(MealsItem mealsItem) {
@@ -280,5 +322,13 @@
             ingradientRecyclerView.setLayoutManager(layoutManager);
             ingradientRecyclerView.setAdapter(ingtrdientsAdapter);
 
+        }
+
+        private void showProgressBar() {
+            progressDialog.show();
+        }
+
+        private void hideProgressBar() {
+            progressDialog.dismiss();
         }
     }

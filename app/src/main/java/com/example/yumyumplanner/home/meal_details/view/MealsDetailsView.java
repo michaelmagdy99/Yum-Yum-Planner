@@ -9,4 +9,8 @@ public interface MealsDetailsView {
     void addMealToFav(MealsItem mealsItem);
     void addMealToCalendar(MealCalendar mealCalendar);
 
+    void showEmptyDataMessage();
+    void showData(List<MealsItem> mealsItems);
+    void showErrorMsg(String error);
+
 }
