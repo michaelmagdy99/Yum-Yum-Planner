@@ -7,4 +7,6 @@ public interface FilterRepo {
     void getMealsByCountry(NetworkCallBack networkCallBack,String country);
     void getMealsByCategory(NetworkCallBack networkCallBack,String category);
     void getMealsById(NetworkCallBack networkCallBack,String id);
+
+    void searchMealsByName(NetworkCallBack networkCallBack,String mealName);
 }

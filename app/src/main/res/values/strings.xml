@@ -42,4 +42,7 @@
     <string name="description">Description :</string>
     <string name="meals">Meals :)</string>
     <string name="search">Search</string>
+    <string name="ingredients__">Ingredients</string>
+    <string name="country__">Country</string>
+    <string name="categories__">Categories</string>
 </resources>

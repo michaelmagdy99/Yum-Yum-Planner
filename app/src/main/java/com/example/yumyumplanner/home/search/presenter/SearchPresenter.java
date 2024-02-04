@@ -8,4 +8,11 @@ public interface SearchPresenter {
     void getIngredients();
     void getCategories();
     void getCountry();
+    void searchByCategoryText(String searchText);
+    void searchByCountryText(String searchText);
+    void searchByIngrText(String searchText);
+
+
+
+
 }

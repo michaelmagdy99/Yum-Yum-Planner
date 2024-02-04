@@ -71,11 +71,7 @@
             android:id="@+id/action_favourite_to_mealDetailsFragment"
             app:destination="@id/mealDetailsFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/profile"
-        android:name="com.example.yumyumplanner.home.profile.view.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+
     <fragment
         android:id="@+id/ingredientsFragment"
         android:name="com.example.yumyumplanner.home.ingredient_details.view.IngredientsFragment"
@@ -109,4 +105,9 @@
             android:id="@+id/action_mealsFragment_to_mealDetailsFragment"
             app:destination="@id/mealDetailsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.example.yumyumplanner.home.profile.view.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

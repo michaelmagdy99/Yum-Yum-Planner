@@ -15,22 +15,23 @@ import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.home.home.view.OnClickListener;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.FilterItem;
+import com.example.yumyumplanner.model.data.Item;
 
 import java.util.List;
 
 public class MealByIngrAdapter extends RecyclerView.Adapter<MealByIngrAdapter.CategoryViewHolder> {
     private Context context;
-    private List<FilterItem> filterItems;
+    private List<Item> filterItems;
     private OnClickListener<FilterItem> listener;
 
 
-    public MealByIngrAdapter(Context context, List<FilterItem> filterItems, OnClickListener<FilterItem> listener){
+    public MealByIngrAdapter(Context context, List<Item> filterItems, OnClickListener<FilterItem> listener){
         this.context = context;
         this.filterItems = filterItems;
         this.listener = listener;
 
     }
-    public void setList(List<FilterItem> filterItems) {
+    public void setList(List<Item> filterItems) {
         this.filterItems = filterItems;
         notifyDataSetChanged();
     }
@@ -45,12 +46,14 @@ public class MealByIngrAdapter extends RecyclerView.Adapter<MealByIngrAdapter.Ca
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        String ingredient = filterItems.get(position).getStrMeal();
+        Item item = filterItems.get(position);
+
+        String ingredient = item.getName();
 
         holder.categoryName.setText(ingredient);
 
         Glide.with(context)
-                .load(filterItems.get(position).getStrMealThumb())
+                .load(item.getImageUrl())
                 .centerCrop()
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.categoryImage);
@@ -58,7 +61,7 @@ public class MealByIngrAdapter extends RecyclerView.Adapter<MealByIngrAdapter.Ca
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemClick(filterItems.get(position));
+                listener.onItemClick((FilterItem) item);
             }
         });
 

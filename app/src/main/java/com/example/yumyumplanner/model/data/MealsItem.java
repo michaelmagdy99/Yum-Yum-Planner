@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "meal")
-public class MealsItem implements Serializable {
+public class MealsItem implements Serializable, Item {
 
 
 	@PrimaryKey
@@ -708,4 +708,13 @@ public class MealsItem implements Serializable {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return strMeal;
+	}
+
+	@Override
+	public String getImageUrl() {
+		return strMealThumb ;
+	}
 }

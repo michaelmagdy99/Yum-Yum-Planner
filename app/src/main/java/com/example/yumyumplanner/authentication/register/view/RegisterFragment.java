@@ -58,7 +58,7 @@ public class RegisterFragment extends Fragment implements RegisterView{
         view =  inflater.inflate(R.layout.fragment_register, container, false);
         initUI(view);
 
-        registerPresenter = RegisterPresenterImp.getInstance(this);
+        registerPresenter = RegisterPresenterImp.getInstance(this, getContext());
 
         //sign up action
         signUpBtn.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +70,9 @@ public class RegisterFragment extends Fragment implements RegisterView{
                 }
                 else{
                     registerPresenter.register(
-                        emailEditText.getText().toString(),
-                        passwordEditText.getText().toString()
+                            emailEditText.getText().toString(),
+                            passwordEditText.getText().toString(),
+                            nameEditText.getText().toString()
                     );
                 }
             }

@@ -4,27 +4,25 @@ import android.net.Uri;
 
 import com.example.yumyumplanner.home.profile.view.ProfileView;
 import com.example.yumyumplanner.model.backup_repo.BackUpRepository;
+import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
 import com.example.yumyumplanner.model.backup_repo.UserDataCallback;
 import com.example.yumyumplanner.model.data.UserProfile;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
-public class ProfilePresenterImp implements ProfilePresenter{
+public class ProfilePresenterImp implements ProfilePresenter, UserDataCallback{
 
     private ProfileView view;
-    private BackUpRepository userRepository;
+    private BackUpRepositoryImp userRepository;
     private static ProfilePresenterImp profilePresenterImp;
 
 
-    public static ProfilePresenterImp getInstance(ProfileView profileView, BackUpRepository userRepository) {
+    public static ProfilePresenterImp getInstance(ProfileView profileView, BackUpRepositoryImp userRepository) {
         if (profilePresenterImp == null) {
             profilePresenterImp = new ProfilePresenterImp(profileView, userRepository);
         }
         return profilePresenterImp;
     }
 
-    private ProfilePresenterImp(ProfileView view, BackUpRepository userRepository) {
+    private ProfilePresenterImp(ProfileView view, BackUpRepositoryImp userRepository) {
         this.view = view;
         this.userRepository = userRepository;
     }
@@ -41,77 +39,24 @@ public class ProfilePresenterImp implements ProfilePresenter{
     @Override
     public void onSaveEditClicked(UserProfile userProfile, Uri imageUri) {
         if (imageUri != null) {
-            userRepository.saveUserData(userProfile, imageUri, new UserDataCallback() {
-                @Override
-                public void onUserDataLoaded(UserProfile userProfile) {
-                    view.showMessage("Success");
-                }
-
-                @Override
-                public void onDataNotFound(Exception e) {
-                    view.showMessage(e.getMessage());
-                }
-
-                @Override
-                public void success() {
-                    view.showMessage("Success");
-                }
-
-                @Override
-                public void error(String string) {
-                    view.showMessage(string);
-                }
-            });
+            userRepository.saveUserData(userProfile, imageUri);
         } else {
-            userRepository.saveUserData(userProfile, null, new UserDataCallback() {
-                @Override
-                public void onUserDataLoaded(UserProfile userProfile) {
-                    view.showMessage("Success");
-
-                }
-
-                @Override
-                public void onDataNotFound(Exception e) {
-                    view.showMessage(e.getMessage());
-                }
-
-                @Override
-                public void success() {
-                    view.showMessage("Success");
-                }
-
-                @Override
-                public void error(String string) {
-                    view.showMessage(string);
-                }
-            });
+            userRepository.saveUserData(userProfile, null);
         }
     }
 
     @Override
     public void onViewCreated() {
-        userRepository.getUserData(new UserDataCallback() {
-            @Override
-            public void onUserDataLoaded(UserProfile userProfile) {
-                view.displayUserData(userProfile);
-            }
-
-            @Override
-            public void onDataNotFound(Exception e) {
-                view.showMessage("Faild to connect" + e.getMessage());
-            }
-
-            @Override
-            public void success() {
-                view.showMessage("Show data Scussfully");
-            }
-
-            @Override
-            public void error(String string) {
-                view.showMessage("Faild to connect" + string);
-
-            }
-        });
+        userRepository.getUserData(this);
     }
 
+    @Override
+    public void onSuccess(UserProfile userProfile) {
+        view.displayUserData(userProfile);
+    }
+
+    @Override
+    public void onFailure(String error) {
+        view.showMessage(error);
+    }
 }

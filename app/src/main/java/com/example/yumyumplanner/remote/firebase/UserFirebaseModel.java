@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class UserFirebaseModel {
@@ -25,6 +26,8 @@ public class UserFirebaseModel {
     public static final int RC_SIGN_IN = 100;
     private FirebaseAuth auth;
     private static UserFirebaseModel firebaseModel;
+    private FirebaseFirestore firestore;
+
     private static final String TAG = "GOOGle_SIGN_IN_TAG";
 
     public static synchronized UserFirebaseModel getInstance(){
@@ -36,6 +39,7 @@ public class UserFirebaseModel {
 
     private UserFirebaseModel() {
         this.auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
     }
 
     public FirebaseAuth getAuth() {

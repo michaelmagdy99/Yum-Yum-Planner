@@ -3,6 +3,7 @@ package com.example.yumyumplanner.home.ingredient_details.presenter;
 import com.example.yumyumplanner.home.home.view.HomeView;
 import com.example.yumyumplanner.home.ingredient_details.view.IngredientsView;
 import com.example.yumyumplanner.model.data.FilterItem;
+import com.example.yumyumplanner.model.data.Item;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
@@ -34,7 +35,7 @@ public class IngredientsPresenterImp implements IngredientsPresenter, NetworkCal
 
                 if (item instanceof FilterItem) {
                     // Display meals data
-                    ingredientsView.showMealsFromIngredints((List<FilterItem>) result);
+                    ingredientsView.showMealsFromIngredints((List<Item>) result);
                 }
             } else {
                 ingredientsView.showEmptyDataMessage();

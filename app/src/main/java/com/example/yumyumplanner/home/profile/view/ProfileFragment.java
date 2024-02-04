@@ -5,11 +5,13 @@ import static com.google.common.io.Files.getFileExtension;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -55,35 +57,34 @@ public class ProfileFragment extends Fragment implements ProfileView{
     EditText name;
     Button saveEdit;
     private ProgressBar progressbar;
-
     ImageButton logout;
     ImageButton editImage;
     ProfilePresenterImp profilePresenter;
-
     TextView nameTv ;
     TextView emailTv ;
+    View view;
+    private Context mContext;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mContext = null;
+    }
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
-
-    private View view;
     public ProfileFragment() {
         // Required empty public constructor
     }
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        profilePresenter.onViewCreated();
-
     }
 
     @Override
@@ -91,7 +92,6 @@ public class ProfileFragment extends Fragment implements ProfileView{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_profile, container, false);
-
         profileImage = view.findViewById(R.id.profile_image_settings);
         logout = view.findViewById(R.id.logout);
         email = view.findViewById(R.id.email_edit_text);
@@ -102,10 +102,8 @@ public class ProfileFragment extends Fragment implements ProfileView{
         emailTv = view.findViewById(R.id.user_email_settings);
         progressbar =view.findViewById(R.id.loading);
 
-
-
         profilePresenter = ProfilePresenterImp.getInstance(this,
-                 BackUpRepositoryImp.getInstance(getContext()));
+                BackUpRepositoryImp.getInstance(mContext));
 
         profilePresenter.onViewCreated();
 
@@ -130,7 +128,6 @@ public class ProfileFragment extends Fragment implements ProfileView{
                 saveUserData();
             }
         });
-
         return view;
     }
 
@@ -150,6 +147,7 @@ public class ProfileFragment extends Fragment implements ProfileView{
         }
     }
 
+
     @Override
     public void logOutSuccessMessage() {
         profilePresenter.logOut();
@@ -157,10 +155,12 @@ public class ProfileFragment extends Fragment implements ProfileView{
         startActivity(new Intent(getActivity(), AuthenticationActivity.class));
     }
 
+
     @Override
     public void displayUserData(UserProfile userProfile) {
-        if (isAdded() && getContext() != null) {
+        Log.d("ProfileFragment", "displayUserData: Displaying user data");
 
+        if (mContext != null) {
             name.setText(userProfile.getName());
             email.setText(userProfile.getEmail());
             nameTv.setText(userProfile.getName());
@@ -176,9 +176,11 @@ public class ProfileFragment extends Fragment implements ProfileView{
             } else {
                 Toast.makeText(getContext(), "Data not Found", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            Log.i("ProfileFragment", "displayUserData: "+ userProfile.getProfileImageURL());
+            Log.e("ProfileFragment", "displayUserData: Context is null");
         }
     }
-
 
     @Override
     public void showImageChooser() {

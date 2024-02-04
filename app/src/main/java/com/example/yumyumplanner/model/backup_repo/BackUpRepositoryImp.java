@@ -35,7 +35,7 @@ public class BackUpRepositoryImp implements BackUpRepository{
     private static BackUpRepositoryImp backUpRepositoryImp;
     private Context ProfileFragment;
 
-    private Context context;
+    private final Context context;
     public static synchronized BackUpRepositoryImp getInstance(Context context) {
         if (backUpRepositoryImp == null) {
             backUpRepositoryImp = new BackUpRepositoryImp(context);
@@ -44,13 +44,11 @@ public class BackUpRepositoryImp implements BackUpRepository{
     }
 
     private BackUpRepositoryImp(Context context) {
+        this.context = context;
         this.userFirebaseModel = UserFirebaseModel.getInstance();
-
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
-        this.context = context;
-
     }
 
     @Override
@@ -73,23 +71,27 @@ public class BackUpRepositoryImp implements BackUpRepository{
                             String userEmail = documentSnapshot.getString("email");
                             String userProfileImage = documentSnapshot.getString("profileImage");
                             UserProfile user = new UserProfile(userName, userEmail, userProfileImage);
-                            callback.onUserDataLoaded(user);
-                            callback.success();
-
+                            callback.onSuccess(user);
+                            Log.e("TAG", "getUserData: Done for getting user data");
                         } else {
-                            callback.onDataNotFound(new Exception("No Data Founded"));
+                            Log.e("TAG", "getUserData: Done by no current for getting user data");
+                            callback.onFailure("No Data Founded");
                         }
                     }).addOnFailureListener(
-                            e -> callback.onDataNotFound(e)
+                            e -> {
+                                callback.onFailure(e.getMessage());
+                                Log.e("TAG", "getUserData: Error getting user data", e);
+                            }
+
                     );
         } else {
-            callback.onDataNotFound(new Exception("Must Login First to can get Data"));
+            callback.onFailure("Must Login First to can get Data");
         }
 
     }
 
     @Override
-    public void saveUserData(UserProfile userProfile, Uri imageUri, UserDataCallback callback) {
+    public void saveUserData(UserProfile userProfile, Uri imageUri) {
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
@@ -114,11 +116,10 @@ public class BackUpRepositoryImp implements BackUpRepository{
                                 Log.i("TAG", "saveUserData: " + userData);
                                 Log.i("TAG", "saveUserData: image " + imageUrl);
                                 Log.i("TAG", "saveUserData: clss " + userProfile.getProfileImageURL());
-                                callback.success();
                             });
                         })
                         .addOnFailureListener(e -> {
-                            callback.error(e.getMessage().toString());
+                            Log.i("TAG", "saveUserData: ");
                         });
             } else {
                 saveUserDataToFirestore(userId, userData);

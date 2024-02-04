@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,8 @@ import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;
 import com.example.yumyumplanner.model.data.FilterItem;
 import com.example.yumyumplanner.model.data.IngredientItem;
+import com.example.yumyumplanner.model.data.Item;
+import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
 
@@ -85,20 +89,35 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
         //get by country
         Bundle args = getArguments();
         if (args != null) {
-            // Get country name from arguments if available
             CountryItem countryItem = MealsFragmentArgs.fromBundle(args).getCountryItem();
             if (countryItem != null) {
                 nameOfCountry = countryItem.getStrArea();
                 mealsPresenters.getMealsByCountry(nameOfCountry);
             }
-
-            // Get category name from arguments if available
             CategoriesItem categoryItem = MealsFragmentArgs.fromBundle(args).getCategoryItem();
             if (categoryItem != null) {
                 nameOfCatogory = categoryItem.getStrCategory();
                 mealsPresenters.getMealsByCategory(nameOfCatogory);
             }
         }
+
+        searchBtn.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String searchText = charSequence.toString().toLowerCase();
+                mealsPresenters.searchFilterItem(searchText);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -143,14 +162,14 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
     }
 
     @Override
-    public void showMealsFromCountry(List<FilterItem> countries) {
+    public void showMealsFromCountry(List<Item> countries) {
         hideProgressBar();
         mealsAdapter.setList(countries);
         mealsAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void showMealsFromCategory(List<FilterItem> categories) {
+    public void showMealsFromCategory(List<Item> categories) {
         hideProgressBar();
         mealsAdapter.setList(categories);
         mealsAdapter.notifyDataSetChanged();
@@ -165,5 +184,12 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
     public void showErrorMsg(String error) {
         hideProgressBar();
         Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMeals(List<Item> mealsItems) {
+        hideProgressBar();
+        mealsAdapter.setList(mealsItems);
+        mealsAdapter.notifyDataSetChanged();
     }
 }

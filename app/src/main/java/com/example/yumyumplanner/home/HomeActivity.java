@@ -27,10 +27,15 @@ public class HomeActivity extends AppCompatActivity {
 
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.mealDetailsFragment) {
-                bottomNavigationView.setVisibility(View.GONE);
-            } else {
+            int destinationId = destination.getId();
+            if (destinationId == R.id.home ||
+                    destinationId == R.id.search ||
+                    destinationId == R.id.favourite ||
+                    destinationId == R.id.profile ||
+                    destinationId == R.id.calendar) {
                 bottomNavigationView.setVisibility(View.VISIBLE);
+            } else {
+                bottomNavigationView.setVisibility(View.GONE);
             }
         });
 

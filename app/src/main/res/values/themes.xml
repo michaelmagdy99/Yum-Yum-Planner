@@ -34,5 +34,12 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    <style name="SquareChipStyle" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">5dp</item>
+    </style>
+
+
+
 
 </resources>

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class FilterItem implements Serializable {
+public class FilterItem implements Serializable, Item {
 
 	@SerializedName("strMealThumb")
 	private String strMealThumb;
@@ -25,5 +25,15 @@ public class FilterItem implements Serializable {
 
 	public String getStrMeal(){
 		return strMeal;
+	}
+
+	@Override
+	public String getName() {
+		return strMeal;
+	}
+
+	@Override
+	public String getImageUrl() {
+		return strMealThumb;
 	}
 }

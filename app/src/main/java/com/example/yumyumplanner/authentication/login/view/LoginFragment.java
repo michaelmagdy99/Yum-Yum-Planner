@@ -83,7 +83,7 @@ public class LoginFragment extends Fragment implements LoginView  {
             }
         });
 
-        loginPresenter = LoginPresenterImp.getInstance(this);
+        loginPresenter = LoginPresenterImp.getInstance(this, getContext());
         signUpTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

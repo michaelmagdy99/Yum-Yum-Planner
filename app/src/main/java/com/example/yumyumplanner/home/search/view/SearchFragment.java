@@ -10,10 +10,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,9 +39,14 @@ import com.example.yumyumplanner.model.data.IngredientItem;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.divider.MaterialDivider;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.rxjava3.core.Observable;
 
 public class SearchFragment extends Fragment implements SearchView, OnClickListener {
 
@@ -59,8 +68,14 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
 
     private SearchPresenterImp searchPresenterImp;
     private View view;
+    private ChipGroup chipGroup ;
 
     EditText searchBar;
+    TextView ingtTV;
+    TextView counTV;
+    TextView catTV;
+    MaterialDivider divider;
+    MaterialDivider divider1;
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -115,6 +130,28 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
         //country
         searchPresenterImp.getCountry();
 
+        setUpChipGroup();
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String searchText = charSequence.toString().toLowerCase();
+                searchPresenterImp.searchByCategoryText(searchText);
+                searchPresenterImp.searchByIngrText(searchText);
+                searchPresenterImp.searchByCountryText(searchText);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         return view;
     }
 
@@ -123,7 +160,16 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
         categoryRecyclerView = view.findViewById(R.id.category_recycler_search);
         countryRecyclerView = view.findViewById(R.id.country_recycler_search);
 
+        catTV = view.findViewById(R.id.category_view);
+        counTV = view.findViewById(R.id.country_view);
+        ingtTV =view.findViewById(R.id.ingredients_view);
+        divider = view.findViewById(R.id.divider_search);
+        divider1 = view.findViewById(R.id.divider_search_1);
+
+        chipGroup = view.findViewById(R.id.chipGroup);
+
         searchBar = view.findViewById(R.id.searchEditText);
+
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Please wait... It is downloading");
         progressDialog.setIndeterminate(false);
@@ -213,5 +259,59 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
             //logic
             //Toast.makeText(getContext(), countryItem.getStrArea(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setUpChipGroup(){
+        for (int i=0; i<chipGroup.getChildCount() ; i++){
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (b) {
+                        hideAllViews();
+                        filterSearch();
+                    }
+                }
+            });
+        }
+    }
+
+    private void filterSearch(){
+        String searchText = searchBar.getText().toString().toLowerCase();
+
+        Chip selectedChip = chipGroup.findViewById(chipGroup.getCheckedChipId());
+        if (selectedChip != null) {
+            String chipText = selectedChip.getText().toString();
+
+            if (chipText.equals("Ingredients")) {
+                searchPresenterImp.searchByIngrText(searchText);
+                ingradientRecyclerView.setVisibility(View.VISIBLE);
+                ingtTV.setVisibility(View.VISIBLE);
+            } else if (chipText.equals("Categories")) {
+                searchPresenterImp.searchByCategoryText(searchText);
+                categoryRecyclerView.setVisibility(View.VISIBLE);
+                catTV.setVisibility(View.VISIBLE);
+            } else if (chipText.equals("Country")) {
+                searchPresenterImp.searchByCountryText(searchText);
+                countryRecyclerView.setVisibility(View.VISIBLE);
+                counTV.setVisibility(View.VISIBLE);
+            }
+            else {
+                searchPresenterImp.searchByCountryText(searchText);
+                searchPresenterImp.searchByCategoryText(searchText);
+                searchPresenterImp.searchByIngrText(searchText);
+            }
+        }
+    }
+
+    private void hideAllViews() {
+        ingradientRecyclerView.setVisibility(View.GONE);
+        categoryRecyclerView.setVisibility(View.GONE);
+        countryRecyclerView.setVisibility(View.GONE);
+        catTV.setVisibility(View.GONE);
+        ingtTV.setVisibility(View.GONE);
+        counTV.setVisibility(View.GONE);
+        divider.setVisibility(View.GONE);
+        divider1.setVisibility(View.GONE);
     }
 }

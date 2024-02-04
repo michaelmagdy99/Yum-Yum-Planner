@@ -39,4 +39,10 @@ public class FilterRepoImp implements FilterRepo{
     public void getMealsById(NetworkCallBack networkCallBack, String id) {
         mealsRemoteDataSource.getMealbyIdCall(networkCallBack, id);
     }
+
+    @Override
+    public void searchMealsByName(NetworkCallBack networkCallBack, String mealName) {
+        mealsRemoteDataSource.searchMealbyName(networkCallBack, mealName);
+
+    }
 }

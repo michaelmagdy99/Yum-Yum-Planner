@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
@@ -96,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="12dp"
-        android:text="@string/country"
+        android:text="@string/country__"
         android:drawableStart="@drawable/country_flag"
         android:drawablePadding="12dp"
         android:textStyle="bold"
@@ -121,7 +122,7 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/ingredients"
+        android:text="@string/ingredients__"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:drawablePadding="10dp"

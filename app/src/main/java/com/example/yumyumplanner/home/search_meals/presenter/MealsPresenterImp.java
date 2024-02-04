@@ -2,11 +2,16 @@ package com.example.yumyumplanner.home.search_meals.presenter;
 
 import com.example.yumyumplanner.home.ingredient_details.view.IngredientsView;
 import com.example.yumyumplanner.home.search_meals.view.MealsView;
+import com.example.yumyumplanner.model.data.CountryItem;
 import com.example.yumyumplanner.model.data.FilterItem;
+import com.example.yumyumplanner.model.data.Item;
+import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
 
 import java.util.List;
+
+import io.reactivex.rxjava3.core.Observable;
 
 public class MealsPresenterImp implements MealsPresenter, NetworkCallBack {
     private MealsView mealsView;
@@ -27,6 +32,8 @@ public class MealsPresenterImp implements MealsPresenter, NetworkCallBack {
         filterRepo.getMealsByCategory(this, category);
     }
 
+
+
     @Override
     public void onSuccessResult(Object result) {
         if (result instanceof List<?>) {
@@ -37,7 +44,10 @@ public class MealsPresenterImp implements MealsPresenter, NetworkCallBack {
 
                 if (item instanceof FilterItem) {
                     // Display meals data
-                    mealsView.showMealsFromCountry((List<FilterItem>) result);
+                    mealsView.showMealsFromCountry((List<Item>) result);
+                }
+                else if(item instanceof MealsItem){
+                    mealsView.showMeals((List<Item>) result);
                 }
             } else {
                 mealsView.showEmptyDataMessage();
@@ -50,5 +60,12 @@ public class MealsPresenterImp implements MealsPresenter, NetworkCallBack {
     @Override
     public void onFailureResult(String message) {
         mealsView.showErrorMsg(message);
+    }
+
+
+
+    @Override
+    public void searchFilterItem(String searchText) {
+        filterRepo.searchMealsByName(this, searchText);
     }
 }

@@ -1,44 +1,34 @@
 package com.example.yumyumplanner.model.authentication_repo;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
-import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
+import com.example.yumyumplanner.model.backup_repo.BackUpRepository;
+import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.remote.firebase.ForgotPasswordCallback;
 import com.example.yumyumplanner.remote.firebase.LoginFirebase;
 import com.example.yumyumplanner.remote.firebase.UserFirebaseModel;
 import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AuthenticationRepositryImp implements AuthenticationRepositry{
     private static final String TAG = "AuthenticationRepositry";
     private static AuthenticationRepositryImp authenticationRepositryImp;
     private UserFirebaseModel userFirebaseModel;
-    public static synchronized AuthenticationRepositryImp getInstance() {
+    private BackUpRepository userRepository;
+
+    public static synchronized AuthenticationRepositryImp getInstance(BackUpRepository userRepository) {
         if (authenticationRepositryImp == null) {
-            authenticationRepositryImp = new AuthenticationRepositryImp();
+            authenticationRepositryImp = new AuthenticationRepositryImp(userRepository);
         }
         return authenticationRepositryImp;
     }
 
-    private AuthenticationRepositryImp() {
+    private AuthenticationRepositryImp(BackUpRepository userRepository) {
         this.userFirebaseModel = UserFirebaseModel.getInstance();
+        this.userRepository = userRepository;
     }
     @Override
     public void login(String email, String password, LoginFirebase loginFirebase) {
@@ -58,24 +48,20 @@ public class AuthenticationRepositryImp implements AuthenticationRepositry{
     }
 
     @Override
-    public void register(String email, String password, RegisterFirebase registerFirebase) {
-
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-
-            registerFirebase.onRegisterFailed("Please enter email and Password!!");
-
+    public void register(String email, String password, String name, RegisterFirebase registerFirebase) {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name)) {
+            registerFirebase.onRegisterFailed("Please enter email, password, and name!!");
         } else {
-
             userFirebaseModel.getAuth().createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                registerFirebase.onRegisterSuccess();
-                            }
-                            else {
-                                registerFirebase.onRegisterFailed("Sign up is failed, try again");
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Set user's name and email
+                            UserProfile userData = new UserProfile(name, email,null);
+                            userRepository.saveUserData(userData, null);
+                            registerFirebase.onRegisterSuccess();
+
+                        } else {
+                            registerFirebase.onRegisterFailed("Sign up is failed, try again");
                         }
                     });
         }

@@ -160,4 +160,18 @@ public class MealsRemoteDataSourceImp implements MealsRemoteDataSource {
                         networkCallBack.onFailureResult("Network request failed. " +
                                 "Error: " + error.getMessage()));
     }
+
+    @Override
+    public void searchMealbyName(NetworkCallBack networkCallBack, String mealName) {
+        Single<MealResponse> mealsByCategoryCall = mealsRemoteWebService.searchByName(mealName);
+
+        mealsByCategoryCall.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    networkCallBack.onSuccessResult(response.meals);
+
+                }, error ->
+                        networkCallBack.onFailureResult("Network request failed. " +
+                                "Error: " + error.getMessage()));
+    }
 }

@@ -26,6 +26,7 @@ import com.example.yumyumplanner.home.home.view.OnClickListener;
 import com.example.yumyumplanner.home.ingredient_details.presenter.IngredientsPresenterImp;
 import com.example.yumyumplanner.home.search_meals.view.MealsFragmentDirections;
 import com.example.yumyumplanner.model.data.FilterItem;
+import com.example.yumyumplanner.model.data.Item;
 import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
@@ -124,7 +125,7 @@ public class IngredientsFragment extends Fragment implements IngredientsView, On
     }
 
     @Override
-    public void showMealsFromIngredints(List<FilterItem> result) {
+    public void showMealsFromIngredints(List<Item> result) {
         hideProgressBar();
         mealsAdapter.setList(result);
         mealsAdapter.notifyDataSetChanged();
