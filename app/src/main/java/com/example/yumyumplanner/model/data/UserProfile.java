@@ -1,13 +1,34 @@
 package com.example.yumyumplanner.model.data;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class UserProfile {
 
     private String name;
     private String email;
     private String profileImageURL;
 
+    private static String userId;
+
+    public static String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public UserProfile(){
 
+    }
+    public static String getCurrentUserId() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            return currentUser.getUid();
+        } else {
+            return null;
+        }
     }
 
     public UserProfile(String name, String email, String profileImageURL) {

@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.home.home.view.OnClickListener;
-import com.example.yumyumplanner.model.data.CategoriesItem;
-import com.example.yumyumplanner.model.data.FilterItem;
 import com.example.yumyumplanner.model.data.Item;
 
 import java.util.List;
@@ -22,10 +20,10 @@ import java.util.List;
 public class MealByIngrAdapter extends RecyclerView.Adapter<MealByIngrAdapter.CategoryViewHolder> {
     private Context context;
     private List<Item> filterItems;
-    private OnClickListener<FilterItem> listener;
+    private OnClickListener<Item> listener;
 
 
-    public MealByIngrAdapter(Context context, List<Item> filterItems, OnClickListener<FilterItem> listener){
+    public MealByIngrAdapter(Context context, List<Item> filterItems, OnClickListener<Item> listener){
         this.context = context;
         this.filterItems = filterItems;
         this.listener = listener;
@@ -61,7 +59,7 @@ public class MealByIngrAdapter extends RecyclerView.Adapter<MealByIngrAdapter.Ca
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemClick((FilterItem) item);
+                listener.onItemClick(item);
             }
         });
 

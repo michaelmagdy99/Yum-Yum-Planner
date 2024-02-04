@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.home.presenter.HomePresenter;
+import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;
 import com.example.yumyumplanner.model.data.FilterItem;
@@ -86,7 +87,8 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
                 this,
                 HomeRepositryImp.getInstance(
                         MealsRemoteDataSourceImp.getInstance(),
-                        MealsLocalDataSourceImp.getInstance(getContext()))
+                        MealsLocalDataSourceImp.getInstance(getContext())),
+                BackUpRepositoryImp.getInstance(getContext())
         );
 
 

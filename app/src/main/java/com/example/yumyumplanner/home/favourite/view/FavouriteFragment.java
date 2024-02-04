@@ -18,6 +18,7 @@ import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.favourite.presenter.FavouritePresenter;
 import com.example.yumyumplanner.home.home.view.HomeFragmentDirections;
+import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
@@ -61,7 +62,9 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
         presenter =new FavouritePresenter(this,
                 HomeRepositryImp.getInstance(
                         MealsRemoteDataSourceImp.getInstance(),
-                        MealsLocalDataSourceImp.getInstance(getContext())));
+                        MealsLocalDataSourceImp.getInstance(getContext())),
+                    BackUpRepositoryImp.getInstance(getContext())
+                );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(favAdapter);
         presenter.getMealsFromDB();
@@ -74,15 +77,9 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
     }
 
     @Override
-    public void showData(LiveData<List<MealsItem>> allMealsFromLocal) {
-        allMealsFromLocal.observe(this, new Observer<List<MealsItem>>() {
-            @Override
-            public void onChanged(List<MealsItem> mealsItems) {
-                favAdapter.setList(mealsItems);
-                favAdapter.notifyDataSetChanged();
-            }
-        });
-
+    public void showData(List<MealsItem> allMealsFromLocal) {
+        favAdapter.setList(allMealsFromLocal);
+        favAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -94,6 +91,12 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
     @Override
     public void deleteMeals(MealsItem mealsItem) {
         presenter.removeFromFav(mealsItem);
+        favAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void afterRemove() {
+        presenter.getMealsFromDB();
     }
 
     @Override

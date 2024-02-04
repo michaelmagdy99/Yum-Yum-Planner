@@ -5,24 +5,26 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-import android.widget.Toast;
 
-import com.example.yumyumplanner.home.profile.view.ProfileFragment;
-import com.example.yumyumplanner.home.profile.view.ProfileView;
-import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
+import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.remote.firebase.UserFirebaseModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.Completable;
 
 public class BackUpRepositoryImp implements BackUpRepository{
 
@@ -96,6 +98,8 @@ public class BackUpRepositoryImp implements BackUpRepository{
         if (currentUser != null) {
             String userId = currentUser.getUid();
 
+            userProfile.setUserId(userId);
+
             Map<String, Object> userData = new HashMap<>();
             userData.put("name", userProfile.getName());
             userData.put("email", userProfile.getEmail());
@@ -104,7 +108,6 @@ public class BackUpRepositoryImp implements BackUpRepository{
                 StorageReference fileReference = storageReference
                         .child("profile_images")
                         .child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
-
 
                 fileReference.putFile(imageUri)
                         .addOnSuccessListener(taskSnapshot -> {
@@ -125,6 +128,7 @@ public class BackUpRepositoryImp implements BackUpRepository{
                 saveUserDataToFirestore(userId, userData);
             }
         } else {
+
         }
     }
 
@@ -139,11 +143,86 @@ public class BackUpRepositoryImp implements BackUpRepository{
                 });
     }
 
-
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = context.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
+        public void uploadMeals(MealsItem meals, String userId) {
+            CollectionReference userMealsCollection = firestore.collection("users")
+                    .document(userId).collection("meals");
+
+            Map<String, Object> mealMap = new HashMap<>();
+            mealMap.put("strMeal", meals.getStrMeal());
+            mealMap.put("strCategory", meals.getStrCategory());
+            mealMap.put("strInstructions", meals.getStrInstructions());
+            mealMap.put("strMealThumb", meals.getStrMealThumb());
+            mealMap.put("strYoutube", meals.getStrYoutube());
+            mealMap.put("strArea", meals.getStrArea());
+            mealMap.put("mealId", meals.getIdMeal());
+            mealMap.put("ingredients", meals.getAllIngredients());
+            mealMap.put("measures", meals.getAllMeaurse());
+
+            userMealsCollection.add(mealMap)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.i("TAG", "uploadMeals: ");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("TAG", "uploadMeals: failed", e);
+                    });
+        }
+
+        public void retrieveMeals(String userId, UserBackUpCallBack callBack) {
+            CollectionReference userMealsCollection = firestore.collection("users")
+                    .document(userId).collection("meals");
+
+            userMealsCollection.get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<MealsItem> mealsList = new ArrayList<>();
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            MealsItem meal = documentSnapshot.toObject(MealsItem.class);
+                            meal.setMealIdInFirabse(documentSnapshot.getId());
+                            mealsList.add(meal);
+                        }
+                        callBack.onSuccess(mealsList);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("TAG", "retrieveMeals: failed", e);
+                        callBack.onFailure(e.getMessage());
+                    });
+        }
+
+        public void deleteMeal(String userId, String mealId, DeleteMealCallback callback) {
+            if (userId == null || mealId == null) {
+                callback.onFailure("User ID or meal ID is null");
+                return;
+            }
+            DocumentReference mealDocumentRef = firestore.collection("users").document(userId)
+                    .collection("meals").document(mealId);
+
+            mealDocumentRef.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            mealDocumentRef.delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.i("TAG", "deleteMeal: success");
+                                        callback.onSuccess();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("TAG", "deleteMeal: failed", e);
+                                        callback.onFailure(e.getMessage());
+                                    });
+                        } else {
+                            callback.onFailure("Document does not exist");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("TAG", "Error checking document existence", e);
+                        callback.onFailure(e.getMessage());
+                    });
+
+        }
+
 
 }

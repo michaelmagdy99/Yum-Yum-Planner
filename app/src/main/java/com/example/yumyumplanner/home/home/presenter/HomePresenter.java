@@ -1,14 +1,18 @@
 package com.example.yumyumplanner.home.home.presenter;
 
 import com.example.yumyumplanner.home.home.view.HomeView;
+import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;
 import com.example.yumyumplanner.model.data.FilterItem;
 import com.example.yumyumplanner.model.data.IngredientItem;
 import com.example.yumyumplanner.model.data.MealsItem;
+import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -17,9 +21,12 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
     private HomeView homeView;
     private HomeRepositryImp mealsRepositry;
 
-    public HomePresenter(HomeView homeView, HomeRepositryImp mealsRepositry){
+    private BackUpRepositoryImp backUpRepository;
+
+    public HomePresenter(HomeView homeView, HomeRepositryImp mealsRepositry, BackUpRepositoryImp backUpRepository){
         this.homeView = homeView;
         this.mealsRepositry = mealsRepositry;
+        this.backUpRepository = backUpRepository;
     }
 
     @Override
@@ -30,6 +37,8 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
     @Override
     public void addToFav(MealsItem meal) {
             mealsRepositry.insertMeal(meal);
+            String userId = UserProfile.getCurrentUserId();
+            backUpRepository.uploadMeals(meal, userId);
     }
 
     @Override

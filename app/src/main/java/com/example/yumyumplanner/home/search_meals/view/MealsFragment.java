@@ -159,6 +159,13 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
             actionMealsFragmentToMealDetailsFragment.setFilterItem(filterItem);
             Navigation.findNavController(view).navigate(actionMealsFragmentToMealDetailsFragment);
         }
+        else if (item instanceof MealsItem) {
+            MealsItem mealsItem = (MealsItem) item;
+            MealsFragmentDirections.ActionMealsFragmentToMealDetailsFragment actionMealsFragmentToMealDetailsFragment =
+                    MealsFragmentDirections.actionMealsFragmentToMealDetailsFragment();
+            actionMealsFragmentToMealDetailsFragment.setMealDetails(mealsItem);
+            Navigation.findNavController(view).navigate(actionMealsFragmentToMealDetailsFragment);
+        }
     }
 
     @Override

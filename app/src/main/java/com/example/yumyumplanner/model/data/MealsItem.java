@@ -16,10 +16,20 @@ import java.util.List;
 public class MealsItem implements Serializable, Item {
 
 
+
 	@PrimaryKey
 	@NonNull
 	@SerializedName("idMeal")
 	private String idMeal;
+	private  String mealIdInFirabse;
+
+	public String getMealIdInFirabse() {
+		return mealIdInFirabse;
+	}
+
+	public  void setMealIdInFirabse(String mealIdInFirabse) {
+		this.mealIdInFirabse = mealIdInFirabse;
+	}
 
 	public void setIdMeal(@NonNull String idMeal) {
 		this.idMeal = idMeal;
