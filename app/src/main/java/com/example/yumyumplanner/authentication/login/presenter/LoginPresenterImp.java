@@ -1,15 +1,13 @@
 package com.example.yumyumplanner.authentication.login.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.example.yumyumplanner.authentication.login.view.LoginView;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
-import com.example.yumyumplanner.remote.firebase.ForgotPasswordCallback;
-import com.example.yumyumplanner.remote.firebase.LoginFirebase;
-import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositry;
+import com.example.yumyumplanner.remote.firebase.authentication.ForgotPasswordCallback;
+import com.example.yumyumplanner.remote.firebase.authentication.LoginFirebase;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 public class LoginPresenterImp implements LoginPresenter, LoginFirebase {
     private  LoginView loginView;
@@ -25,7 +23,7 @@ public class LoginPresenterImp implements LoginPresenter, LoginFirebase {
 
     private LoginPresenterImp(LoginView loginView, Context context) {
         this.loginView = loginView;
-        authenticationRepositry = AuthenticationRepositryImp.getInstance(BackUpRepositoryImp.getInstance(context));
+        authenticationRepositry = AuthenticationRepositryImp.getInstance(BackUpDataSourceImp.getInstance(context));
     }
 
     @Override

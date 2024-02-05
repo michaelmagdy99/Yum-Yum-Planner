@@ -1,11 +1,10 @@
-package com.example.yumyumplanner.model.backup_repo;
+package com.example.yumyumplanner.remote.firebase.backup;
 
 import com.example.yumyumplanner.model.data.MealsItem;
-import com.example.yumyumplanner.model.data.UserProfile;
 
 import java.util.List;
 
-public interface UserBackUpCallBack {
+public interface MealsBackUpCallBack {
     void onSuccess(List<MealsItem> userProfile);
     void onFailure(String error);
 }

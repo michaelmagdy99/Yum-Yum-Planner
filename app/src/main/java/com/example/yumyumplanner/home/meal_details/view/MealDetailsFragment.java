@@ -37,6 +37,7 @@
     import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
     import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
     import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
+    import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -95,7 +96,8 @@
                             HomeRepositryImp.getInstance(
                             MealsRemoteDataSourceImp.getInstance(),
                             MealsLocalDataSourceImp.getInstance(getContext())),
-                            FilterRepoImp.getInstance(MealsRemoteDataSourceImp.getInstance())
+                            FilterRepoImp.getInstance(MealsRemoteDataSourceImp.getInstance()),
+                            BackUpDataSourceImp.getInstance(getContext())
                     );
 
 

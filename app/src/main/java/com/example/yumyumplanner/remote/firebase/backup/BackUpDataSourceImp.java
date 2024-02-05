@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.model.backup_repo;
+package com.example.yumyumplanner.remote.firebase.backup;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -6,16 +6,17 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.data.UserProfile;
-import com.example.yumyumplanner.remote.firebase.UserFirebaseModel;
+import com.example.yumyumplanner.remote.firebase.authentication.UserFirebaseModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -24,9 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.rxjava3.core.Completable;
-
-public class BackUpRepositoryImp implements BackUpRepository{
+public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
 
     private UserFirebaseModel userFirebaseModel;
 
@@ -34,18 +33,18 @@ public class BackUpRepositoryImp implements BackUpRepository{
     private FirebaseFirestore firestore;
     private StorageReference storageReference;
 
-    private static BackUpRepositoryImp backUpRepositoryImp;
+    private static BackUpDataSourceImp backUpRepositoryImp;
     private Context ProfileFragment;
 
     private final Context context;
-    public static synchronized BackUpRepositoryImp getInstance(Context context) {
+    public static synchronized BackUpDataSourceImp getInstance(Context context) {
         if (backUpRepositoryImp == null) {
-            backUpRepositoryImp = new BackUpRepositoryImp(context);
+            backUpRepositoryImp = new BackUpDataSourceImp(context);
         }
         return backUpRepositoryImp;
     }
 
-    private BackUpRepositoryImp(Context context) {
+    private BackUpDataSourceImp(Context context) {
         this.context = context;
         this.userFirebaseModel = UserFirebaseModel.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -173,7 +172,7 @@ public class BackUpRepositoryImp implements BackUpRepository{
                     });
         }
 
-        public void retrieveMeals(String userId, UserBackUpCallBack callBack) {
+        public void retrieveMeals(String userId, MealsBackUpCallBack callBack) {
             CollectionReference userMealsCollection = firestore.collection("users")
                     .document(userId).collection("meals");
 
@@ -223,6 +222,91 @@ public class BackUpRepositoryImp implements BackUpRepository{
                     });
 
         }
+
+        //backup calendar data
+        public void uploadPlanMeals(MealCalendar meals, String userId) {
+            CollectionReference userMealsCollection = firestore.collection("users")
+                    .document(userId).collection("meals_of_plan");
+
+            Map<String, Object> mealMap = new HashMap<>();
+            mealMap.put("strMeal", meals.getStrMeal());
+            mealMap.put("strCategory", meals.getStrCategory());
+            mealMap.put("strInstructions", meals.getStrInstructions());
+            mealMap.put("strMealThumb", meals.getStrMealThumb());
+            mealMap.put("strYoutube", meals.getStrYoutube());
+            mealMap.put("strArea", meals.getStrArea());
+            mealMap.put("mealId", meals.getIdMeal());
+            mealMap.put("ingredients", meals.getAllIngredients());
+            mealMap.put("measures", meals.getAllMeaurse());
+            mealMap.put("date", meals.date);
+            mealMap.put("dateOfWeek", meals.dayOfWeek);
+
+            userMealsCollection.add(mealMap)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.i("TAG", "uploadMeals: ");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("TAG", "uploadMeals: failed", e);
+                    });
+        }
+
+
+    public void retrievePlanMeals(String userId, String date,MealPlanCallBack callBack) {
+        CollectionReference userMealsCollection = firestore.collection("users")
+                .document(userId).collection("meals_of_plan");
+
+        Query query = userMealsCollection.whereEqualTo("date", date);
+
+        query.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<MealCalendar> mealsList = new ArrayList<>();
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        MealCalendar meal = documentSnapshot.toObject(MealCalendar.class);
+                        meal.setMealIdInFirabse(documentSnapshot.getId());
+                        mealsList.add(meal);
+                    }
+                    callBack.onSuccess(mealsList);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("TAG", "retrieveMeals: failed", e);
+                    callBack.onFailure(e.getMessage());
+                });
+    }
+
+
+    public void deleteMealOfPlan(String userId, String mealId, DeleteMealCallback callback) {
+        if (userId == null || mealId == null) {
+            callback.onFailure("User ID or meal ID is null");
+            return;
+        }
+        DocumentReference mealDocumentRef = firestore.collection("users").document(userId)
+                .collection("meals_of_plan").document(mealId);
+
+        mealDocumentRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        mealDocumentRef.delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.i("TAG", "deleteMeal: success");
+                                    callback.onSuccess();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("TAG", "deleteMeal: failed", e);
+                                    callback.onFailure(e.getMessage());
+                                });
+                    } else {
+                        callback.onFailure("Document does not exist");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("TAG", "Error checking document existence", e);
+                    callback.onFailure(e.getMessage());
+                });
+
+    }
+
+
+
 
 
 }

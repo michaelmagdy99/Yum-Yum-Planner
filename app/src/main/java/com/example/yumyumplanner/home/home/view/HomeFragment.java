@@ -3,6 +3,7 @@ package com.example.yumyumplanner.home.home.view;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -19,18 +20,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.home.presenter.HomePresenter;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;
-import com.example.yumyumplanner.model.data.FilterItem;
 import com.example.yumyumplanner.model.data.IngredientItem;
 import com.example.yumyumplanner.model.data.MealsItem;
-import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +92,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
                 HomeRepositryImp.getInstance(
                         MealsRemoteDataSourceImp.getInstance(),
                         MealsLocalDataSourceImp.getInstance(getContext())),
-                BackUpRepositoryImp.getInstance(getContext())
+                BackUpDataSourceImp.getInstance(getContext())
         );
 
 

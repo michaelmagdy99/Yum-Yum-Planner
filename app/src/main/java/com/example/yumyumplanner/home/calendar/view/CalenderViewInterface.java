@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface CalenderViewInterface {
 
-    public void showData(LiveData<List<MealCalendar>> allMealsCaleander);
+    public void showData(List<MealCalendar> allMealsCaleander);
     public void showErrorMsg(String error);
     public void deleteMeals(MealCalendar mealCalendar);
+
+    void afterRemove();
 }

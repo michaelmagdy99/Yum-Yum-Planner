@@ -1,19 +1,24 @@
 package com.example.yumyumplanner.home;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.yumyumplanner.R;
 
 
 public class HomeActivity extends AppCompatActivity {
+    public static boolean isGuestMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,34 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (isGuestMode) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.profile || itemId == R.id.calendar || itemId == R.id.favourite) {
+                    showGuestModeMessage();
+                    return false;
+                }
+            }
+            return NavigationUI.onNavDestinationSelected(item, navController);
+        });
 
+
+
+    }
+    private void showGuestModeMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign Up For More Features");
+        builder.setMessage("Add your food preferences, shop your recipes, plan your meals and more!");
+
+        builder.setPositiveButton("SIGN UP", (dialog, which) -> {
+            startActivity(new Intent(this, AuthenticationActivity.class));
+        });
+
+        builder.setNegativeButton("CANCEL", (dialog, which) -> {
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

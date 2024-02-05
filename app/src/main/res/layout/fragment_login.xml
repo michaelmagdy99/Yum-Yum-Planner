@@ -123,26 +123,16 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <CheckBox
-        android:id="@+id/check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:buttonTint="@color/primaryColor"
-        android:textStyle="normal"
-        android:text="@string/remember_me"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/password_input"
-        app:layout_constraintTop_toBottomOf="@+id/password_input" />
-
     <TextView
         android:id="@+id/Reset_Password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reset_password"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/check_box"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="@+id/password_input"
-        app:layout_constraintTop_toTopOf="@+id/check_box" />
+        app:layout_constraintTop_toBottomOf="@id/password_input"
+        />
 
     <Button
         android:id="@+id/login_btn"
@@ -151,7 +141,7 @@
         android:backgroundTint="@color/primaryColor"
         android:text="@string/login"
         android:textSize="18sp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="42dp"
         app:layout_constraintEnd_toEndOf="@+id/password_input"
         app:layout_constraintStart_toStartOf="@+id/password_input"
         app:layout_constraintTop_toBottomOf="@+id/password_input" />

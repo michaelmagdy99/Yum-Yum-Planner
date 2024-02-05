@@ -24,6 +24,16 @@ public class MealCalendar implements Serializable {
     @ColumnInfo(name = "date")
     public String date;
 
+    private  String mealIdInFirabse;
+
+    public String getMealIdInFirabse() {
+        return mealIdInFirabse;
+    }
+
+    public  void setMealIdInFirabse(String mealIdInFirabse) {
+        this.mealIdInFirabse = mealIdInFirabse;
+    }
+
 
     public void setIdMeal(@NonNull String idMeal) {
         this.idMeal = idMeal;

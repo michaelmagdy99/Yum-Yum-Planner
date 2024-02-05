@@ -1,28 +1,26 @@
 package com.example.yumyumplanner.home.profile.presenter;
 
 import android.net.Uri;
-
 import com.example.yumyumplanner.home.profile.view.ProfileView;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepository;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
-import com.example.yumyumplanner.model.backup_repo.UserDataCallback;
 import com.example.yumyumplanner.model.data.UserProfile;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
+import com.example.yumyumplanner.remote.firebase.backup.UserDataCallback;
 
-public class ProfilePresenterImp implements ProfilePresenter, UserDataCallback{
+public class ProfilePresenterImp implements ProfilePresenter, UserDataCallback {
 
     private ProfileView view;
-    private BackUpRepositoryImp userRepository;
+    private BackUpDataSourceImp userRepository;
     private static ProfilePresenterImp profilePresenterImp;
 
 
-    public static ProfilePresenterImp getInstance(ProfileView profileView, BackUpRepositoryImp userRepository) {
+    public static ProfilePresenterImp getInstance(ProfileView profileView, BackUpDataSourceImp userRepository) {
         if (profilePresenterImp == null) {
             profilePresenterImp = new ProfilePresenterImp(profileView, userRepository);
         }
         return profilePresenterImp;
     }
 
-    private ProfilePresenterImp(ProfileView view, BackUpRepositoryImp userRepository) {
+    private ProfilePresenterImp(ProfileView view, BackUpDataSourceImp userRepository) {
         this.view = view;
         this.userRepository = userRepository;
     }

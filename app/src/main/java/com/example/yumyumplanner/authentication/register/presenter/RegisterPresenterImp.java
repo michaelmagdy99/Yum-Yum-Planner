@@ -3,10 +3,10 @@ package com.example.yumyumplanner.authentication.register.presenter;
 import android.content.Context;
 
 import com.example.yumyumplanner.authentication.register.view.RegisterView;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
-import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
+import com.example.yumyumplanner.remote.firebase.authentication.RegisterFirebase;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositry;
 import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 public class RegisterPresenterImp implements RegisterPresetner, RegisterFirebase {
 
@@ -22,7 +22,7 @@ public class RegisterPresenterImp implements RegisterPresetner, RegisterFirebase
     }
     private RegisterPresenterImp(RegisterView registerView, Context context) {
         this.registerView = registerView;
-        authenticationRepositry = AuthenticationRepositryImp.getInstance(BackUpRepositoryImp.getInstance(context));
+        authenticationRepositry = AuthenticationRepositryImp.getInstance(BackUpDataSourceImp.getInstance(context));
     }
 
 

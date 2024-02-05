@@ -1,24 +1,18 @@
 package com.example.yumyumplanner.home.profile.view;
 
-import static androidx.core.content.ContextCompat.getDrawable;
-import static com.google.common.io.Files.getFileExtension;
-
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,23 +23,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.authentication.AuthenticationActivity;
-import com.example.yumyumplanner.authentication.login.presenter.LoginPresenterImp;
+import com.example.yumyumplanner.database.MealDatabase;
 import com.example.yumyumplanner.home.profile.presenter.ProfilePresenterImp;
-import com.example.yumyumplanner.model.authentication_repo.AuthenticationRepositryImp;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepository;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
-import com.example.yumyumplanner.model.data.UserProfile;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.example.yumyumplanner.model.data.UserProfile;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -103,7 +85,7 @@ public class ProfileFragment extends Fragment implements ProfileView{
         progressbar =view.findViewById(R.id.loading);
 
         profilePresenter = ProfilePresenterImp.getInstance(this,
-                BackUpRepositoryImp.getInstance(mContext));
+                BackUpDataSourceImp.getInstance(mContext));
 
         profilePresenter.onViewCreated();
 
@@ -111,7 +93,8 @@ public class ProfileFragment extends Fragment implements ProfileView{
             @Override
             public void onClick(View view) {
                 logOutSuccessMessage();
-                getActivity().finish();
+                //clear room
+                MealDatabase.getInstance(getContext()).clearAllData();
             }
         });
         editImage.setOnClickListener(new View.OnClickListener() {

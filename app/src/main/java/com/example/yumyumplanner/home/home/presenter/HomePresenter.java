@@ -1,18 +1,14 @@
 package com.example.yumyumplanner.home.home.presenter;
 
 import com.example.yumyumplanner.home.home.view.HomeView;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;
-import com.example.yumyumplanner.model.data.FilterItem;
 import com.example.yumyumplanner.model.data.IngredientItem;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.data.UserProfile;
-import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 import java.util.List;
 
@@ -21,9 +17,9 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
     private HomeView homeView;
     private HomeRepositryImp mealsRepositry;
 
-    private BackUpRepositoryImp backUpRepository;
+    private BackUpDataSourceImp backUpRepository;
 
-    public HomePresenter(HomeView homeView, HomeRepositryImp mealsRepositry, BackUpRepositoryImp backUpRepository){
+    public HomePresenter(HomeView homeView, HomeRepositryImp mealsRepositry, BackUpDataSourceImp backUpRepository){
         this.homeView = homeView;
         this.mealsRepositry = mealsRepositry;
         this.backUpRepository = backUpRepository;

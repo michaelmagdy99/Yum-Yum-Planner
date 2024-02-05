@@ -23,4 +23,10 @@ public abstract class MealDatabase extends RoomDatabase {
         }
         return instance;
     }
+    public void clearAllData() {
+        new Thread(() -> {
+            getMealDAO().deleteAllPlan();
+            getMealDAO().deleteAllFav();
+        }).start();
+    }
 }

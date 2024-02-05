@@ -4,12 +4,12 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.example.yumyumplanner.model.backup_repo.BackUpRepository;
 import com.example.yumyumplanner.model.data.UserProfile;
-import com.example.yumyumplanner.remote.firebase.ForgotPasswordCallback;
-import com.example.yumyumplanner.remote.firebase.LoginFirebase;
-import com.example.yumyumplanner.remote.firebase.UserFirebaseModel;
-import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
+import com.example.yumyumplanner.remote.firebase.authentication.ForgotPasswordCallback;
+import com.example.yumyumplanner.remote.firebase.authentication.LoginFirebase;
+import com.example.yumyumplanner.remote.firebase.authentication.UserFirebaseModel;
+import com.example.yumyumplanner.remote.firebase.authentication.RegisterFirebase;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -17,16 +17,16 @@ public class AuthenticationRepositryImp implements AuthenticationRepositry{
     private static final String TAG = "AuthenticationRepositry";
     private static AuthenticationRepositryImp authenticationRepositryImp;
     private UserFirebaseModel userFirebaseModel;
-    private BackUpRepository userRepository;
+    private BackUpDataSourceImp userRepository;
 
-    public static synchronized AuthenticationRepositryImp getInstance(BackUpRepository userRepository) {
+    public static synchronized AuthenticationRepositryImp getInstance(BackUpDataSourceImp userRepository) {
         if (authenticationRepositryImp == null) {
             authenticationRepositryImp = new AuthenticationRepositryImp(userRepository);
         }
         return authenticationRepositryImp;
     }
 
-    private AuthenticationRepositryImp(BackUpRepository userRepository) {
+    private AuthenticationRepositryImp(BackUpDataSourceImp userRepository) {
         this.userFirebaseModel = UserFirebaseModel.getInstance();
         this.userRepository = userRepository;
     }

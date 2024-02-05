@@ -1,13 +1,8 @@
 package com.example.yumyumplanner.model.authentication_repo;
 
-import android.content.Context;
-import android.net.Uri;
-
-import com.example.yumyumplanner.remote.firebase.ForgotPasswordCallback;
-import com.example.yumyumplanner.remote.firebase.LoginFirebase;
-import com.example.yumyumplanner.remote.firebase.RegisterFirebase;
-import com.example.yumyumplanner.remote.firebase.UserFirebaseModel;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.yumyumplanner.remote.firebase.authentication.ForgotPasswordCallback;
+import com.example.yumyumplanner.remote.firebase.authentication.LoginFirebase;
+import com.example.yumyumplanner.remote.firebase.authentication.RegisterFirebase;
 
 public interface AuthenticationRepositry {
 

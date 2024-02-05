@@ -5,14 +5,13 @@ import android.util.Log;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
-import com.example.yumyumplanner.home.favourite.view.FavouriteFragment;
 import com.example.yumyumplanner.home.favourite.view.FavouriteView;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
-import com.example.yumyumplanner.model.backup_repo.DeleteMealCallback;
-import com.example.yumyumplanner.model.backup_repo.UserBackUpCallBack;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositry;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
+import com.example.yumyumplanner.remote.firebase.backup.DeleteMealCallback;
+import com.example.yumyumplanner.remote.firebase.backup.MealsBackUpCallBack;
 
 import java.util.List;
 
@@ -20,9 +19,9 @@ public class FavouritePresenter implements FavouritePresenterInterface{
 
     private FavouriteView view ;
     private HomeRepositry repository;
-    private BackUpRepositoryImp backUpRepositoryImp;
+    private BackUpDataSourceImp backUpRepositoryImp;
 
-    public FavouritePresenter(FavouriteView view, HomeRepositry repository, BackUpRepositoryImp backUpRepositoryImp){
+    public FavouritePresenter(FavouriteView view, HomeRepositry repository, BackUpDataSourceImp backUpRepositoryImp){
         this.view = view;
         this.repository = repository;
         this.backUpRepositoryImp = backUpRepositoryImp;
@@ -37,7 +36,7 @@ public class FavouritePresenter implements FavouritePresenterInterface{
         });
         //retrive backup meal
         Log.i("TAG", "getData: " + UserProfile.getCurrentUserId() );
-        backUpRepositoryImp.retrieveMeals(UserProfile.getCurrentUserId(), new UserBackUpCallBack() {
+        backUpRepositoryImp.retrieveMeals(UserProfile.getCurrentUserId(), new MealsBackUpCallBack() {
 
             @Override
             public void onSuccess(List<MealsItem> mealsItemsList) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yumyumplanner.R;
+import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.example.yumyumplanner.authentication.login.presenter.LoginPresenterImp;
 import com.example.yumyumplanner.home.HomeActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -78,8 +80,9 @@ public class LoginFragment extends Fragment implements LoginView  {
         gustModeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity() , HomeActivity.class);
-                startActivity(intent);
+                HomeActivity.isGuestMode = true ;
+                showGuestModeMessage();
+
             }
         });
 
@@ -179,6 +182,7 @@ public class LoginFragment extends Fragment implements LoginView  {
 
     @Override
     public void showLoginSuccessMessage() {
+        HomeActivity.isGuestMode = false;
         Toast.makeText(getContext(), "Login successful!!", Toast.LENGTH_LONG).show();
         // Intent to home activity
         goToHome();
@@ -211,6 +215,7 @@ public class LoginFragment extends Fragment implements LoginView  {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
+                                    HomeActivity.isGuestMode = false;
                                     goToHome();
                                     Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                                 } else {
@@ -230,6 +235,23 @@ public class LoginFragment extends Fragment implements LoginView  {
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    private void showGuestModeMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Wait! Are Sure?");
+        builder.setMessage("You'll miss out on personalized contant and saving our delicious recipes");
+
+        builder.setPositiveButton("YES, I'M SURE", (dialog, which) -> {
+            Intent intent = new Intent(getActivity() , HomeActivity.class);
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("No, Go BACK", (dialog, which) -> {
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

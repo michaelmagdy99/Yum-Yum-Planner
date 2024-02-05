@@ -3,8 +3,6 @@ package com.example.yumyumplanner.home.favourite.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,11 +15,10 @@ import android.widget.Toast;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.favourite.presenter.FavouritePresenter;
-import com.example.yumyumplanner.home.home.view.HomeFragmentDirections;
-import com.example.yumyumplanner.model.backup_repo.BackUpRepositoryImp;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +60,7 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
                 HomeRepositryImp.getInstance(
                         MealsRemoteDataSourceImp.getInstance(),
                         MealsLocalDataSourceImp.getInstance(getContext())),
-                    BackUpRepositoryImp.getInstance(getContext())
+                    BackUpDataSourceImp.getInstance(getContext())
                 );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(favAdapter);

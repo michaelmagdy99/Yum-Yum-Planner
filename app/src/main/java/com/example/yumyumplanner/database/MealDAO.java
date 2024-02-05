@@ -32,6 +32,8 @@ public interface MealDAO {
 
     @Insert (onConflict = OnConflictStrategy.IGNORE)
     void insertMealtoCalendar(MealCalendar mealCalendar);
-
-
+    @Query("DELETE FROM meal_plan")
+    void deleteAllPlan();
+    @Query("DELETE FROM meal")
+    void deleteAllFav();
 }

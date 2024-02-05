@@ -3,9 +3,11 @@ package com.example.yumyumplanner.home.meal_details.preseter;
 import com.example.yumyumplanner.home.meal_details.view.MealsDetailsView;
 import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
+import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 import java.util.List;
 
@@ -15,11 +17,14 @@ public class MealDetailsPreserter implements  MealDetailsPresenterInterface, Net
     private FilterRepoImp filterRepo;
 
     private MealsDetailsView view;
+    private BackUpDataSourceImp backUpRepository;
 
-    public MealDetailsPreserter(MealsDetailsView view, HomeRepositryImp mealsRepositry, FilterRepoImp filterRepo){
+    public MealDetailsPreserter(MealsDetailsView view, HomeRepositryImp mealsRepositry, FilterRepoImp filterRepo, BackUpDataSourceImp backUpRepository){
         this.mealsRepositry = mealsRepositry;
         this.view = view;
         this.filterRepo = filterRepo;
+        this.backUpRepository = backUpRepository;
+
     }
     @Override
     public void addToFav(MealsItem meal) {
@@ -29,6 +34,8 @@ public class MealDetailsPreserter implements  MealDetailsPresenterInterface, Net
     @Override
     public void addToCalender(MealCalendar mealCalendar) {
         mealsRepositry.addToCalendar(mealCalendar);
+        String userId = UserProfile.getCurrentUserId();
+        backUpRepository.uploadPlanMeals(mealCalendar, userId);
     }
 
     @Override

@@ -24,6 +24,7 @@ import com.example.yumyumplanner.home.favourite.view.FavouriteFragmentDirections
 import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
     CalenderPresenter presenter;
 
     CalenderAdapter calenderAdapter;
+    String date;
     public CalendarFragment() {
         // Required empty public constructor
     }
@@ -69,7 +71,9 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
         presenter =new CalenderPresenter(this,
                 HomeRepositryImp.getInstance(
                         MealsRemoteDataSourceImp.getInstance(),
-                        MealsLocalDataSourceImp.getInstance(getContext())));
+                        MealsLocalDataSourceImp.getInstance(getContext())),
+                BackUpDataSourceImp.getInstance(getContext())
+        );
 
 
         //set data to get data
@@ -79,11 +83,11 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
                                             int dayOfMonth) {
 
                 Log.e("date",String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year);
-                String date = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
+                String currentDate = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
                 recyclerView.setLayoutManager(layoutManager);
                 //setAdapter
                 recyclerView.setAdapter(calenderAdapter);
-                presenter.getMealsFromCalendar(date);
+                presenter.getMealsFromCalendar(currentDate);
             }
         });
 
@@ -93,17 +97,9 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
 
     @Override
-    public void showData(LiveData<List<MealCalendar>> allMealsCaleander) {
-        allMealsCaleander.removeObservers(getViewLifecycleOwner());
-
-        allMealsCaleander.observe(this, new Observer<List<MealCalendar>>() {
-                @Override
-                public void onChanged(List<MealCalendar> mealCalendars) {
-                    //adapter
-                    calenderAdapter.setList(mealCalendars);
-                    calenderAdapter.notifyDataSetChanged();
-                }
-            });
+    public void showData(List<MealCalendar> allMealsCaleander) {
+        calenderAdapter.setList(allMealsCaleander);
+        calenderAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -115,6 +111,11 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
     @Override
     public void deleteMeals(MealCalendar mealCalendar) {
         presenter.removeFromCalnder(mealCalendar);
+    }
+
+    @Override
+    public void afterRemove() {
+       // presenter.getMealsFromCalendar(date);
     }
 
     @Override

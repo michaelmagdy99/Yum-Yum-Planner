@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.model.backup_repo;
+package com.example.yumyumplanner.remote.firebase.backup;
 
 import com.example.yumyumplanner.model.data.UserProfile;
 

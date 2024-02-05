@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.remote.firebase;
+package com.example.yumyumplanner.remote.firebase.authentication;
 
 public interface RegisterFirebase {
     void onRegisterSuccess();
