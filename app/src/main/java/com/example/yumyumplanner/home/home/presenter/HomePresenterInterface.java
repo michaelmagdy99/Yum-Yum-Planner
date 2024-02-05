@@ -9,4 +9,5 @@ public interface HomePresenterInterface {
     void getIngredients();
     void getCategories();
     void getCountry();
+
 }

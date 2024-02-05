@@ -3,35 +3,111 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/home">
 
 
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/home"
         android:name="com.example.yumyumplanner.home.home.view.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_mealDetailsFragment"
             app:destination="@id/mealDetailsFragment" />
+        <action
+            android:id="@+id/action_home_to_ingredientsFragment"
+            app:destination="@id/ingredientsFragment" />
+        <action
+            android:id="@+id/action_home_to_mealsFragment"
+            app:destination="@id/mealsFragment" />
     </fragment>
     <fragment
         android:id="@+id/mealDetailsFragment"
-        android:name="com.example.yumyumplanner.home.meal_details.MealDetailsFragment"
-        android:label="MealDetailsFragment" />
+        android:name="com.example.yumyumplanner.home.meal_details.view.MealDetailsFragment"
+        android:label="Meal Details">
+        <argument
+            android:name="mealDetails"
+            android:defaultValue="@null"
+            app:argType="com.example.yumyumplanner.model.data.MealsItem"
+            app:nullable="true" />
+        <argument
+            android:name="mealCalender"
+            app:argType="com.example.yumyumplanner.model.data.MealCalendar"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="filterItem"
+            app:argType="com.example.yumyumplanner.model.data.FilterItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
-        android:id="@+id/calendarFragment"
-        android:name="com.example.yumyumplanner.home.calendar.CalendarFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" />
+        android:id="@+id/calendar"
+        android:name="com.example.yumyumplanner.home.calendar.view.CalendarFragment"
+        android:label="Calendar"
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_calendar_to_mealDetailsFragment"
+            app:destination="@id/mealDetailsFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.yumyumplanner.home.search.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        android:id="@+id/search"
+        android:name="com.example.yumyumplanner.home.search.view.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_search_to_ingredientsFragment"
+            app:destination="@id/ingredientsFragment" />
+        <action
+            android:id="@+id/action_search_to_mealsFragment"
+            app:destination="@id/mealsFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/favouriteFragment"
-        android:name="com.example.yumyumplanner.home.favourite.FavouriteFragment"
-        android:label="fragment_favourite"
-        tools:layout="@layout/fragment_favourite" />
+        android:id="@+id/favourite"
+        android:name="com.example.yumyumplanner.home.favourite.view.FavouriteFragment"
+        android:label="Favourite"
+        tools:layout="@layout/fragment_favourite" >
+        <action
+            android:id="@+id/action_favourite_to_mealDetailsFragment"
+            app:destination="@id/mealDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ingredientsFragment"
+        android:name="com.example.yumyumplanner.home.ingredient_details.view.IngredientsFragment"
+        android:label="fragment_ingredients"
+        tools:layout="@layout/fragment_ingredients" >
+        <argument
+            android:name="ingredientItem"
+            app:argType="com.example.yumyumplanner.model.data.IngredientItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_ingredientsFragment_to_mealDetailsFragment"
+            app:destination="@id/mealDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mealsFragment"
+        android:name="com.example.yumyumplanner.home.search_meals.view.MealsFragment"
+        android:label="fragment_meals"
+        tools:layout="@layout/fragment_meals" >
+        <argument
+            android:name="countryItem"
+            app:argType="com.example.yumyumplanner.model.data.CountryItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="categoryItem"
+            app:argType="com.example.yumyumplanner.model.data.CategoriesItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_mealsFragment_to_mealDetailsFragment"
+            app:destination="@id/mealDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.example.yumyumplanner.home.profile.view.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

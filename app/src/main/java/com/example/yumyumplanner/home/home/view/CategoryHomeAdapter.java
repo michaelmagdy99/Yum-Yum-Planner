@@ -37,7 +37,7 @@ public class CategoryHomeAdapter extends RecyclerView.Adapter<CategoryHomeAdapte
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.ingredients_home_items,parent,false);
+        View view = inflater.inflate(R.layout.category_home_item,parent,false);
         CategoryViewHolder categoryViewHolder = new CategoryViewHolder(view);
         return categoryViewHolder;
     }
@@ -78,8 +78,8 @@ public class CategoryHomeAdapter extends RecyclerView.Adapter<CategoryHomeAdapte
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            categoryImage = itemView.findViewById(R.id.image_of_ingradines_home);
-            categoryName = itemView.findViewById(R.id.ingradents_name_home);
+            categoryImage = itemView.findViewById(R.id.image_of_category_home);
+            categoryName = itemView.findViewById(R.id.category_name_home);
         }
     }
 }

@@ -2,7 +2,9 @@ package com.example.yumyumplanner.model.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CategoriesItem{
+import java.io.Serializable;
+
+public class CategoriesItem implements Serializable {
 
 	@SerializedName("strCategory")
 	private String strCategory;

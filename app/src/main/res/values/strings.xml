@@ -21,7 +21,7 @@
     <string name="daily_inspiration">Daily Inspiration for you </string>
     <string name="get_started">Get Started</string>
     <string name="exit">Exit</string>
-    <string name="country">Country</string>
+    <string name="country">Search by Country</string>
     <string name="category">Category :</string>
     <string name="country_">You will eat today from :</string>
     <string name="category_">Category</string>
@@ -29,4 +29,20 @@
     <string name="add_to_plan">Add To Plan</string>
     <string name="ingrediens">Ingredients which you like :)</string>
     <string name="categories_the_different_food">Categories the different food :)</string>
+    <string name="ingredients">Search by Ingredients</string>
+    <string name="favourite_meals">Favourite Meals</string>
+    <string name="meal_plan">Meal Plan</string>
+    <string name="save">Save</string>
+    <string name="planner">Planner</string>
+    <string name="yum_yum">Yum Yum</string>
+    <string name="default_web_client_id">603633507261-6h2prlbg2e3f518n493b7ip6a7ftpcph.apps.googleusercontent.com</string>
+    <string name="web_client_secret">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</string>
+    <string name="remove_from_plan">Remove From Plan</string>
+    <string name="categories">Search by Categories</string>
+    <string name="description">Description :</string>
+    <string name="meals">Meals :)</string>
+    <string name="search">Search</string>
+    <string name="ingredients__">Ingredients</string>
+    <string name="country__">Country</string>
+    <string name="categories__">Categories</string>
 </resources>

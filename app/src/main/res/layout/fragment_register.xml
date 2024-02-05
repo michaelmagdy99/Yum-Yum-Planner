@@ -7,22 +7,7 @@
     android:background="@color/background"
     tools:context=".authentication.login.view.LoginFragment">
 
-    <TextView
-        android:id="@+id/gust_btn_sign_up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
-        android:text="@string/skip"
-        android:layout_margin="16dp"
-        android:textColor="#000000"
-        android:background="@drawable/skip_backgraound"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+
 
     <ImageButton
         android:id="@+id/back_btn"
@@ -159,8 +144,10 @@
             android:hint="@string/password"
             android:inputType="textPassword"
             android:maxLength="20"
-            android:padding="20dp"
-            android:singleLine="true"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="50dp"            android:singleLine="true"
             android:autofillHints="password" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -188,7 +175,10 @@
             android:hint="@string/re_type_password"
             android:inputType="textPassword"
             android:maxLength="20"
-            android:padding="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="50dp"
             android:singleLine="true"
             />
 

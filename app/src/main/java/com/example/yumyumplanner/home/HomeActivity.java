@@ -1,28 +1,24 @@
 package com.example.yumyumplanner.home;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import android.view.MenuItem;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.yumyumplanner.R;
-import com.example.yumyumplanner.home.calendar.CalendarFragment;
-import com.example.yumyumplanner.home.favourite.FavouriteFragment;
-import com.example.yumyumplanner.home.home.view.HomeFragment;
-import com.example.yumyumplanner.home.profile.ProfileFragment;
-import com.example.yumyumplanner.home.search.SearchFragment;
 
 
 public class HomeActivity extends AppCompatActivity {
+    public static boolean isGuestMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,39 +32,46 @@ public class HomeActivity extends AppCompatActivity {
 
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.mealDetailsFragment) {
-                bottomNavigationView.setVisibility(View.GONE);
-            } else {
+            int destinationId = destination.getId();
+            if (destinationId == R.id.home ||
+                    destinationId == R.id.search ||
+                    destinationId == R.id.favourite ||
+                    destinationId == R.id.profile ||
+                    destinationId == R.id.calendar) {
                 bottomNavigationView.setVisibility(View.VISIBLE);
-            }
-        });
-
-        if (savedInstanceState == null) {
-            navController.navigate(R.id.homeFragment);
-        }
-
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.home) {
-                navController.navigate(R.id.homeFragment);
-                return true;
-            } else if (itemId == R.id.search) {
-                navController.navigate(R.id.searchFragment);
-                return true;
-            } else if (itemId == R.id.calendar) {
-                navController.navigate(R.id.calendarFragment);
-                return true;
-            } else if (itemId == R.id.favourite) {
-                navController.navigate(R.id.favouriteFragment);
-                return true;
             } else {
-                return false;
+                bottomNavigationView.setVisibility(View.GONE);
             }
+        });
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (isGuestMode) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.profile || itemId == R.id.calendar || itemId == R.id.favourite) {
+                    showGuestModeMessage();
+                    return false;
+                }
+            }
+            return NavigationUI.onNavDestinationSelected(item, navController);
         });
 
 
+
+    }
+    private void showGuestModeMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign Up For More Features");
+        builder.setMessage("Add your food preferences, shop your recipes, plan your meals and more!");
+
+        builder.setPositiveButton("SIGN UP", (dialog, which) -> {
+            startActivity(new Intent(this, AuthenticationActivity.class));
+        });
+
+        builder.setNegativeButton("CANCEL", (dialog, which) -> {
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

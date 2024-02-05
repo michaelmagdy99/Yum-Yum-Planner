@@ -3,9 +3,11 @@ package com.example.yumyumplanner.home.home.view;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,44 +16,57 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.yumyumplanner.R;
+import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.home.presenter.HomePresenter;
-import com.example.yumyumplanner.home.meal_details.IngrdientsAdapter;
 import com.example.yumyumplanner.model.data.CategoriesItem;
+import com.example.yumyumplanner.model.data.CountryItem;
 import com.example.yumyumplanner.model.data.IngredientItem;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
-import com.example.yumyumplanner.network.MealsRemoteDataSourceImp;
+import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements HomeView, OnClickListener{
 
-
+    private Boolean favFalg = false;
     private View view;
     private TextView nameMeal;
     private HomePresenter homepresenter;
     private TextView countryMeal;
     private ImageView mealImage;
     private TextView categoryMeal;
+    private List<MealsItem> mealsItems;
     private ConstraintLayout itemConstraint;
     public static final String TAG = "Home Fragment";
 
     private IngrdientsHomeAdapter ingtrdientsHomeAdapter;
     private RecyclerView ingradientRecyclerView;
     LinearLayoutManager IngrlayoutManager;
-    LinearLayoutManager caterlayoutManager;
+    GridLayoutManager caterlayoutManager;
 
     private CategoryHomeAdapter categoryHomeAdapter;
     private RecyclerView categoryRecyclerView;
 
     private ProgressDialog progressDialog;
+
+    private ImageView favBtn;
+    private CountriesHomeAdapter countriesHomeAdapter;
+
+    private LinearLayoutManager countryLayoutManager;
+    private RecyclerView countryRecyclerView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -71,29 +86,62 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         view = inflater.inflate(R.layout.fragment_home, container, false);
         intitUI(view);
         showProgressBar();
+        //object of presenter
+        homepresenter =new HomePresenter(
+                this,
+                HomeRepositryImp.getInstance(
+                        MealsRemoteDataSourceImp.getInstance(),
+                        MealsLocalDataSourceImp.getInstance(getContext())),
+                BackUpDataSourceImp.getInstance(getContext())
+        );
+
+
+        //object of country
+        countryLayoutManager = new LinearLayoutManager(getContext());
+        countryLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        countriesHomeAdapter = new CountriesHomeAdapter(getContext(), new ArrayList<>(),this);
+
         //object of ingtrdientsHomeAdapter
         IngrlayoutManager = new LinearLayoutManager(getContext());
         IngrlayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         ingtrdientsHomeAdapter = new IngrdientsHomeAdapter(getContext(), new ArrayList<>(),this);
         //object of categoryHomeAdapter
-        caterlayoutManager = new LinearLayoutManager(getContext());
-        caterlayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        caterlayoutManager = new GridLayoutManager(getContext(), 2);
+        caterlayoutManager.setOrientation(RecyclerView.VERTICAL);
         categoryHomeAdapter = new CategoryHomeAdapter(getContext(), new ArrayList<>(), this);
-        homepresenter =new HomePresenter(this,
-                HomeRepositryImp.getInstance(
-                MealsRemoteDataSourceImp.getInstance()));
+
         //ingradientsRV
         ingradientRecyclerView.setLayoutManager(IngrlayoutManager);
         ingradientRecyclerView.setAdapter(ingtrdientsHomeAdapter);
         //categoryRV
         categoryRecyclerView.setLayoutManager(caterlayoutManager);
         categoryRecyclerView.setAdapter(categoryHomeAdapter);
+        //countrysRV
+        countryRecyclerView.setLayoutManager(countryLayoutManager);
+        countryRecyclerView.setAdapter(countriesHomeAdapter);
         //radom meal
         homepresenter.getMeals();
         //ingradient
         homepresenter.getIngredients();
         //categoty
         homepresenter.getCategories();
+
+        //country
+        homepresenter.getCountry();
+
+
+        favBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (favFalg) {
+                    favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
+                } else {
+                    favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
+                    addMeal(mealsItems.get(0));
+                }
+                favFalg =! favFalg;
+            }
+        });
 
         return view;
     }
@@ -105,7 +153,9 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         itemConstraint = view.findViewById(R.id.item_constrian);
         ingradientRecyclerView = view.findViewById(R.id.ingredients_recycler_home);
         categoryRecyclerView = view.findViewById(R.id.category_recycler_home);
+        favBtn = view.findViewById(R.id.fav_btn_home);
 
+        countryRecyclerView = view.findViewById(R.id.country_recycler_home);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Please wait... It is downloading");
         progressDialog.setIndeterminate(false);
@@ -116,6 +166,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     @Override
     public void showData(List<MealsItem> mealsItems) {
         hideProgressBar();
+        this.mealsItems = mealsItems;
 
         Glide.with(getContext())
                 .load(mealsItems.get(0).getStrMealThumb())
@@ -127,22 +178,14 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         nameMeal.setText(mealsItems.get(0).getStrMeal());
         countryMeal.setText(mealsItems.get(0).getStrArea());
         categoryMeal.setText(mealsItems.get(0).getStrCategory());
+
         itemConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-
-                bundle.putString("mealName", mealsItems.get(0).getStrMeal());
-                bundle.putString("categoryName", mealsItems.get(0).getStrCategory());
-                bundle.putString("countryMeal", mealsItems.get(0).getStrArea());
-                bundle.putString("instructionMeal", mealsItems.get(0).getStrInstructions());
-                bundle.putString("imageMeal", mealsItems.get(0).getStrMealThumb());
-                bundle.putString("videoMeal",mealsItems.get(0).getStrYoutube());
-                bundle.putStringArrayList("ingredientsList", new ArrayList<>(mealsItems.get(0).getAllIngredients()));
-                bundle.putStringArrayList("measureList", new ArrayList<>(mealsItems.get(0).getAllMeaurse()));
-
-
-                Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_mealDetailsFragment, bundle);
+                HomeFragmentDirections.ActionHomeFragmentToMealDetailsFragment action =
+                        HomeFragmentDirections.actionHomeFragmentToMealDetailsFragment();
+                action.setMealDetails(mealsItems.get(0));
+                Navigation.findNavController(view).navigate(action);
             }
         });
     }
@@ -158,24 +201,29 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
 
     @Override
     public void showCategory(List<CategoriesItem> categoriesItems) {
-        Log.i(TAG, "showDataCateg: " + categoriesItems.get(0).getStrCategory());
         hideProgressBar();
-
         categoryHomeAdapter.setList(categoriesItems);
         categoryHomeAdapter.notifyDataSetChanged();
 
     }
 
     @Override
+    public void showCountry(List<CountryItem> countryItems) {
+        Log.i("TAG", "showDataCateg: " + countryItems.get(0).getStrArea());
+        hideProgressBar();
+        countriesHomeAdapter.setList(countryItems);
+        countriesHomeAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void showErrorMsg(String error) {
         hideProgressBar();
-
         Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void addMeal(MealsItem mealsItem) {
-
+        homepresenter.addToFav(mealsItem);
     }
 
     @Override
@@ -188,12 +236,31 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     public void onItemClick(Object item) {
         if (item instanceof CategoriesItem) {
             CategoriesItem categoriesItem = (CategoriesItem) item;
+            HomeFragmentDirections.ActionHomeToMealsFragment actionHomeToMealsFragment =
+                    HomeFragmentDirections.actionHomeToMealsFragment();
+            actionHomeToMealsFragment.setCategoryItem(categoriesItem);
+            Navigation.findNavController(view).navigate(actionHomeToMealsFragment);
             //logic
-            Toast.makeText(getContext(), categoriesItem.getStrCategory(), Toast.LENGTH_SHORT).show();
+           //Toast.makeText(getContext(), categoriesItem.getIdCategory(), Toast.LENGTH_SHORT).show();
+
         } else if (item instanceof IngredientItem) {
             IngredientItem ingredientItem = (IngredientItem) item;
+            HomeFragmentDirections.ActionHomeToIngredientsFragment actionHomeToIngredientsFragment =
+                    HomeFragmentDirections.actionHomeToIngredientsFragment();
+            actionHomeToIngredientsFragment.setIngredientItem(ingredientItem);
+            //navigate with object ingredientItem
+            Navigation.findNavController(view).navigate(actionHomeToIngredientsFragment);
             //logic
-            Toast.makeText(getContext(), ingredientItem.getStrIngredient(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), ingredientItem.getIdIngredient(), Toast.LENGTH_SHORT).show();
+        }
+        else if (item instanceof CountryItem) {
+            CountryItem countryItem = (CountryItem) item;
+            HomeFragmentDirections.ActionHomeToMealsFragment actionHomeToMealsFragment =
+                    HomeFragmentDirections.actionHomeToMealsFragment();
+            actionHomeToMealsFragment.setCountryItem(countryItem);
+            Navigation.findNavController(view).navigate(actionHomeToMealsFragment);
+            //logic
+            //Toast.makeText(getContext(), countryItem.getStrArea(), Toast.LENGTH_SHORT).show();
         }
     }
 
