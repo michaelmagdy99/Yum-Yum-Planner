@@ -39,6 +39,13 @@
         <item name="cornerSize">5dp</item>
     </style>
 
+    <style name="CustomWeekDayText">
+        <item name="android:textColor">@color/primaryColor</item>
+    </style>
+
+    <style name="CustomDateText">
+        <item name="android:textColor">@color/black</item>
+    </style>
 
 
 

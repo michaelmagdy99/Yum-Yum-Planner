@@ -270,6 +270,15 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
                     if (b) {
                         hideAllViews();
                         filterSearch();
+                    }else {
+                        ingradientRecyclerView.setVisibility(View.VISIBLE);
+                        categoryRecyclerView.setVisibility(View.VISIBLE);
+                        countryRecyclerView.setVisibility(View.VISIBLE);
+                        catTV.setVisibility(View.VISIBLE);
+                        ingtTV.setVisibility(View.VISIBLE);
+                        counTV.setVisibility(View.VISIBLE);
+                        divider.setVisibility(View.VISIBLE);
+                        divider1.setVisibility(View.VISIBLE);
                     }
                 }
             });

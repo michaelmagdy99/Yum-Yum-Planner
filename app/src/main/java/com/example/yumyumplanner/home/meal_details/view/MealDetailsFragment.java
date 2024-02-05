@@ -1,6 +1,5 @@
     package com.example.yumyumplanner.home.meal_details.view;
     
-    import static android.app.ProgressDialog.show;
 
     import android.app.DatePickerDialog;
     import android.app.ProgressDialog;
@@ -113,7 +112,7 @@
             } else if (mealCalendar != null) {
                 // args from CalendarFragment
                 handleArgumentFromCalendarFragment(mealCalendar);
-            }else if (filterItem != null){
+            } else if (filterItem != null){
               //args from meal search
                 preserter.getMealDetails(filterItem.getIdMeal());
             } else {
@@ -145,6 +144,16 @@
                 @Override
                 public void onClick(View view) {
                     Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.clear(Calendar.MINUTE);
+                    calendar.clear(Calendar.SECOND);
+                    calendar.clear(Calendar.MILLISECOND);
+
+                    long minDate = calendar.getTimeInMillis();
+
+                    calendar.add(Calendar.DAY_OF_WEEK, 6); // Move calendar to the end of the week
+                    long maxDate = calendar.getTimeInMillis();
                     DatePickerDialog datePickerDialog = new DatePickerDialog(
                             view.getContext(),
                             new DatePickerDialog.OnDateSetListener() {
@@ -156,20 +165,6 @@
                             calendar.set(Calendar.YEAR, year);
                             calendar.set(Calendar.MONTH, month);
                             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                            long startTime = calendar.getTimeInMillis();
-
-                            Intent intent = new Intent(Intent.ACTION_INSERT);
-                            intent.setData(CalendarContract.Events.CONTENT_URI);
-                            intent.putExtra(CalendarContract.Events.TITLE, "Your Event Title");
-                            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime);
-
-                            if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(getContext(), "No app available to handle calendar events", Toast.LENGTH_SHORT).show();
-                            }
-
 
                             MealCalendar mealCalendar = new MealCalendar();
                             mealCalendar.dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -183,7 +178,6 @@
                             mealCalendar.setStrInstructions(instruction);
                             mealCalendar.setAllIngredients(ingredientsList);
                             mealCalendar.setAllMeasures(meaurseList);
-
                             // add to room
                             addMealToCalendar(mealCalendar);
                         }
@@ -192,6 +186,8 @@
                             calendar.get(Calendar.MONTH),
                             calendar.get(Calendar.DAY_OF_MONTH)
                     );
+                    datePickerDialog.getDatePicker().setMinDate(minDate);
+                    datePickerDialog.getDatePicker().setMaxDate(maxDate);
                     datePickerDialog.show();
                 }
             });
@@ -227,7 +223,6 @@
         @Override
         public void addMealToFav(MealsItem mealsItem) {
             preserter.addToFav(mealsItem);
-
         }
 
         @Override
@@ -292,7 +287,6 @@
         }
 
         private void handleNoArguments() {
-            // Handle case when no arguments are present
             Toast.makeText(getContext(), "There are some woring in data", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(view).navigateUp();
         }

@@ -29,6 +29,8 @@ public class MealDetailsPreserter implements  MealDetailsPresenterInterface, Net
     @Override
     public void addToFav(MealsItem meal) {
         mealsRepositry.insertMeal(meal);
+        String userId = UserProfile.getCurrentUserId();
+        backUpRepository.uploadMeals(meal, userId);
     }
 
     @Override

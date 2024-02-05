@@ -136,14 +136,7 @@ public class LoginFragment extends Fragment implements LoginView  {
             Toast.makeText(getContext(), "Login Successfuly", Toast.LENGTH_SHORT).show();
             goToHome();
         }
-
-        facebookSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
+        
         //forgetPassword
         resetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +157,6 @@ public class LoginFragment extends Fragment implements LoginView  {
         progressbar =view.findViewById(R.id.loading);
         loginUpBtn = view.findViewById(R.id.login_btn);
         googleSignIn = view.findViewById(R.id.google_icon_btn);
-        facebookSignIn = view.findViewById(R.id.facebook_icon_btn);
         resetPassword = view.findViewById(R.id.Reset_Password);
     }
 

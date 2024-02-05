@@ -16,9 +16,7 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
 
     private HomeView homeView;
     private HomeRepositryImp mealsRepositry;
-
     private BackUpDataSourceImp backUpRepository;
-
     public HomePresenter(HomeView homeView, HomeRepositryImp mealsRepositry, BackUpDataSourceImp backUpRepository){
         this.homeView = homeView;
         this.mealsRepositry = mealsRepositry;
@@ -40,13 +38,11 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
     @Override
     public void getIngredients() {
         mealsRepositry.getIngredients(this);
-
     }
 
     @Override
     public void getCategories() {
         mealsRepositry.getCategories(this);
-
     }
 
     @Override
