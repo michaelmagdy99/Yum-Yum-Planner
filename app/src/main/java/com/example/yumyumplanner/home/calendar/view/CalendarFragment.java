@@ -15,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.calendar.presenter.CalenderPresenter;
@@ -44,6 +46,9 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
     CalenderAdapter calenderAdapter;
     String date;
+
+    LottieAnimationView no_cal_list;
+    TextView textView_no_cal;
     public CalendarFragment() {
         // Required empty public constructor
     }
@@ -65,6 +70,9 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
         recyclerView = view.findViewById(R.id.recycler_view_planner_meals);
         calendarViwe = view.findViewById(R.id.calendar_view);
 
+        no_cal_list = view.findViewById(R.id.animation_view_cal);
+        textView_no_cal = view.findViewById(R.id.txt_cal);
+
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         calenderAdapter = new CalenderAdapter(getContext(), new ArrayList<>(),this);
@@ -78,17 +86,38 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
 
         //set data to get data
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
+        long minDate = System.currentTimeMillis();
+        calendar.add(Calendar.DAY_OF_WEEK, 6);
+        long maxDate = calendar.getTimeInMillis();
+        calendarViwe.setMinDate(minDate);
+        calendarViwe.setMaxDate(maxDate);
+
+        recyclerView.setLayoutManager(layoutManager);
+        //setAdapter
+        recyclerView.setAdapter(calenderAdapter);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        Log.i("TAG", "onCreateView: " + String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year);
+        presenter.getMealsFromCalendar(String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year);
         calendarViwe.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month,
                                             int dayOfMonth) {
 
                 Log.e("date",String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year);
-                String currentDate = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
+                date = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
+
                 recyclerView.setLayoutManager(layoutManager);
                 //setAdapter
                 recyclerView.setAdapter(calenderAdapter);
-                presenter.getMealsFromCalendar(currentDate);
+                presenter.getMealsFromCalendar(date);
             }
         });
 
@@ -99,8 +128,17 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
     @Override
     public void showData(List<MealCalendar> allMealsCaleander) {
-        calenderAdapter.setList(allMealsCaleander);
-        calenderAdapter.notifyDataSetChanged();
+        if(allMealsCaleander != null && !allMealsCaleander.isEmpty()) {
+            recyclerView.setVisibility(View.VISIBLE);
+            no_cal_list.setVisibility(View.GONE);
+            textView_no_cal.setVisibility(View.GONE);
+            calenderAdapter.setList(allMealsCaleander);
+            calenderAdapter.notifyDataSetChanged();
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            no_cal_list.setVisibility(View.VISIBLE);
+            textView_no_cal.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -116,7 +154,7 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
     @Override
     public void afterRemove() {
-       // presenter.getMealsFromCalendar(date);
+        presenter.getMealsFromCalendar(date);
     }
 
     @Override

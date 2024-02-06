@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:elevation="2dp"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/cooking"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,10 +86,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
-                android:text="@string/country"
+                android:text="@string/country__"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_marginTop="15dp"
                 android:drawableStart="@drawable/country_flag"
                 android:drawablePadding="12dp"
@@ -111,7 +111,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@id/name_meal"
                 app:layout_constraintStart_toStartOf="parent"
@@ -131,7 +131,7 @@
         android:drawablePadding="10dp"
         android:text="@string/ingrediens"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/meal_card_view" />
@@ -192,7 +192,7 @@
         android:drawablePadding="10dp"
         android:text="@string/categories_the_different_food"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_search_2" />

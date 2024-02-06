@@ -1,5 +1,7 @@
 package com.example.yumyumplanner.home;
 
+import static com.example.yumyumplanner.utils.InternetConnectivity.isConnectedToInternet;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -15,15 +17,19 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.yumyumplanner.R;
+import com.google.android.material.snackbar.Snackbar;
 
 
 public class HomeActivity extends AppCompatActivity {
     public static boolean isGuestMode = false;
+    private View rootView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        rootView = findViewById(android.R.id.content);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -52,10 +58,13 @@ public class HomeActivity extends AppCompatActivity {
                     return false;
                 }
             }
+
             return NavigationUI.onNavDestinationSelected(item, navController);
         });
 
-
+        if (!isConnectedToInternet(this)) {
+            showNoInternetSnackbar();
+        }
 
     }
     private void showGuestModeMessage() {
@@ -70,8 +79,16 @@ public class HomeActivity extends AppCompatActivity {
         builder.setNegativeButton("CANCEL", (dialog, which) -> {
             dialog.dismiss();
         });
+
         AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
         dialog.show();
+    }
+
+    private void showNoInternetSnackbar() {
+        Snackbar snackbar = Snackbar.make(rootView, "No internet connection", Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Dismiss", v -> snackbar.dismiss());
+        snackbar.show();
     }
 
 }

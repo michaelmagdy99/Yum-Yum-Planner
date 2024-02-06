@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.splash.view.splashactivity;
+package com.example.yumyumplanner.splash;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

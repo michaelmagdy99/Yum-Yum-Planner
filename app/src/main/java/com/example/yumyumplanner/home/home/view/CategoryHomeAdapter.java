@@ -51,7 +51,7 @@ public class CategoryHomeAdapter extends RecyclerView.Adapter<CategoryHomeAdapte
         Glide.with(context)
                 .load(categoriesItems.get(position).getStrCategoryThumb())
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.categoryImage);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

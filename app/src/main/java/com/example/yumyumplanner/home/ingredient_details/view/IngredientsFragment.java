@@ -97,7 +97,7 @@ public class IngredientsFragment extends Fragment implements IngredientsView, On
         Glide.with(getContext())
                 .load(imageUrl)
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(imageIngredient);
         //getList
         ingredientsPresenter.getMealsByIngredints(nameOfIngr);

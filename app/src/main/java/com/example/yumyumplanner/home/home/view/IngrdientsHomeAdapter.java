@@ -50,7 +50,7 @@ public class IngrdientsHomeAdapter extends RecyclerView.Adapter<IngrdientsHomeAd
         Glide.with(context)
                 .load(imageUrl)
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.ingtrdientsImage);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -171,7 +171,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         Glide.with(getContext())
                 .load(mealsItems.get(0).getStrMealThumb())
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(mealImage);
 
         Log.i(TAG, "showData: " + mealsItems.get(0).getStrYoutube());

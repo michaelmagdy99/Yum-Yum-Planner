@@ -112,9 +112,12 @@
             } else if (mealCalendar != null) {
                 // args from CalendarFragment
                 handleArgumentFromCalendarFragment(mealCalendar);
+                favBtn.setVisibility(View.GONE);
+                addToCalender.setVisibility(View.GONE);
             } else if (filterItem != null){
               //args from meal search
                 preserter.getMealDetails(filterItem.getIdMeal());
+                favBtn.setVisibility(View.GONE);
             } else {
                 // No arguments are present
                 handleNoArguments();
@@ -150,7 +153,7 @@
                     calendar.clear(Calendar.SECOND);
                     calendar.clear(Calendar.MILLISECOND);
 
-                    long minDate = calendar.getTimeInMillis();
+                    long minDate = System.currentTimeMillis();
 
                     calendar.add(Calendar.DAY_OF_WEEK, 6); // Move calendar to the end of the week
                     long maxDate = calendar.getTimeInMillis();
@@ -301,14 +304,14 @@
             Glide.with(getContext())
                     .load(image)
                     .centerCrop()
-                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.cooking)
                     .into(mealImage);
 
             youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                     String videoId = getId(urlVideo);
-                    youTubePlayer.loadVideo(videoId, 0);
+                    youTubePlayer.cueVideo(videoId, 0);
                 }
             });
 
@@ -326,5 +329,11 @@
 
         private void hideProgressBar() {
             progressDialog.dismiss();
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            youTubePlayerView.release();
         }
     }

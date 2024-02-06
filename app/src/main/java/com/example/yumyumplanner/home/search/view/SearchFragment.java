@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -268,9 +270,27 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if (b) {
-                        hideAllViews();
-                        filterSearch();
+                        showProgressBar();
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                hideAllViews();
+                                filterSearch();
+                            }
+                        });
+
                     }else {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                countryLayoutManager = new LinearLayoutManager(getContext());
+                                countryLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+                                countryRecyclerView.setLayoutManager(countryLayoutManager);
+                                IngrlayoutManager = new LinearLayoutManager(getContext());
+                                IngrlayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+                                ingradientRecyclerView.setLayoutManager(IngrlayoutManager);
+                            }
+                        });
                         ingradientRecyclerView.setVisibility(View.VISIBLE);
                         categoryRecyclerView.setVisibility(View.VISIBLE);
                         countryRecyclerView.setVisibility(View.VISIBLE);
@@ -292,23 +312,33 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
         if (selectedChip != null) {
             String chipText = selectedChip.getText().toString();
 
-            if (chipText.equals("Ingredients")) {
-                searchPresenterImp.searchByIngrText(searchText);
-                ingradientRecyclerView.setVisibility(View.VISIBLE);
-                ingtTV.setVisibility(View.VISIBLE);
-            } else if (chipText.equals("Categories")) {
-                searchPresenterImp.searchByCategoryText(searchText);
-                categoryRecyclerView.setVisibility(View.VISIBLE);
-                catTV.setVisibility(View.VISIBLE);
-            } else if (chipText.equals("Country")) {
-                searchPresenterImp.searchByCountryText(searchText);
-                countryRecyclerView.setVisibility(View.VISIBLE);
-                counTV.setVisibility(View.VISIBLE);
-            }
-            else {
-                searchPresenterImp.searchByCountryText(searchText);
-                searchPresenterImp.searchByCategoryText(searchText);
-                searchPresenterImp.searchByIngrText(searchText);
+            switch (chipText) {
+                case "Ingredients":
+                    //make ingredienta gride
+                    IngrlayoutManager = new GridLayoutManager(getContext(), 3);
+                    ingradientRecyclerView.setLayoutManager(IngrlayoutManager);
+                    searchPresenterImp.searchByIngrText(searchText);
+                    ingradientRecyclerView.setVisibility(View.VISIBLE);
+                    ingtTV.setVisibility(View.VISIBLE);
+
+                    break;
+                case "Categories":
+                    searchPresenterImp.searchByCategoryText(searchText);
+                    categoryRecyclerView.setVisibility(View.VISIBLE);
+                    catTV.setVisibility(View.VISIBLE);
+                    break;
+                case "Country":
+                    countryLayoutManager = new GridLayoutManager(getContext(), 3);
+                    countryRecyclerView.setLayoutManager(countryLayoutManager);
+                    searchPresenterImp.searchByCountryText(searchText);
+                    countryRecyclerView.setVisibility(View.VISIBLE);
+                    counTV.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    searchPresenterImp.searchByCountryText(searchText);
+                    searchPresenterImp.searchByCategoryText(searchText);
+                    searchPresenterImp.searchByIngrText(searchText);
+                    break;
             }
         }
     }

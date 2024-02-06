@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.favourite.presenter.FavouritePresenter;
@@ -33,6 +35,9 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
     FavouritePresenter presenter;
 
     FavAdapter favAdapter;
+
+    LottieAnimationView no_fav_list;
+    TextView textView_no_fav;
 
 
 
@@ -71,14 +76,23 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
 
     private void initUi(View view){
         recyclerView = view.findViewById(R.id.fav_recyclerview);
+        no_fav_list = view.findViewById(R.id.animation_view_fav);
+        textView_no_fav = view.findViewById(R.id.txt_1);
     }
 
     @Override
     public void showData(List<MealsItem> allMealsFromLocal) {
-        favAdapter.setList(allMealsFromLocal);
-        favAdapter.notifyDataSetChanged();
+        if(allMealsFromLocal != null && !allMealsFromLocal.isEmpty()) {
+            no_fav_list.setVisibility(View.GONE);
+            textView_no_fav.setVisibility(View.GONE);
+            favAdapter.setList(allMealsFromLocal);
+            favAdapter.notifyDataSetChanged();
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            no_fav_list.setVisibility(View.VISIBLE);
+            textView_no_fav.setVisibility(View.VISIBLE);
+        }
     }
-
     @Override
     public void showErrorMsg(String error) {
         Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();

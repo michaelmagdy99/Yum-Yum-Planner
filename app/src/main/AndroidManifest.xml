@@ -24,7 +24,7 @@
             android:name=".authentication.AuthenticationActivity"
             android:exported="false" />
         <activity
-            android:name=".splash.view.splashactivity.SplashActivity"
+            android:name=".splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -54,7 +54,7 @@ public class CalenderAdapter extends RecyclerView.Adapter<CalenderAdapter.Calend
         Glide.with(context)
                 .load(mealsItemList.get(position).getStrMealThumb())
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.photo);
         holder.removeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

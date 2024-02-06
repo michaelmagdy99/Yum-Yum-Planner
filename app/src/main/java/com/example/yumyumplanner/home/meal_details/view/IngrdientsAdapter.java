@@ -46,7 +46,7 @@ public class IngrdientsAdapter extends RecyclerView.Adapter<IngrdientsAdapter.In
         Glide.with(context)
                 .load(imageUrl)
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.ingtrdientsImage);
 
     }

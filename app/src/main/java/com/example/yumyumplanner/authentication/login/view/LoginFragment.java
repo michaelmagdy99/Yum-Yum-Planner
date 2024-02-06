@@ -24,6 +24,7 @@ import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.example.yumyumplanner.authentication.login.presenter.LoginPresenterImp;
 import com.example.yumyumplanner.home.HomeActivity;
+import com.example.yumyumplanner.utils.InternetConnectivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -130,13 +131,6 @@ public class LoginFragment extends Fragment implements LoginView  {
                 startActivityForResult(intent, 100);             }
         });
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            Toast.makeText(getContext(), "Login Successfuly", Toast.LENGTH_SHORT).show();
-            goToHome();
-        }
-        
         //forgetPassword
         resetPassword.setOnClickListener(new View.OnClickListener() {
             @Override

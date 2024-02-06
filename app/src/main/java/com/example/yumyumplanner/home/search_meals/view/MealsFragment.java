@@ -171,15 +171,26 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
     @Override
     public void showMealsFromCountry(List<Item> countries) {
         hideProgressBar();
-        mealsAdapter.setList(countries);
-        mealsAdapter.notifyDataSetChanged();
+        if(countries != null){
+            mealsAdapter.setList(countries);
+            mealsAdapter.notifyDataSetChanged();
+        }else{
+            mealsAdapter.setList(new ArrayList<>());
+            mealsAdapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override
     public void showMealsFromCategory(List<Item> categories) {
         hideProgressBar();
-        mealsAdapter.setList(categories);
-        mealsAdapter.notifyDataSetChanged();
+        if(categories != null){
+            mealsAdapter.setList(categories);
+            mealsAdapter.notifyDataSetChanged();
+        }else{
+            mealsAdapter.setList(new ArrayList<>());
+            mealsAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -190,13 +201,18 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
     @Override
     public void showErrorMsg(String error) {
         hideProgressBar();
-        Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showMeals(List<Item> mealsItems) {
         hideProgressBar();
-        mealsAdapter.setList(mealsItems);
-        mealsAdapter.notifyDataSetChanged();
+        if(mealsItems != null){
+            mealsAdapter.setList(mealsItems);
+            mealsAdapter.notifyDataSetChanged();
+        }else{
+            mealsAdapter.setList(new ArrayList<>());
+            mealsAdapter.notifyDataSetChanged();
+        }
     }
 }
