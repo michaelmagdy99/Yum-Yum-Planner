@@ -1,10 +1,16 @@
 package com.example.yumyumplanner.home.home.view;
 
+import static com.example.yumyumplanner.utils.InternetConnectivity.isConnectedToInternet;
+
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -26,7 +33,9 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.yumyumplanner.R;
+import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
+import com.example.yumyumplanner.home.HomeActivity;
 import com.example.yumyumplanner.home.home.presenter.HomePresenter;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;
@@ -80,12 +89,26 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showProgressBar();
+        LottieAnimationView lottieAnimationView = view.findViewById(R.id.animation_view_no_internet);
+        NestedScrollView nestedScrollView = view.findViewById(R.id.scrol_view_home);
+        if(!isConnectedToInternet(requireContext())){
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            nestedScrollView.setVisibility(View.GONE);
+        }else{
+            lottieAnimationView.setVisibility(View.GONE);
+            nestedScrollView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
         intitUI(view);
-        showProgressBar();
         //object of presenter
         homepresenter =new HomePresenter(
                 this,
@@ -133,13 +156,18 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         favBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (HomeActivity.isGuestMode) {
+                    showGuestModeMessage();
+                }else{
                 if (favFalg) {
+                    deleteMeals(mealsItems.get(0));
                     favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
                 } else {
                     favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
                     addMeal(mealsItems.get(0));
                 }
-                favFalg =! favFalg;
+                favFalg = !favFalg;
+            }
             }
         });
 
@@ -154,8 +182,8 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         ingradientRecyclerView = view.findViewById(R.id.ingredients_recycler_home);
         categoryRecyclerView = view.findViewById(R.id.category_recycler_home);
         favBtn = view.findViewById(R.id.fav_btn_home);
-
         countryRecyclerView = view.findViewById(R.id.country_recycler_home);
+
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Please wait... It is downloading");
         progressDialog.setIndeterminate(false);
@@ -171,7 +199,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
         Glide.with(getContext())
                 .load(mealsItems.get(0).getStrMealThumb())
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(mealImage);
 
         Log.i(TAG, "showData: " + mealsItems.get(0).getStrYoutube());
@@ -218,7 +246,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     @Override
     public void showErrorMsg(String error) {
         hideProgressBar();
-        Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),  error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -230,6 +258,11 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     public void showEmptyDataMessage() {
         hideProgressBar();
 
+    }
+
+    @Override
+    public void deleteMeals(MealsItem mealsItem) {
+        homepresenter.removeFromFav(mealsItem);
     }
 
     @Override
@@ -265,10 +298,30 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     }
 
     private void showProgressBar() {
-        progressDialog.show();
+        HomeActivity.showLoadingAnimation();
     }
 
     private void hideProgressBar() {
-        progressDialog.dismiss();
+        HomeActivity.hideLoadingAnimation();
+    }
+
+
+    public void showGuestModeMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Sign Up For More Features");
+        builder.setMessage("Add your food preferences, shop your recipes, plan your meals and more!");
+
+        builder.setPositiveButton("SIGN UP", (dialog, which) -> {
+            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+            //getActivity().finish();
+        });
+
+        builder.setNegativeButton("CANCEL", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 }

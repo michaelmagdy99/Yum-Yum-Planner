@@ -1,4 +1,4 @@
-package com.example.yumyumplanner.splash.view.splashactivity;
+package com.example.yumyumplanner.splash;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -70,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
     private void goToAuthenticationActivity() {
         Intent intent = new Intent(SplashActivity.this, AuthenticationActivity.class);
         startActivity(intent);
-        finish();
+       // finish();
     }
 
     private void setSplashScreenTimeOut() {

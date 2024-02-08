@@ -1,5 +1,7 @@
 package com.example.yumyumplanner.home.home.presenter;
 
+import android.util.Log;
+
 import com.example.yumyumplanner.home.home.view.HomeView;
 import com.example.yumyumplanner.model.data.CategoriesItem;
 import com.example.yumyumplanner.model.data.CountryItem;
@@ -9,6 +11,7 @@ import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
 import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
+import com.example.yumyumplanner.remote.firebase.backup.DeleteMealCallback;
 
 import java.util.List;
 
@@ -16,9 +19,7 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
 
     private HomeView homeView;
     private HomeRepositryImp mealsRepositry;
-
     private BackUpDataSourceImp backUpRepository;
-
     public HomePresenter(HomeView homeView, HomeRepositryImp mealsRepositry, BackUpDataSourceImp backUpRepository){
         this.homeView = homeView;
         this.mealsRepositry = mealsRepositry;
@@ -32,21 +33,19 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
 
     @Override
     public void addToFav(MealsItem meal) {
-            mealsRepositry.insertMeal(meal);
-            String userId = UserProfile.getCurrentUserId();
-            backUpRepository.uploadMeals(meal, userId);
+        mealsRepositry.insertMeal(meal);
+        String userId = UserProfile.getCurrentUserId();
+        backUpRepository.uploadMeals(meal, userId);
     }
 
     @Override
     public void getIngredients() {
         mealsRepositry.getIngredients(this);
-
     }
 
     @Override
     public void getCategories() {
         mealsRepositry.getCategories(this);
-
     }
 
     @Override
@@ -88,5 +87,27 @@ public class HomePresenter implements HomePresenterInterface, NetworkCallBack {
     @Override
     public void onFailureResult(String message) {
         homeView.showErrorMsg(message);
+    }
+
+    @Override
+    public void removeFromFav(MealsItem mealsItem) {
+
+        String userId = UserProfile.getCurrentUserId();
+        String mealId = mealsItem.getIdMeal();
+        Log.i("TAG", "removeFromFav: " + mealId);
+        if (userId != null && mealId != null) {
+            backUpRepository.deleteMeal(userId, mealId, new DeleteMealCallback() {
+                @Override
+                public void onSuccess() {
+                    mealsRepositry.deleteMeal(mealsItem);
+                }
+                @Override
+                public void onFailure(String error) {
+                    homeView.showErrorMsg(error);
+                }
+            });
+        } else {
+            homeView.showErrorMsg("NO User, Login First");
+        }
     }
 }

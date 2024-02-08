@@ -37,7 +37,7 @@ public class CategoryHomeAdapter extends RecyclerView.Adapter<CategoryHomeAdapte
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.category_home_item,parent,false);
+        View view = inflater.inflate(R.layout.category_home_list_item,parent,false);
         CategoryViewHolder categoryViewHolder = new CategoryViewHolder(view);
         return categoryViewHolder;
     }
@@ -51,7 +51,7 @@ public class CategoryHomeAdapter extends RecyclerView.Adapter<CategoryHomeAdapte
         Glide.with(context)
                 .load(categoriesItems.get(position).getStrCategoryThumb())
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.categoryImage);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,5 @@
     package com.example.yumyumplanner.home.meal_details.view;
     
-    import static android.app.ProgressDialog.show;
 
     import android.app.DatePickerDialog;
     import android.app.ProgressDialog;
@@ -8,7 +7,11 @@
     import android.os.Bundle;
     
     import androidx.annotation.NonNull;
+    import androidx.annotation.Nullable;
+    import androidx.appcompat.app.AlertDialog;
     import androidx.fragment.app.Fragment;
+    import androidx.lifecycle.LifecycleOwner;
+    import androidx.lifecycle.Observer;
     import androidx.navigation.Navigation;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
@@ -27,17 +30,22 @@
 
     import com.bumptech.glide.Glide;
     import com.example.yumyumplanner.R;
+    import com.example.yumyumplanner.authentication.AuthenticationActivity;
     import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
+    import com.example.yumyumplanner.home.HomeActivity;
     import com.example.yumyumplanner.home.home.presenter.HomePresenter;
     import com.example.yumyumplanner.home.meal_details.preseter.MealDetailsPresenterInterface;
     import com.example.yumyumplanner.home.meal_details.preseter.MealDetailsPreserter;
     import com.example.yumyumplanner.model.data.FilterItem;
     import com.example.yumyumplanner.model.data.MealCalendar;
+    import com.example.yumyumplanner.model.data.MealDescriptionInGoogle;
     import com.example.yumyumplanner.model.data.MealsItem;
     import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
     import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
     import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
     import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
+    import com.google.android.gms.auth.api.signin.GoogleSignIn;
+    import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -66,7 +74,7 @@
         private ImageButton favBtn;
         private ImageButton backBtn;
 
-        private Boolean favFalg = false;
+        Boolean favFalg = false;
         private Button addToCalender ;
 
 
@@ -83,7 +91,13 @@
             super.onCreate(savedInstanceState);
     
         }
-    
+
+        @Override
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            //showProgressBar();
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -106,16 +120,18 @@
             MealCalendar mealCalendar = args.getMealCalender();
             FilterItem filterItem = args.getFilterItem();
 
-
             if (mealsItem != null) {
-                // arga from HomeFragment
+                // arga from home
                 handleArgumentFromHomeFragment(mealsItem);
             } else if (mealCalendar != null) {
-                // args from CalendarFragment
+                // args from cal
                 handleArgumentFromCalendarFragment(mealCalendar);
-            }else if (filterItem != null){
+                favBtn.setVisibility(View.GONE);
+                addToCalender.setVisibility(View.GONE);
+            } else if (filterItem != null){
               //args from meal search
                 preserter.getMealDetails(filterItem.getIdMeal());
+                favBtn.setVisibility(View.GONE);
             } else {
                 // No arguments are present
                 handleNoArguments();
@@ -128,76 +144,95 @@
                 }
             });
 
+            getMealFromId(mealid);
+
             favBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (favFalg) {
-                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
-                    } else {
-                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
-                        addMealToFav(MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails());
+                    if (HomeActivity.isGuestMode){
+                        showGuestModeMessage();
                     }
-                    favFalg =! favFalg;
+                    else{
+                        if (favFalg) {
+                            favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
+                            deleteMeals(MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails());
+                        } else {
+                            favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
+                            addMealToFav(MealDetailsFragmentArgs.fromBundle(getArguments()).getMealDetails());
+                        }
+                        favFalg = !favFalg;
+                    }
                 }
             });
 
             addToCalender.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Calendar calendar = Calendar.getInstance();
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(
-                            view.getContext(),
-                            new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                            Toast.makeText(getContext(),String.valueOf(dayOfMonth)+ "-" + (month+1) + "-" + year, Toast.LENGTH_SHORT).show();
-                            // Set the selected date to the Calendar instance
-                            calendar.set(Calendar.YEAR, year);
-                            calendar.set(Calendar.MONTH, month);
-                            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    if (HomeActivity.isGuestMode) {
+                        showGuestModeMessage();
+                    } else {
 
-                            long startTime = calendar.getTimeInMillis();
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTimeInMillis(System.currentTimeMillis());
+                            calendar.set(Calendar.HOUR_OF_DAY, 0);
+                            calendar.clear(Calendar.MINUTE);
+                            calendar.clear(Calendar.SECOND);
+                            calendar.clear(Calendar.MILLISECOND);
+                            long minDate = calendar.getTimeInMillis();
+                            calendar.add(Calendar.DAY_OF_WEEK, 6);
+                            long maxDate = calendar.getTimeInMillis();
 
-                            Intent intent = new Intent(Intent.ACTION_INSERT);
-                            intent.setData(CalendarContract.Events.CONTENT_URI);
-                            intent.putExtra(CalendarContract.Events.TITLE, "Your Event Title");
-                            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime);
+                            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                                    view.getContext(),
+                                    new DatePickerDialog.OnDateSetListener() {
+                                        @Override
+                                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                            if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(getContext(), "No app available to handle calendar events", Toast.LENGTH_SHORT).show();
-                            }
+                                            Toast.makeText(getContext(), String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year, Toast.LENGTH_SHORT).show();
+                                            // Set the selected date to the Calendar instance
+                                            calendar.set(Calendar.YEAR, year);
+                                            calendar.set(Calendar.MONTH, month);
+                                            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
+                                            MealCalendar mealCalendar = new MealCalendar();
+                                            mealCalendar.dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                                            mealCalendar.date = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
+                                            mealCalendar.setIdMeal(mealid);
+                                            mealCalendar.setStrArea(country);
+                                            mealCalendar.setStrMeal(mealName);
+                                            mealCalendar.setStrCategory(categoryName);
+                                            mealCalendar.setStrMealThumb(image);
+                                            mealCalendar.setStrYoutube(String.valueOf(youTubePlayerView));
+                                            mealCalendar.setStrInstructions(instruction);
+                                            mealCalendar.setAllIngredients(ingredientsList);
+                                            mealCalendar.setAllMeasures(meaurseList);
+                                            // add to room
+                                            addMealToCalendar(mealCalendar);
 
-                            MealCalendar mealCalendar = new MealCalendar();
-                            mealCalendar.dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                            mealCalendar.date = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
-                            mealCalendar.setIdMeal(mealid);
-                            mealCalendar.setStrArea(country);
-                            mealCalendar.setStrMeal(mealName);
-                            mealCalendar.setStrCategory(categoryName);
-                            mealCalendar.setStrMealThumb(image);
-                            mealCalendar.setStrYoutube(String.valueOf(youTubePlayerView));
-                            mealCalendar.setStrInstructions(instruction);
-                            mealCalendar.setAllIngredients(ingredientsList);
-                            mealCalendar.setAllMeasures(meaurseList);
-
-                            // add to room
-                            addMealToCalendar(mealCalendar);
+                                            Intent intent = new Intent(Intent.ACTION_INSERT)
+                                                    .setData(CalendarContract.Events.CONTENT_URI)
+                                                    .putExtra(CalendarContract.Events.TITLE, mealCalendar.getStrMeal())
+                                                    .putExtra(CalendarContract.Events.DESCRIPTION, MealDescriptionInGoogle.getMealString(mealCalendar));
+                                            startActivity(intent);
+                                        }
+                                    },
+                                    calendar.get(Calendar.YEAR),
+                                    calendar.get(Calendar.MONTH),
+                                    calendar.get(Calendar.DAY_OF_WEEK)
+                            );
+                            datePickerDialog.getDatePicker().setMinDate(minDate);
+                            datePickerDialog.getDatePicker().setMaxDate(maxDate);
+                            datePickerDialog.show();
                         }
-                    },
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH)
-                    );
-                    datePickerDialog.show();
-                }
+                    }
+
+
             });
 
             return view;
         }
+
     
         private void intitUI(View view){
             mealImage = view.findViewById(R.id.image_meal_deatils);
@@ -227,7 +262,6 @@
         @Override
         public void addMealToFav(MealsItem mealsItem) {
             preserter.addToFav(mealsItem);
-
         }
 
         @Override
@@ -259,7 +293,12 @@
         @Override
         public void showErrorMsg(String error) {
             hideProgressBar();
-            Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),  error, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void deleteMeals(MealsItem mealsItem) {
+            preserter.removeFromFav(mealsItem);
         }
 
 
@@ -292,7 +331,6 @@
         }
 
         private void handleNoArguments() {
-            // Handle case when no arguments are present
             Toast.makeText(getContext(), "There are some woring in data", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(view).navigateUp();
         }
@@ -307,14 +345,14 @@
             Glide.with(getContext())
                     .load(image)
                     .centerCrop()
-                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.cooking)
                     .into(mealImage);
 
             youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                     String videoId = getId(urlVideo);
-                    youTubePlayer.loadVideo(videoId, 0);
+                    youTubePlayer.cueVideo(videoId, 0);
                 }
             });
 
@@ -327,10 +365,51 @@
         }
 
         private void showProgressBar() {
-            progressDialog.show();
+            HomeActivity.showLoadingAnimation();
         }
 
         private void hideProgressBar() {
-            progressDialog.dismiss();
+            HomeActivity.hideLoadingAnimation();
         }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            youTubePlayerView.release();
+        }
+
+        public void showGuestModeMessage() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Sign Up For More Features");
+            builder.setMessage("Add your food preferences, shop your recipes, plan your meals and more!");
+
+            builder.setPositiveButton("SIGN UP", (dialog, which) -> {
+                startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+                //getActivity().finish();
+            });
+
+            builder.setNegativeButton("CANCEL", (dialog, which) -> {
+                dialog.dismiss();
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        public void getMealFromId(String id){
+            preserter.getMealById(id).observe(getViewLifecycleOwner(), new Observer<List<MealsItem>>() {
+                @Override
+                public void onChanged(List<MealsItem> mealsItems) {
+                    if(mealsItems != null && !mealsItems.isEmpty()){
+                        favFalg = true;
+                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
+                    }else{
+                        favFalg = false;
+                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
+                    }
+                }
+            });
+        }
+
     }

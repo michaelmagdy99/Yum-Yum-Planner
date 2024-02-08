@@ -26,6 +26,7 @@ public interface HomeRepositry {
 
     void deleteMealFromCalendar (MealCalendar  mealCalendar);
     LiveData<List<MealCalendar>> getAllMealsFromCalendar(String date);
+    LiveData<List<MealsItem>> getMealById(String date);
 
 
 }

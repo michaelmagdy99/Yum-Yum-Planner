@@ -53,7 +53,7 @@ public class MealByIngrAdapter extends RecyclerView.Adapter<MealByIngrAdapter.Ca
         Glide.with(context)
                 .load(item.getImageUrl())
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.categoryImage);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

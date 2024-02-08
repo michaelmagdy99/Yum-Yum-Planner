@@ -17,5 +17,7 @@ public interface MealsLocalDataSource {
     void deleteMealFromCalendar(MealCalendar mealCalendar);
     void insertMealToCalendar(MealCalendar mealCalendar);
 
+    LiveData<List<MealsItem>> getMealById(String mealsItemId);
+
 
 }

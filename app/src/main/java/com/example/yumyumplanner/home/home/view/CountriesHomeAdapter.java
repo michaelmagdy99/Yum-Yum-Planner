@@ -49,7 +49,7 @@ public class CountriesHomeAdapter extends RecyclerView.Adapter<CountriesHomeAdap
         Glide.with(context)
                 .load(imageUrl)
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.countryImage);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

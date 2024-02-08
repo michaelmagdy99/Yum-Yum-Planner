@@ -3,6 +3,8 @@ package com.example.yumyumplanner.home.ingredient_details.view;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
+import com.example.yumyumplanner.home.HomeActivity;
 import com.example.yumyumplanner.home.home.presenter.HomePresenter;
 import com.example.yumyumplanner.home.home.view.CategoryHomeAdapter;
 import com.example.yumyumplanner.home.home.view.OnClickListener;
@@ -66,12 +69,17 @@ public class IngredientsFragment extends Fragment implements IngredientsView, On
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showProgressBar();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ingredients, container, false);
         initUi(view);
-        showProgressBar();
         ingredientsPresenter =new IngredientsPresenterImp(
                 this,
                 FilterRepoImp.getInstance(
@@ -97,7 +105,7 @@ public class IngredientsFragment extends Fragment implements IngredientsView, On
         Glide.with(getContext())
                 .load(imageUrl)
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(imageIngredient);
         //getList
         ingredientsPresenter.getMealsByIngredints(nameOfIngr);
@@ -154,10 +162,10 @@ public class IngredientsFragment extends Fragment implements IngredientsView, On
     }
 
     private void showProgressBar() {
-        progressDialog.show();
+        HomeActivity.showLoadingAnimation();
     }
 
     private void hideProgressBar() {
-        progressDialog.dismiss();
+        HomeActivity.hideLoadingAnimation();
     }
 }

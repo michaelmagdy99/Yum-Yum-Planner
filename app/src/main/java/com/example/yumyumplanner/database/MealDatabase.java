@@ -9,6 +9,8 @@ import androidx.room.RoomDatabase;
 import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
 
+import java.util.List;
+
 @Database(entities = {MealsItem.class, MealCalendar.class}, version = 1)
 public abstract class MealDatabase extends RoomDatabase {
 
@@ -28,5 +30,12 @@ public abstract class MealDatabase extends RoomDatabase {
             getMealDAO().deleteAllPlan();
             getMealDAO().deleteAllFav();
         }).start();
+    }
+
+    public void addAllData(List<MealsItem> mealsItemsList) {
+        new Thread(() -> {
+            getMealDAO().insertAllMeals(mealsItemsList);
+        }).start();
+
     }
 }

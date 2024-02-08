@@ -6,9 +6,16 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.example.yumyumplanner.database.MealDAO;
+import com.example.yumyumplanner.database.MealDatabase;
+import com.example.yumyumplanner.database.MealsLocalDataSource;
+import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
+import com.example.yumyumplanner.home.HomeActivity;
 import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.data.UserProfile;
+import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
+import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
 import com.example.yumyumplanner.remote.firebase.authentication.UserFirebaseModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,13 +37,13 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
     private UserFirebaseModel userFirebaseModel;
 
     private FirebaseAuth auth;
-    private FirebaseFirestore firestore;
+    private  FirebaseFirestore firestore;
     private StorageReference storageReference;
 
     private static BackUpDataSourceImp backUpRepositoryImp;
-    private Context ProfileFragment;
+    private Context context;
+    private  FirebaseUser currentUser;
 
-    private final Context context;
     public static synchronized BackUpDataSourceImp getInstance(Context context) {
         if (backUpRepositoryImp == null) {
             backUpRepositoryImp = new BackUpDataSourceImp(context);
@@ -48,13 +55,14 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
         this.context = context;
         this.userFirebaseModel = UserFirebaseModel.getInstance();
         auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
         firestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
     public void logOut() {
-        auth.signOut();
+        FirebaseAuth.getInstance().signOut();
     }
 
     @Override
@@ -135,6 +143,7 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
         firestore.collection("users").document(userId)
                 .set(userData)
                 .addOnSuccessListener(aVoid -> {
+
                     Log.i("TAG", "saveUserDataToFirestore: success");
                 })
                 .addOnFailureListener(e -> {
@@ -153,6 +162,7 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
                     .document(userId).collection("meals");
 
             Map<String, Object> mealMap = new HashMap<>();
+            mealMap.put("idMeal", meals.getIdMeal());
             mealMap.put("strMeal", meals.getStrMeal());
             mealMap.put("strCategory", meals.getStrCategory());
             mealMap.put("strInstructions", meals.getStrInstructions());
@@ -165,7 +175,9 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
 
             userMealsCollection.add(mealMap)
                     .addOnSuccessListener(documentReference -> {
-                        Log.i("TAG", "uploadMeals: ");
+                        String mealId = documentReference.getId();
+                        Log.i("TAG", "uploadMeals: " + documentReference.getId());
+                        meals.setMealIdInFirabse(mealId);
                     })
                     .addOnFailureListener(e -> {
                         Log.e("TAG", "uploadMeals: failed", e);
@@ -183,6 +195,7 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
                             MealsItem meal = documentSnapshot.toObject(MealsItem.class);
                             meal.setMealIdInFirabse(documentSnapshot.getId());
                             mealsList.add(meal);
+                            Log.i("TAG", "retrieveMeals: " + documentSnapshot.getId());
                         }
                         callBack.onSuccess(mealsList);
                     })
@@ -200,10 +213,15 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
             DocumentReference mealDocumentRef = firestore.collection("users").document(userId)
                     .collection("meals").document(mealId);
 
-            mealDocumentRef.get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            mealDocumentRef.delete()
+            Query query = firestore.collection("users").document(userId)
+                    .collection("meals")
+                    .whereEqualTo("idMeal", mealId);
+
+            query.get()
+                    .addOnSuccessListener(queryDocumentSnapshots  -> {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots ) {
+                            // Delete the document(s) found by the query
+                            documentSnapshot.getReference().delete()
                                     .addOnSuccessListener(aVoid -> {
                                         Log.i("TAG", "deleteMeal: success");
                                         callback.onSuccess();
@@ -212,8 +230,6 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
                                         Log.e("TAG", "deleteMeal: failed", e);
                                         callback.onFailure(e.getMessage());
                                     });
-                        } else {
-                            callback.onFailure("Document does not exist");
                         }
                     })
                     .addOnFailureListener(e -> {
@@ -229,6 +245,7 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
                     .document(userId).collection("meals_of_plan");
 
             Map<String, Object> mealMap = new HashMap<>();
+            mealMap.put("idMeal", meals.getIdMeal());
             mealMap.put("strMeal", meals.getStrMeal());
             mealMap.put("strCategory", meals.getStrCategory());
             mealMap.put("strInstructions", meals.getStrInstructions());
@@ -244,6 +261,7 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
             userMealsCollection.add(mealMap)
                     .addOnSuccessListener(documentReference -> {
                         Log.i("TAG", "uploadMeals: ");
+                       // meals.setMealIdInFirabse(documentReference.getId());
                     })
                     .addOnFailureListener(e -> {
                         Log.e("TAG", "uploadMeals: failed", e);
@@ -251,13 +269,13 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
         }
 
 
-    public void retrievePlanMeals(String userId, String date,MealPlanCallBack callBack) {
+    public  void retrievePlanMeals(String userId, MealPlanCallBack callBack) {
         CollectionReference userMealsCollection = firestore.collection("users")
                 .document(userId).collection("meals_of_plan");
 
-        Query query = userMealsCollection.whereEqualTo("date", date);
+//        Query query = userMealsCollection.whereEqualTo("date", date);
 
-        query.get()
+        userMealsCollection.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<MealCalendar> mealsList = new ArrayList<>();
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
@@ -282,10 +300,15 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
         DocumentReference mealDocumentRef = firestore.collection("users").document(userId)
                 .collection("meals_of_plan").document(mealId);
 
-        mealDocumentRef.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        mealDocumentRef.delete()
+        Query query = firestore.collection("users").document(userId)
+                .collection("meals_of_plan")
+                .whereEqualTo("idMeal", mealId);
+
+        query.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots ) {
+                        // Delete the document(s) found by the query
+                        documentSnapshot.getReference().delete()
                                 .addOnSuccessListener(aVoid -> {
                                     Log.i("TAG", "deleteMeal: success");
                                     callback.onSuccess();
@@ -294,8 +317,6 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
                                     Log.e("TAG", "deleteMeal: failed", e);
                                     callback.onFailure(e.getMessage());
                                 });
-                    } else {
-                        callback.onFailure("Document does not exist");
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -305,8 +326,68 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
 
     }
 
+    //refresh room after login
+    public void setBackUpFavInRoom(Context context) {
+        this.context = context;
+        retrieveMeals(UserProfile.getCurrentUserId(), new MealsBackUpCallBack() {
+            @Override
+            public void onSuccess(List<MealsItem> mealsItemsList) {
+                if (mealsItemsList != null && !mealsItemsList.isEmpty()) {
+                    Log.i("TAG", "onSuccess in backUp: " + mealsItemsList.get(0).getIdMeal());
+                    Log.i("TAG", "onSuccess: size back up "+ mealsItemsList.size());
+
+                    List<MealsItem> refreshmealsItems = mealsItemsList;
+
+                    new Thread(() -> {
+
+                        MealDatabase.getInstance(context).getMealDAO().insertAllMeals(refreshmealsItems);
+                        Log.i("TAG", "onSuccess: " + refreshmealsItems.get(0).getIdMeal());
+
+                    }).start();
+                    Log.i("TAG", "onSuccess: " + refreshmealsItems.get(0).getStrCategory());
+                } else {
+                    Log.i("TAG", "No Data retrieved from Firestore");
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.e("TAG", "Failed to retrieve data from Firestore: " + error);
+            }
+        });
+
+    }
 
 
+    public void setBackUpCalInRoom(Context context){
+
+        this.context = context;
+        retrievePlanMeals(UserProfile.getCurrentUserId(), new MealPlanCallBack() {
+            @Override
+            public void onSuccess(List<MealCalendar> mealCalendars) {
+                if (mealCalendars != null && !mealCalendars.isEmpty()) {
+                    Log.i("TAG", "onSuccess in backUp: " + mealCalendars.get(0).getIdMeal());
+                    Log.i("TAG", "onSuccess: size back up "+ mealCalendars.size());
+
+                    List<MealCalendar> refreshmealsItems = mealCalendars;
+
+                    new Thread(() -> {
+                        MealDatabase.getInstance(context).getMealDAO().insertAllPlan(refreshmealsItems);
+                        Log.i("TAG", "onSuccess: " + refreshmealsItems.get(0).getIdMeal());
+                    }).start();
+                    Log.i("TAG", "onSuccess: " + refreshmealsItems.get(0).getStrCategory());
+                }
+                else {
+                    Log.i("TAG", "No Data retrieved from Firestore");
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+            }
+        });
+
+    }
 
 
 }

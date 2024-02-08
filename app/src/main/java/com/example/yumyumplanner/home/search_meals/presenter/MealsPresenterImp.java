@@ -9,6 +9,7 @@ import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
 import com.example.yumyumplanner.remote.api.NetworkCallBack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -53,7 +54,7 @@ public class MealsPresenterImp implements MealsPresenter, NetworkCallBack {
                 mealsView.showEmptyDataMessage();
             }
         } else {
-            mealsView.showErrorMsg("Unexpected result type: " + result.getClass().getSimpleName());
+            mealsView.showMeals(new ArrayList<>());
         }
     }
 

@@ -209,11 +209,11 @@
         android:text="@string/add_to_plan"
         android:layout_marginHorizontal="30dp"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_anchor="@id/scroll_view"
-        app:layout_anchorGravity="bottom" />
+        app:layout_anchorGravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
     <ImageButton
         android:id="@+id/back_btn_deatils"

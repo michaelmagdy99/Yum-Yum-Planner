@@ -1,12 +1,16 @@
 package com.example.yumyumplanner.home.profile.presenter;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
+
 import com.example.yumyumplanner.home.profile.view.ProfileView;
 import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 import com.example.yumyumplanner.remote.firebase.backup.UserDataCallback;
 
-public class ProfilePresenterImp implements ProfilePresenter, UserDataCallback {
+public class ProfilePresenterImp implements ProfilePresenter {
 
     private ProfileView view;
     private BackUpDataSourceImp userRepository;
@@ -43,18 +47,5 @@ public class ProfilePresenterImp implements ProfilePresenter, UserDataCallback {
         }
     }
 
-    @Override
-    public void onViewCreated() {
-        userRepository.getUserData(this);
-    }
 
-    @Override
-    public void onSuccess(UserProfile userProfile) {
-        view.displayUserData(userProfile);
-    }
-
-    @Override
-    public void onFailure(String error) {
-        view.showMessage(error);
-    }
 }

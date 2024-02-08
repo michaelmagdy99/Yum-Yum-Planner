@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 <androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/scrol_view_home"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:elevation="2dp"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/cooking"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,10 +92,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
-                android:text="@string/country"
+                android:text="@string/country__"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_marginTop="15dp"
                 android:drawableStart="@drawable/country_flag"
                 android:drawablePadding="12dp"
@@ -111,11 +117,13 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@id/name_meal"
                 app:layout_constraintStart_toStartOf="parent"
                 />
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -131,7 +139,7 @@
         android:drawablePadding="10dp"
         android:text="@string/ingrediens"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/meal_card_view" />
@@ -192,7 +200,7 @@
         android:drawablePadding="10dp"
         android:text="@string/categories_the_different_food"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_search_2" />
@@ -210,6 +218,24 @@
         app:layout_constraintTop_toBottomOf="@+id/category_view"
         tools:listitem="@layout/ingredients_home_items" />
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view_no_internet"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.444"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/no_network" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

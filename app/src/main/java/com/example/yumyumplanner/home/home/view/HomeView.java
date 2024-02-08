@@ -17,5 +17,6 @@ public interface HomeView {
     void showErrorMsg(String error);
     void addMeal(MealsItem mealsItem);
     void showEmptyDataMessage();
+    public void deleteMeals(MealsItem mealsItem);
 
 }

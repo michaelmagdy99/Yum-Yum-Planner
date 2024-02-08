@@ -53,7 +53,7 @@ public class FavAdapter  extends RecyclerView.Adapter<FavAdapter.FavViewHolder> 
         Glide.with(context)
                 .load(mealsItemList.get(position).getStrMealThumb())
                 .centerCrop()
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.cooking)
                 .into(holder.photo);
 
         holder.favBtn.setOnClickListener(new View.OnClickListener() {

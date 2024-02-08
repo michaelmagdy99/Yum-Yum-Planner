@@ -45,4 +45,5 @@
     <string name="ingredients__">Ingredients</string>
     <string name="country__">Country</string>
     <string name="categories__">Categories</string>
+    <string name="no_faviouitre_item">No Favourite items</string>
 </resources>
