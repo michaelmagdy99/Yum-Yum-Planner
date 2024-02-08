@@ -112,6 +112,7 @@ public class RegisterFragment extends Fragment implements RegisterView{
 
     @Override
     public void showRegisterSuccessMessage() {
+        HomeActivity.isGuestMode = false;
         Toast.makeText(getContext(), "Sign UP Successfully", Toast.LENGTH_LONG).show();
         Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment);
     }
