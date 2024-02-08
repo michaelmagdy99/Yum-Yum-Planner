@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.yumyumplanner.R;
+import com.example.yumyumplanner.database.MealDAO;
+import com.example.yumyumplanner.database.MealDatabase;
 import com.example.yumyumplanner.home.HomeActivity;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -21,9 +24,6 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            Toast.makeText(this, "Login Successfuly", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, HomeActivity.class));
-        }
+
     }
 }

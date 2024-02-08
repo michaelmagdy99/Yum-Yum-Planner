@@ -39,20 +39,7 @@ public class CalenderPresenter implements CalenderPresenterInterface {
                 calenderView.showData(mealsItems);
             }
         });
-
         Log.i("TAG", "getData: " + UserProfile.getCurrentUserId() );
-        backUpRepositoryImp.retrievePlanMeals(UserProfile.getCurrentUserId(), date, new MealPlanCallBack() {
-
-            @Override
-            public void onSuccess(List<MealCalendar> mealsItemsList) {
-                calenderView.showData(mealsItemsList);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                calenderView.showErrorMsg(error);
-            }
-        });
     }
 
     @Override
@@ -61,7 +48,7 @@ public class CalenderPresenter implements CalenderPresenterInterface {
 
 
         String userId = UserProfile.getCurrentUserId();
-        String mealId = mealCalendar.getMealIdInFirabse();
+        String mealId = mealCalendar.getIdMeal();
         Log.i("TAG", "removeFromFav: " + mealId);
         if (userId != null && mealId != null) {
             backUpRepositoryImp.deleteMealOfPlan(userId, mealId, new DeleteMealCallback() {

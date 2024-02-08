@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.yumyumplanner.R;
+import com.example.yumyumplanner.home.HomeActivity;
 import com.example.yumyumplanner.home.home.view.HomeFragmentDirections;
 import com.example.yumyumplanner.home.home.view.OnClickListener;
 import com.example.yumyumplanner.home.ingredient_details.presenter.IngredientsPresenterImp;
@@ -143,11 +144,11 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
 
 
     private void showProgressBar() {
-        progressDialog.show();
+        HomeActivity.showLoadingAnimation();
     }
 
     private void hideProgressBar() {
-        progressDialog.dismiss();
+        HomeActivity.hideLoadingAnimation();
     }
 
     @Override

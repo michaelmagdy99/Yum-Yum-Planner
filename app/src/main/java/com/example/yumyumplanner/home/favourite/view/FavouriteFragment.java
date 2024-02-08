@@ -3,6 +3,9 @@ package com.example.yumyumplanner.home.favourite.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,6 +74,7 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
         recyclerView.setAdapter(favAdapter);
         presenter.getMealsFromDB();
 
+
         return view;
     }
 
@@ -81,21 +85,29 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
     }
 
     @Override
-    public void showData(List<MealsItem> allMealsFromLocal) {
-        if(allMealsFromLocal != null && !allMealsFromLocal.isEmpty()) {
-            no_fav_list.setVisibility(View.GONE);
-            textView_no_fav.setVisibility(View.GONE);
-            favAdapter.setList(allMealsFromLocal);
-            favAdapter.notifyDataSetChanged();
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            no_fav_list.setVisibility(View.VISIBLE);
-            textView_no_fav.setVisibility(View.VISIBLE);
-        }
+    public void showData(LiveData<List<MealsItem>> allMealsFromLocal) {
+        allMealsFromLocal.observe(getViewLifecycleOwner(), new Observer<List<MealsItem>>() {
+                 @Override
+                 public void onChanged(List<MealsItem> mealsItems) {
+
+                     if (mealsItems != null && !mealsItems.isEmpty()) {
+                         no_fav_list.setVisibility(View.GONE);
+                         textView_no_fav.setVisibility(View.GONE);
+
+                         favAdapter.setList(mealsItems);
+                         favAdapter.notifyDataSetChanged();
+                     } else {
+                         no_fav_list.setVisibility(View.VISIBLE);
+                         textView_no_fav.setVisibility(View.VISIBLE);
+                         recyclerView.setVisibility(View.GONE);
+                     }
+                 }
+            });
+
     }
     @Override
     public void showErrorMsg(String error) {
-        Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),  error, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -113,7 +125,6 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
     @Override
     public void onItemClick(MealsItem mealsItem) {
         deleteMeals(mealsItem);
-        Toast.makeText(getContext(), "removed", Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onDetailsItemClick(MealsItem mealsItem) {

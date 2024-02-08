@@ -45,7 +45,7 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/chef"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <TextView
@@ -60,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/animation_view_fav"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

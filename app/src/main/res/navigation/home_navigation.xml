@@ -110,8 +110,4 @@
         android:name="com.example.yumyumplanner.home.profile.view.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
-    <fragment
-        android:id="@+id/connectionFragment"
-        android:name="com.example.yumyumplanner.home.ConnectionFragment"
-        android:label="ConnectionFragment" />
 </navigation>

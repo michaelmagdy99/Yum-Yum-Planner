@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.example.yumyumplanner.database.MealDatabase;
+import com.example.yumyumplanner.home.HomeActivity;
 import com.example.yumyumplanner.home.profile.presenter.ProfilePresenterImp;
 
 import com.example.yumyumplanner.model.data.UserProfile;
@@ -35,7 +38,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment implements ProfileView{
 
     CircleImageView profileImage;
-    EditText email;
     EditText name;
     Button saveEdit;
     private ProgressBar progressbar;
@@ -43,22 +45,7 @@ public class ProfileFragment extends Fragment implements ProfileView{
     ImageButton editImage;
     ProfilePresenterImp profilePresenter;
     TextView nameTv ;
-    TextView emailTv ;
     View view;
-    private Context mContext;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mContext = null;
-    }
-
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
     public ProfileFragment() {
@@ -69,25 +56,23 @@ public class ProfileFragment extends Fragment implements ProfileView{
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_profile, container, false);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         profileImage = view.findViewById(R.id.profile_image_settings);
         logout = view.findViewById(R.id.logout);
-        email = view.findViewById(R.id.email_edit_text);
         name = view.findViewById(R.id.name_edit_text);
         editImage = view.findViewById(R.id.edit_profile_image_settings);
         saveEdit = view.findViewById(R.id.save_edit);
         nameTv = view.findViewById(R.id.user_name_settings);
-        emailTv = view.findViewById(R.id.user_email_settings);
         progressbar =view.findViewById(R.id.loading);
 
         profilePresenter = ProfilePresenterImp.getInstance(this,
-                BackUpDataSourceImp.getInstance(mContext));
+                BackUpDataSourceImp.getInstance(requireContext()));
 
-        profilePresenter.onViewCreated();
+        profilePresenter.onViewCreated(requireContext());
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +96,13 @@ public class ProfileFragment extends Fragment implements ProfileView{
                 saveUserData();
             }
         });
-        return view;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
     private void openFileChooser() {
@@ -136,34 +127,34 @@ public class ProfileFragment extends Fragment implements ProfileView{
         profilePresenter.logOut();
         Toast.makeText(getContext(), "Logout Successfully", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+        getActivity().finish();
     }
 
 
     @Override
-    public void displayUserData(UserProfile userProfile) {
+    public void displayUserData(String nameValue , String imageURl) {
         Log.d("ProfileFragment", "displayUserData: Displaying user data");
 
-        if (mContext != null) {
-            name.setText(userProfile.getName());
-            email.setText(userProfile.getEmail());
-            nameTv.setText(userProfile.getName());
-            emailTv.setText(userProfile.getEmail());
+        if (getView() != null) {
+            // Use getView() instead of getContext() to ensure the fragment's view is available
+            name.setText(nameValue);
+            nameTv.setText(nameValue);
 
-            Log.i("TAG", "displayUserData: " + userProfile.getProfileImageURL());
-            if (userProfile.getProfileImageURL() != null && !userProfile.getProfileImageURL().isEmpty()) {
+            Log.i("TAG", "displayUserData: " + imageURl);
+            if (imageURl != null && !imageURl.isEmpty()) {
                 Glide.with(requireContext())
-                        .load(userProfile.getProfileImageURL())
-                        .placeholder(R.drawable.profile)
-                        .error(R.drawable.profile)
+                        .load(imageURl)
+                        .placeholder(R.drawable.panda_cooking)
+                        .error(R.drawable.panda_cooking)
                         .into(profileImage);
             } else {
-                Toast.makeText(getContext(), "Data not Found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Data not Found", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Log.i("ProfileFragment", "displayUserData: "+ userProfile.getProfileImageURL());
-            Log.e("ProfileFragment", "displayUserData: Context is null");
+            Log.e("ProfileFragment", "displayUserData: View is null");
         }
     }
+
 
     @Override
     public void showImageChooser() {
@@ -172,15 +163,14 @@ public class ProfileFragment extends Fragment implements ProfileView{
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void saveUserData() {
         String userName = name.getText().toString();
-        String userEmail = email.getText().toString();
-        UserProfile userProfile = new UserProfile(userName, userEmail, "");
+        UserProfile userProfile = new UserProfile(userName,"", "");
         profilePresenter.onSaveEditClicked(userProfile, imageUri);
-
+        Toast.makeText(requireContext(),"Updated Profile",Toast.LENGTH_SHORT).show();
     }
 
 }

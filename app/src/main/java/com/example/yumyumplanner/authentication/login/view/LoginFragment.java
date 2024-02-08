@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,10 @@ import android.widget.Toast;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.example.yumyumplanner.authentication.login.presenter.LoginPresenterImp;
+import com.example.yumyumplanner.database.MealDAO;
+import com.example.yumyumplanner.database.MealDatabase;
 import com.example.yumyumplanner.home.HomeActivity;
+import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
 import com.example.yumyumplanner.utils.InternetConnectivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -59,7 +63,6 @@ public class LoginFragment extends Fragment implements LoginView  {
 
     private TextView gustModeBtn;
 
-
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -83,7 +86,6 @@ public class LoginFragment extends Fragment implements LoginView  {
             public void onClick(View view) {
                 HomeActivity.isGuestMode = true ;
                 showGuestModeMessage();
-
             }
         });
 
@@ -138,6 +140,15 @@ public class LoginFragment extends Fragment implements LoginView  {
                 //loginPresenter.forgotPassword(emailEditText.getText().toString());
             }
         });
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            goToHome();
+            Toast.makeText(getContext(), "Login Successfuly", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getActivity(), HomeActivity.class));
+            getActivity().finish();
+        }
 
 
         return view;
@@ -169,9 +180,13 @@ public class LoginFragment extends Fragment implements LoginView  {
     @Override
     public void showLoginSuccessMessage() {
         HomeActivity.isGuestMode = false;
-        Toast.makeText(getContext(), "Login successful!!", Toast.LENGTH_LONG).show();
-        // Intent to home activity
-        goToHome();
+        if(getContext()!= null) {
+            Toast.makeText(getContext(), "Login successful!!", Toast.LENGTH_LONG).show();
+            // Intent to home activity
+            goToHome();
+        }else {
+            Log.i("TAG","Context is null here");
+        }
     }
 
     @Override
@@ -195,13 +210,14 @@ public class LoginFragment extends Fragment implements LoginView  {
                     GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
                     if (googleSignInAccount != null) {
                         AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
-                        firebaseAuth = FirebaseAuth.getInstance();
                         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(requireActivity(),
                                 new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
+
                                     HomeActivity.isGuestMode = false;
+                                    ////////
                                     goToHome();
                                     Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                                 } else {
@@ -231,6 +247,7 @@ public class LoginFragment extends Fragment implements LoginView  {
         builder.setPositiveButton("YES, I'M SURE", (dialog, which) -> {
             Intent intent = new Intent(getActivity() , HomeActivity.class);
             startActivity(intent);
+            getActivity().finish();
         });
 
         builder.setNegativeButton("No, Go BACK", (dialog, which) -> {

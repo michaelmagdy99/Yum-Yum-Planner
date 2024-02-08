@@ -13,4 +13,6 @@ public interface MealsDetailsView {
     void showData(List<MealsItem> mealsItems);
     void showErrorMsg(String error);
 
+    public void deleteMeals(MealsItem mealsItem);
+
 }

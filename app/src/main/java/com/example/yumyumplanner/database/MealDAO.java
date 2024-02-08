@@ -21,6 +21,11 @@ public interface MealDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(MealsItem mealsItem);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAllMeals(List<MealsItem> mealsItems);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAllPlan(List<MealCalendar> mealsItemsCal);
     @Delete
     void delete(MealsItem mealsItem);
 
@@ -32,6 +37,7 @@ public interface MealDAO {
 
     @Insert (onConflict = OnConflictStrategy.IGNORE)
     void insertMealtoCalendar(MealCalendar mealCalendar);
+
     @Query("DELETE FROM meal_plan")
     void deleteAllPlan();
     @Query("DELETE FROM meal")

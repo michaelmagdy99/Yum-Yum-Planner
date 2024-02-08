@@ -9,5 +9,5 @@ public interface MealDetailsPresenterInterface {
 
     public void getMealDetails(String id);
 
-
+    void removeFromFav(MealsItem mealsItem);
 }

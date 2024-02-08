@@ -87,7 +87,7 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
         //set data to get data
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        calendar.set(Calendar.DAY_OF_WEEK, (int) calendar.getTimeInMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.clear(Calendar.MINUTE);
         calendar.clear(Calendar.SECOND);
@@ -95,9 +95,9 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
         long minDate = System.currentTimeMillis();
         calendar.add(Calendar.DAY_OF_WEEK, 6);
         long maxDate = calendar.getTimeInMillis();
+
         calendarViwe.setMinDate(minDate);
         calendarViwe.setMaxDate(maxDate);
-
         recyclerView.setLayoutManager(layoutManager);
         //setAdapter
         recyclerView.setAdapter(calenderAdapter);
@@ -143,7 +143,7 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
     @Override
     public void showErrorMsg(String error) {
-        Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),  error, Toast.LENGTH_SHORT).show();
 
     }
 

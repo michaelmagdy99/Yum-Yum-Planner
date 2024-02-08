@@ -28,38 +28,23 @@ public class FavouritePresenter implements FavouritePresenterInterface{
     }
     @Override
     public void getMealsFromDB() {
-        repository.getAllMealsFromLocal().observe((LifecycleOwner) view, new Observer<List<MealsItem>>() {
-            @Override
-            public void onChanged(List<MealsItem> mealsItems) {
-                view.showData(mealsItems);
-            }
-        });
+        view.showData(repository.getAllMealsFromLocal());
+
         //retrive backup meal
         Log.i("TAG", "getData: " + UserProfile.getCurrentUserId() );
-        backUpRepositoryImp.retrieveMeals(UserProfile.getCurrentUserId(), new MealsBackUpCallBack() {
 
-            @Override
-            public void onSuccess(List<MealsItem> mealsItemsList) {
-                view.showData(mealsItemsList);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                view.showErrorMsg(error);
-            }
-        });
     }
     @Override
     public void removeFromFav(MealsItem mealsItem) {
-        repository.deleteMeal(mealsItem);
-
         String userId = UserProfile.getCurrentUserId();
-        String mealId = mealsItem.getMealIdInFirabse();
+        String mealId = mealsItem.getIdMeal();
         Log.i("TAG", "removeFromFav: " + mealId);
         if (userId != null && mealId != null) {
             backUpRepositoryImp.deleteMeal(userId, mealId, new DeleteMealCallback() {
                 @Override
                 public void onSuccess() {
+                    repository.deleteMeal(mealsItem);
+
                     view.afterRemove();
                 }
                 @Override
@@ -68,7 +53,7 @@ public class FavouritePresenter implements FavouritePresenterInterface{
                 }
             });
         } else {
-            view.showErrorMsg("NO User, Login First");
+            view.showErrorMsg("No User, Login First");
         }
     }
 }
