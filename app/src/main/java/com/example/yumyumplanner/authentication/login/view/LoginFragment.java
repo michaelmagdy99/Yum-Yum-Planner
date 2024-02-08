@@ -147,7 +147,7 @@ public class LoginFragment extends Fragment implements LoginView  {
             goToHome();
             Toast.makeText(getContext(), "Login Successfuly", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getActivity(), HomeActivity.class));
-            getActivity().finish();
+            //getActivity().finish();
         }
 
 
@@ -236,7 +236,7 @@ public class LoginFragment extends Fragment implements LoginView  {
     private void goToHome(){
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
-        getActivity().finish();
+        //getActivity().finish();
     }
 
     private void showGuestModeMessage() {
@@ -247,7 +247,6 @@ public class LoginFragment extends Fragment implements LoginView  {
         builder.setPositiveButton("YES, I'M SURE", (dialog, which) -> {
             Intent intent = new Intent(getActivity() , HomeActivity.class);
             startActivity(intent);
-            getActivity().finish();
         });
 
         builder.setNegativeButton("No, Go BACK", (dialog, which) -> {

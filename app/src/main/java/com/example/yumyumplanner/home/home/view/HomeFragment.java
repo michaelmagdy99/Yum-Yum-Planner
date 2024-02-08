@@ -1,5 +1,7 @@
 package com.example.yumyumplanner.home.home.view;
 
+import static com.example.yumyumplanner.utils.InternetConnectivity.isConnectedToInternet;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -22,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -88,6 +92,15 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         showProgressBar();
+        LottieAnimationView lottieAnimationView = view.findViewById(R.id.animation_view_no_internet);
+        NestedScrollView nestedScrollView = view.findViewById(R.id.scrol_view_home);
+        if(!isConnectedToInternet(requireContext())){
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            nestedScrollView.setVisibility(View.GONE);
+        }else{
+            lottieAnimationView.setVisibility(View.GONE);
+            nestedScrollView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -300,7 +313,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
 
         builder.setPositiveButton("SIGN UP", (dialog, which) -> {
             startActivity(new Intent(getActivity(), AuthenticationActivity.class));
-            getActivity().finish();
+            //getActivity().finish();
         });
 
         builder.setNegativeButton("CANCEL", (dialog, which) -> {

@@ -1,11 +1,14 @@
 package com.example.yumyumplanner.home.search.view;
 
+import static com.example.yumyumplanner.utils.InternetConnectivity.isConnectedToInternet;
+
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -18,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -27,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.HomeActivity;
@@ -95,7 +100,15 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         showProgressBar();
-
+        LottieAnimationView lottieAnimationView = view.findViewById(R.id.animation_view_no_internet_search);
+        NestedScrollView nestedScrollView = view.findViewById(R.id.scrol_view_search);
+        if(!isConnectedToInternet(requireContext())){
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            nestedScrollView.setVisibility(View.GONE);
+        }else{
+            lottieAnimationView.setVisibility(View.GONE);
+            nestedScrollView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -142,26 +155,6 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
         searchPresenterImp.getCountry();
 
         setUpChipGroup();
-
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String searchText = charSequence.toString().toLowerCase();
-                searchPresenterImp.searchByCategoryText(searchText);
-                searchPresenterImp.searchByIngrText(searchText);
-                searchPresenterImp.searchByCountryText(searchText);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
 
         return view;
     }
@@ -273,6 +266,19 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
     }
 
     private void setUpChipGroup(){
+        searchBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Chip selectedChip = chipGroup.findViewById(chipGroup.getCheckedChipId());
+                    if (selectedChip == null) {
+                        Navigation.findNavController(v).navigate(R.id.action_search_to_mealsFragment);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
         for (int i=0; i<chipGroup.getChildCount() ; i++){
             Chip chip = (Chip) chipGroup.getChildAt(i);
             chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -330,11 +336,48 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
                     ingradientRecyclerView.setVisibility(View.VISIBLE);
                     ingtTV.setVisibility(View.VISIBLE);
 
+                    searchBar.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            String searchText = charSequence.toString().toLowerCase();
+                            searchPresenterImp.searchByIngrText(searchText);
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
+
                     break;
                 case "Categories":
                     searchPresenterImp.searchByCategoryText(searchText);
                     categoryRecyclerView.setVisibility(View.VISIBLE);
                     catTV.setVisibility(View.VISIBLE);
+                    searchBar.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            String searchText = charSequence.toString().toLowerCase();
+                            searchPresenterImp.searchByCategoryText(searchText);
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
+
                     break;
                 case "Country":
                     countryLayoutManager = new GridLayoutManager(getContext(), 3);
@@ -342,11 +385,30 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
                     searchPresenterImp.searchByCountryText(searchText);
                     countryRecyclerView.setVisibility(View.VISIBLE);
                     counTV.setVisibility(View.VISIBLE);
+                    searchBar.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            String searchText = charSequence.toString().toLowerCase();
+
+                            searchPresenterImp.searchByCountryText(searchText);
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
                     break;
                 default:
-                    searchPresenterImp.searchByCountryText(searchText);
-                    searchPresenterImp.searchByCategoryText(searchText);
-                    searchPresenterImp.searchByIngrText(searchText);
+//                    searchPresenterImp.searchByCountryText(searchText);
+//                    searchPresenterImp.searchByCategoryText(searchText);
+//                    searchPresenterImp.searchByIngrText(searchText);
+
                     break;
             }
         }

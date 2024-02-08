@@ -85,27 +85,26 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
         );
 
 
-        //set data to get data
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, (int) calendar.getTimeInMillis());
+        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.clear(Calendar.MINUTE);
         calendar.clear(Calendar.SECOND);
         calendar.clear(Calendar.MILLISECOND);
-        long minDate = System.currentTimeMillis();
+        long minDate = calendar.getTimeInMillis();
         calendar.add(Calendar.DAY_OF_WEEK, 6);
         long maxDate = calendar.getTimeInMillis();
-
         calendarViwe.setMinDate(minDate);
         calendarViwe.setMaxDate(maxDate);
         recyclerView.setLayoutManager(layoutManager);
         //setAdapter
-        recyclerView.setAdapter(calenderAdapter);
-        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_WEEK);
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
         Log.i("TAG", "onCreateView: " + String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year);
         presenter.getMealsFromCalendar(String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year);
+        recyclerView.setAdapter(calenderAdapter);
+        calenderAdapter.notifyDataSetChanged();
         calendarViwe.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month,

@@ -32,6 +32,9 @@ public interface MealDAO {
     @Query("SELECT * FROM meal_plan WHERE date = :date")
     LiveData<List<MealCalendar>> getAllMealsFromCalendar(String date);
 
+    @Query("SELECT * FROM meal WHERE idMeal= :id")
+    LiveData<List<MealsItem>> getMealsById(String id);
+
     @Delete
     void deleteMealFromCalendar(MealCalendar mealCalendar);
 

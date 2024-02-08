@@ -93,7 +93,7 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
                      if (mealsItems != null && !mealsItems.isEmpty()) {
                          no_fav_list.setVisibility(View.GONE);
                          textView_no_fav.setVisibility(View.GONE);
-
+                         recyclerView.setVisibility(View.VISIBLE);
                          favAdapter.setList(mealsItems);
                          favAdapter.notifyDataSetChanged();
                      } else {

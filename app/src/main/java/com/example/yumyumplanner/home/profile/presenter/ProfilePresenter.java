@@ -9,7 +9,5 @@ public interface ProfilePresenter {
      void logOut();
      void onImageChosen(Uri imageUri);
      void onSaveEditClicked(UserProfile userProfile, Uri imageUri);
-     void onViewCreated(Context context);
-
 
 }

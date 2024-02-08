@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.yumyumplanner.R;
 import com.example.yumyumplanner.home.HomeActivity;
 import com.example.yumyumplanner.home.home.view.HomeFragmentDirections;
@@ -51,6 +52,8 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
 
     MealByIngrAdapter mealsAdapter;
 
+    LottieAnimationView lottieAnimationSearch;
+
     String nameOfCountry ,nameOfCatogory;
 
     MealsPresenterImp mealsPresenters;
@@ -73,8 +76,9 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_meals, container, false);
         initUi(view);
-        showProgressBar();
+        //showProgressBar();
 
+        lottieAnimationSearch = view.findViewById(R.id.animation_view_search);
         mealsPresenters =new MealsPresenterImp(
                 this,
                 FilterRepoImp.getInstance(
@@ -94,11 +98,15 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
             if (countryItem != null) {
                 nameOfCountry = countryItem.getStrArea();
                 mealsPresenters.getMealsByCountry(nameOfCountry);
+                searchBtn.setVisibility(View.GONE);
             }
             CategoriesItem categoryItem = MealsFragmentArgs.fromBundle(args).getCategoryItem();
             if (categoryItem != null) {
                 nameOfCatogory = categoryItem.getStrCategory();
                 mealsPresenters.getMealsByCategory(nameOfCatogory);
+                searchBtn.setVisibility(View.GONE);
+            }else{
+                mealsAdapter.setList(new ArrayList<>());
             }
         }
 
@@ -172,12 +180,14 @@ public class MealsFragment extends Fragment implements OnClickListener, MealsVie
     @Override
     public void showMealsFromCountry(List<Item> countries) {
         hideProgressBar();
-        if(countries != null){
+        if(countries != null && !countries.isEmpty()){
+            lottieAnimationSearch.setVisibility(View.GONE);
+            mealsRecyclerView.setVisibility(View.VISIBLE);
             mealsAdapter.setList(countries);
             mealsAdapter.notifyDataSetChanged();
         }else{
-            mealsAdapter.setList(new ArrayList<>());
-            mealsAdapter.notifyDataSetChanged();
+            lottieAnimationSearch.setVisibility(View.VISIBLE);
+            mealsRecyclerView.setVisibility(View.GONE);
         }
 
     }

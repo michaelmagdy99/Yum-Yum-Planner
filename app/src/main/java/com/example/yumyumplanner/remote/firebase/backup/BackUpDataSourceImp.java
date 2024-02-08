@@ -62,7 +62,7 @@ public class BackUpDataSourceImp implements BackUpFirebaseDataSource {
 
     @Override
     public void logOut() {
-        auth.signOut();
+        FirebaseAuth.getInstance().signOut();
     }
 
     @Override

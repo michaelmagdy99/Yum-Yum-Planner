@@ -59,6 +59,7 @@ public class MealsLocalDataSourceImp implements MealsLocalDataSource{
         return dao.getAllMealsFromCalendar(date);
     }
 
+
     @Override
     public void deleteMealFromCalendar(MealCalendar mealCalendar) {
         new Thread(new Runnable() {
@@ -79,6 +80,10 @@ public class MealsLocalDataSourceImp implements MealsLocalDataSource{
         }).start();
     }
 
+    @Override
+    public LiveData<List<MealsItem>> getMealById(String mealsItemId) {
+        return dao.getMealsById(mealsItemId);
+    }
 
 
 }

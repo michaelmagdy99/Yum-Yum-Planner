@@ -47,15 +47,5 @@ public class ProfilePresenterImp implements ProfilePresenter {
         }
     }
 
-    @Override
-    public void onViewCreated(Context context) {
-       // userRepository.getUserData(this);
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
-        String name = sharedPreferences.getString("UserName", "");
-        String imageURl = sharedPreferences.getString("UserProfileImageURL", "");
-        view.displayUserData(name,imageURl);
-        Log.i("UserData", "Name: " + name + ", ImageURL: " + imageURl);
-    }
 
 }

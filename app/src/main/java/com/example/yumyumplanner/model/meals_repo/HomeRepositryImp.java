@@ -78,5 +78,10 @@ public class HomeRepositryImp implements HomeRepositry {
         return mealsLocalDataSource.getAllMealsFromCalendar(date);
     }
 
+    @Override
+    public LiveData<List<MealsItem>> getMealById(String date) {
+        return mealsLocalDataSource.getMealById(date);
+    }
+
 
 }

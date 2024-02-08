@@ -2,6 +2,8 @@ package com.example.yumyumplanner.home.meal_details.preseter;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.yumyumplanner.home.meal_details.view.MealsDetailsView;
 import com.example.yumyumplanner.model.data.MealCalendar;
 import com.example.yumyumplanner.model.data.MealsItem;
@@ -94,5 +96,10 @@ public class MealDetailsPreserter implements  MealDetailsPresenterInterface, Net
         } else {
             view.showErrorMsg("NO User, Login First");
         }
+    }
+
+    @Override
+    public LiveData<List<MealsItem>> getMealById(String id) {
+        return mealsRepositry.getMealById(id);
     }
 }

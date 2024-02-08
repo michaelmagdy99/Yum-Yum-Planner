@@ -10,6 +10,8 @@
     import androidx.annotation.Nullable;
     import androidx.appcompat.app.AlertDialog;
     import androidx.fragment.app.Fragment;
+    import androidx.lifecycle.LifecycleOwner;
+    import androidx.lifecycle.Observer;
     import androidx.navigation.Navigation;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
@@ -36,11 +38,14 @@
     import com.example.yumyumplanner.home.meal_details.preseter.MealDetailsPreserter;
     import com.example.yumyumplanner.model.data.FilterItem;
     import com.example.yumyumplanner.model.data.MealCalendar;
+    import com.example.yumyumplanner.model.data.MealDescriptionInGoogle;
     import com.example.yumyumplanner.model.data.MealsItem;
     import com.example.yumyumplanner.model.meals_repo.FilterRepoImp;
     import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
     import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
     import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
+    import com.google.android.gms.auth.api.signin.GoogleSignIn;
+    import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
     import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -69,7 +74,7 @@
         private ImageButton favBtn;
         private ImageButton backBtn;
 
-        private Boolean favFalg = false;
+        Boolean favFalg = false;
         private Button addToCalender ;
 
 
@@ -115,12 +120,11 @@
             MealCalendar mealCalendar = args.getMealCalender();
             FilterItem filterItem = args.getFilterItem();
 
-
             if (mealsItem != null) {
-                // arga from HomeFragment
+                // arga from home
                 handleArgumentFromHomeFragment(mealsItem);
             } else if (mealCalendar != null) {
-                // args from CalendarFragment
+                // args from cal
                 handleArgumentFromCalendarFragment(mealCalendar);
                 favBtn.setVisibility(View.GONE);
                 addToCalender.setVisibility(View.GONE);
@@ -139,6 +143,8 @@
                     Navigation.findNavController(view).navigateUp();
                 }
             });
+
+            getMealFromId(mealid);
 
             favBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -166,53 +172,62 @@
                     if (HomeActivity.isGuestMode) {
                         showGuestModeMessage();
                     } else {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(Calendar.DAY_OF_WEEK, (int) System.currentTimeMillis());
-                        calendar.set(Calendar.HOUR_OF_DAY, 0);
-                        calendar.clear(Calendar.MINUTE);
-                        calendar.clear(Calendar.SECOND);
-                        calendar.clear(Calendar.MILLISECOND);
-                        long minDate = System.currentTimeMillis();
-                        calendar.add(Calendar.DAY_OF_WEEK, 6);
-                        long maxDate = calendar.getTimeInMillis();
 
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                                view.getContext(),
-                                new DatePickerDialog.OnDateSetListener() {
-                                    @Override
-                                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTimeInMillis(System.currentTimeMillis());
+                            calendar.set(Calendar.HOUR_OF_DAY, 0);
+                            calendar.clear(Calendar.MINUTE);
+                            calendar.clear(Calendar.SECOND);
+                            calendar.clear(Calendar.MILLISECOND);
+                            long minDate = calendar.getTimeInMillis();
+                            calendar.add(Calendar.DAY_OF_WEEK, 6);
+                            long maxDate = calendar.getTimeInMillis();
 
-                                        Toast.makeText(getContext(), String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year, Toast.LENGTH_SHORT).show();
-                                        // Set the selected date to the Calendar instance
-                                        calendar.set(Calendar.YEAR, year);
-                                        calendar.set(Calendar.MONTH, month);
-                                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                                    view.getContext(),
+                                    new DatePickerDialog.OnDateSetListener() {
+                                        @Override
+                                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                                        MealCalendar mealCalendar = new MealCalendar();
-                                        mealCalendar.dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                                        mealCalendar.date = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
-                                        mealCalendar.setIdMeal(mealid);
-                                        mealCalendar.setStrArea(country);
-                                        mealCalendar.setStrMeal(mealName);
-                                        mealCalendar.setStrCategory(categoryName);
-                                        mealCalendar.setStrMealThumb(image);
-                                        mealCalendar.setStrYoutube(String.valueOf(youTubePlayerView));
-                                        mealCalendar.setStrInstructions(instruction);
-                                        mealCalendar.setAllIngredients(ingredientsList);
-                                        mealCalendar.setAllMeasures(meaurseList);
-                                        // add to room
-                                        addMealToCalendar(mealCalendar);
-                                    }
-                                },
-                                calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH)
-                        );
-                        datePickerDialog.getDatePicker().setMinDate(minDate);
-                        datePickerDialog.getDatePicker().setMaxDate(maxDate);
-                        datePickerDialog.show();
+                                            Toast.makeText(getContext(), String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year, Toast.LENGTH_SHORT).show();
+                                            // Set the selected date to the Calendar instance
+                                            calendar.set(Calendar.YEAR, year);
+                                            calendar.set(Calendar.MONTH, month);
+                                            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                                            MealCalendar mealCalendar = new MealCalendar();
+                                            mealCalendar.dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                                            mealCalendar.date = String.valueOf(dayOfMonth) + "-" + (month + 1) + "-" + year;
+                                            mealCalendar.setIdMeal(mealid);
+                                            mealCalendar.setStrArea(country);
+                                            mealCalendar.setStrMeal(mealName);
+                                            mealCalendar.setStrCategory(categoryName);
+                                            mealCalendar.setStrMealThumb(image);
+                                            mealCalendar.setStrYoutube(String.valueOf(youTubePlayerView));
+                                            mealCalendar.setStrInstructions(instruction);
+                                            mealCalendar.setAllIngredients(ingredientsList);
+                                            mealCalendar.setAllMeasures(meaurseList);
+                                            // add to room
+                                            addMealToCalendar(mealCalendar);
+
+                                            Intent intent = new Intent(Intent.ACTION_INSERT)
+                                                    .setData(CalendarContract.Events.CONTENT_URI)
+                                                    .putExtra(CalendarContract.Events.TITLE, mealCalendar.getStrMeal())
+                                                    .putExtra(CalendarContract.Events.DESCRIPTION, MealDescriptionInGoogle.getMealString(mealCalendar));
+                                            startActivity(intent);
+                                        }
+                                    },
+                                    calendar.get(Calendar.YEAR),
+                                    calendar.get(Calendar.MONTH),
+                                    calendar.get(Calendar.DAY_OF_WEEK)
+                            );
+                            datePickerDialog.getDatePicker().setMinDate(minDate);
+                            datePickerDialog.getDatePicker().setMaxDate(maxDate);
+                            datePickerDialog.show();
+                        }
                     }
-                }
+
+
             });
 
             return view;
@@ -370,7 +385,7 @@
 
             builder.setPositiveButton("SIGN UP", (dialog, which) -> {
                 startActivity(new Intent(getActivity(), AuthenticationActivity.class));
-                getActivity().finish();
+                //getActivity().finish();
             });
 
             builder.setNegativeButton("CANCEL", (dialog, which) -> {
@@ -380,6 +395,21 @@
             AlertDialog dialog = builder.create();
             dialog.setCancelable(false);
             dialog.show();
+        }
+
+        public void getMealFromId(String id){
+            preserter.getMealById(id).observe(getViewLifecycleOwner(), new Observer<List<MealsItem>>() {
+                @Override
+                public void onChanged(List<MealsItem> mealsItems) {
+                    if(mealsItems != null && !mealsItems.isEmpty()){
+                        favFalg = true;
+                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.fav));
+                    }else{
+                        favFalg = false;
+                        favBtn.setImageDrawable(getResources().getDrawable(R.drawable.faviourte));
+                    }
+                }
+            });
         }
 
     }

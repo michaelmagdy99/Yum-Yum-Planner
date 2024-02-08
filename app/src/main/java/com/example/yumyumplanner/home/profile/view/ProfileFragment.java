@@ -3,6 +3,7 @@ package com.example.yumyumplanner.home.profile.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -72,7 +73,28 @@ public class ProfileFragment extends Fragment implements ProfileView{
         profilePresenter = ProfilePresenterImp.getInstance(this,
                 BackUpDataSourceImp.getInstance(requireContext()));
 
-        profilePresenter.onViewCreated(requireContext());
+        if (getContext() == null){
+            Log.i("TAG" , "Context is null");
+        }
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        String nameVal = sharedPreferences.getString("UserName", "");
+        String imageURl = sharedPreferences.getString("UserProfileImageURL", "");
+
+
+            name.setText(nameVal);
+            nameTv.setText(nameVal);
+
+            Log.i("TAG", "displayUserData: " + imageURl);
+            if (imageURl != null && !imageURl.isEmpty()) {
+                Glide.with(requireContext())
+                        .load(imageURl)
+                        .placeholder(R.drawable.panda_cooking)
+                        .error(R.drawable.panda_cooking)
+                        .into(profileImage);
+            } else {
+                Toast.makeText(requireContext(), "Data not Found", Toast.LENGTH_SHORT).show();
+            }
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,33 +149,9 @@ public class ProfileFragment extends Fragment implements ProfileView{
         profilePresenter.logOut();
         Toast.makeText(getContext(), "Logout Successfully", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(getActivity(), AuthenticationActivity.class));
-        getActivity().finish();
+        //getActivity().finish();
     }
 
-
-    @Override
-    public void displayUserData(String nameValue , String imageURl) {
-        Log.d("ProfileFragment", "displayUserData: Displaying user data");
-
-        if (getView() != null) {
-            // Use getView() instead of getContext() to ensure the fragment's view is available
-            name.setText(nameValue);
-            nameTv.setText(nameValue);
-
-            Log.i("TAG", "displayUserData: " + imageURl);
-            if (imageURl != null && !imageURl.isEmpty()) {
-                Glide.with(requireContext())
-                        .load(imageURl)
-                        .placeholder(R.drawable.panda_cooking)
-                        .error(R.drawable.panda_cooking)
-                        .into(profileImage);
-            } else {
-                Toast.makeText(requireContext(), "Data not Found", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Log.e("ProfileFragment", "displayUserData: View is null");
-        }
-    }
 
 
     @Override
