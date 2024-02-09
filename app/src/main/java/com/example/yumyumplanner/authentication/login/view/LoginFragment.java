@@ -35,12 +35,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.OAuthProvider;
 
 public class LoginFragment extends Fragment implements LoginView  {
 
@@ -48,8 +51,6 @@ public class LoginFragment extends Fragment implements LoginView  {
     private TextView signUpTv;
 
     private ProgressBar progressbar;
-
-    private TextView resetPassword;
     private EditText emailEditText ;
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth firebaseAuth;
@@ -59,7 +60,7 @@ public class LoginFragment extends Fragment implements LoginView  {
     private LoginPresenterImp loginPresenter;
     private ImageButton googleSignIn;
 
-    private ImageButton facebookSignIn;
+    private ImageButton twitterSignIn;
 
     private TextView gustModeBtn;
 
@@ -134,13 +135,6 @@ public class LoginFragment extends Fragment implements LoginView  {
             }
         });
 
-        //forgetPassword
-        resetPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //loginPresenter.forgotPassword(emailEditText.getText().toString());
-            }
-        });
         firebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -150,6 +144,13 @@ public class LoginFragment extends Fragment implements LoginView  {
             startActivity(new Intent(getActivity(), HomeActivity.class));
             //getActivity().finish();
         }
+
+        twitterSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeLoginWithTwitter();
+            }
+        });
 
 
         return view;
@@ -163,7 +164,7 @@ public class LoginFragment extends Fragment implements LoginView  {
         progressbar =view.findViewById(R.id.loading);
         loginUpBtn = view.findViewById(R.id.login_btn);
         googleSignIn = view.findViewById(R.id.google_icon_btn);
-        resetPassword = view.findViewById(R.id.Reset_Password);
+        twitterSignIn =view.findViewById(R.id.twitter_icon_btn);
     }
 
     @Override
@@ -237,7 +238,7 @@ public class LoginFragment extends Fragment implements LoginView  {
     private void goToHome(){
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
-        //getActivity().finish();
+        getActivity().finish();
     }
 
     private void showGuestModeMessage() {
@@ -255,6 +256,53 @@ public class LoginFragment extends Fragment implements LoginView  {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void makeLoginWithTwitter() {
+
+        OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
+        provider.addCustomParameter("lang", "en");
+        Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
+        if (pendingResultTask != null) {
+            // There's something already here! Finish the sign-in for your user.
+            pendingResultTask
+                    .addOnSuccessListener(
+                            new OnSuccessListener<AuthResult>() {
+                                @Override
+                                public void onSuccess(AuthResult authResult) {
+                                    goToHome();
+                                    Toast.makeText(getContext(), "Twitter Login In Sucseefully", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Twitter Login In Failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.i("TAG", "onFailure: twitter faile in if" + e.getMessage());
+                                }
+                            });
+        } else {
+            firebaseAuth
+                    .startActivityForSignInWithProvider(getActivity(), provider.build())
+                    .addOnSuccessListener(
+                            new OnSuccessListener<AuthResult>() {
+                                @Override
+                                public void onSuccess(AuthResult authResult) {
+                                    goToHome();
+                                    Toast.makeText(getContext(), "Twitter Login In Sucseefully", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Twitter Login In Failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.i("TAG", "onFailure: twitter faile in else" + e.getMessage());
+
+                                }
+                            });
+        }
     }
 
 }
