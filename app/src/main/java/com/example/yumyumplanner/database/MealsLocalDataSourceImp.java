@@ -84,6 +84,12 @@ public class MealsLocalDataSourceImp implements MealsLocalDataSource{
     public LiveData<List<MealsItem>> getMealById(String mealsItemId) {
         return dao.getMealsById(mealsItemId);
     }
+    public LiveData<Integer> getMealCount() {
+        return dao.getMealCount();
+    }
+    public LiveData<Integer> getMealPlanCount() {
+        return dao.getMealPlanCount();
+    }
 
 
 }

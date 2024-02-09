@@ -130,7 +130,8 @@ public class LoginFragment extends Fragment implements LoginView  {
             @Override
             public void onClick(View view) {
                 Intent intent = googleSignInClient.getSignInIntent();
-                startActivityForResult(intent, 100);             }
+                startActivityForResult(intent, 100);
+            }
         });
 
         //forgetPassword

@@ -92,19 +92,64 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+    <ImageView
+        android:id="@+id/fav_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/fav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name_textInput" />
+
+
+    <ImageView
+        android:id="@+id/plan_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="96dp"
+        android:src="@drawable/calendar"
+        app:layout_constraintStart_toEndOf="@+id/fav_image"
+        app:layout_constraintTop_toTopOf="@+id/fav_image" />
+
+    <TextView
+        android:id="@+id/fav_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="0"
+        android:textSize="28sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/fav_image"
+        app:layout_constraintEnd_toEndOf="@+id/fav_image"
+        app:layout_constraintTop_toBottomOf="@+id/fav_image" />
+
+
+    <TextView
+        android:id="@+id/plan_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/plan_image"
+        app:layout_constraintStart_toStartOf="@id/plan_image"
+        app:layout_constraintTop_toBottomOf="@+id/plan_image" />
     <Button
         android:id="@+id/save_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="@string/save"
         android:layout_marginHorizontal="80dp"
+        android:layout_marginTop="80dp"
         android:paddingVertical="10dp"
+        android:text="@string/save"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_textInput" />
+        app:layout_constraintTop_toBottomOf="@+id/fav_tv" />
 
     <ProgressBar
         android:id="@+id/loading"
