@@ -139,7 +139,6 @@ public class LoginFragment extends Fragment implements LoginView  {
 
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
-            goToHome();
             Toast.makeText(getContext(), "Login Successfuly", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getActivity(), HomeActivity.class));
             //getActivity().finish();
@@ -181,11 +180,11 @@ public class LoginFragment extends Fragment implements LoginView  {
 
     @Override
     public void showLoginSuccessMessage() {
-        HomeActivity.isGuestMode = false;
         if(getContext()!= null) {
             Toast.makeText(getContext(), "Login successful!!", Toast.LENGTH_LONG).show();
             // Intent to home activity
             goToHome();
+            HomeActivity.isGuestMode = false;
         }else {
             Log.i("TAG","Context is null here");
         }
@@ -238,7 +237,7 @@ public class LoginFragment extends Fragment implements LoginView  {
     private void goToHome(){
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
-        getActivity().finish();
+        //getActivity().finish();
     }
 
     private void showGuestModeMessage() {

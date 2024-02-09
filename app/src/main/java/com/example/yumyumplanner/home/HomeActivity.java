@@ -120,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
 
         builder.setPositiveButton("SIGN UP", (dialog, which) -> {
             startActivity(new Intent(this, AuthenticationActivity.class));
-            finish();
+            //finish();
         });
 
         builder.setNegativeButton("CANCEL", (dialog, which) -> {
