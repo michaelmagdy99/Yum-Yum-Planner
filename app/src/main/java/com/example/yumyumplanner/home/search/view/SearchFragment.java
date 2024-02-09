@@ -210,7 +210,7 @@ public class SearchFragment extends Fragment implements SearchView, OnClickListe
     @Override
     public void showErrorMsg(String error) {
         hideProgressBar();
-        Toast.makeText(getContext(), "Error" + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "EnSure From YOur Network", Toast.LENGTH_SHORT).show();
     }
 
     @Override

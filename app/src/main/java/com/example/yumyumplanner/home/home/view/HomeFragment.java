@@ -246,7 +246,7 @@ public class HomeFragment extends Fragment implements HomeView, OnClickListener{
     @Override
     public void showErrorMsg(String error) {
         hideProgressBar();
-        Toast.makeText(getContext(),  error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),  "EnSure From Your Network ", Toast.LENGTH_SHORT).show();
     }
 
     @Override

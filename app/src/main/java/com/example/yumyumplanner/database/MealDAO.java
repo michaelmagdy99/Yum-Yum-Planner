@@ -45,4 +45,10 @@ public interface MealDAO {
     void deleteAllPlan();
     @Query("DELETE FROM meal")
     void deleteAllFav();
+
+    @Query("SELECT COUNT(*) FROM meal")
+    LiveData<Integer> getMealCount();
+
+    @Query("SELECT COUNT(*) FROM meal_plan")
+    LiveData<Integer> getMealPlanCount();
 }
