@@ -34,6 +34,7 @@ import com.example.yumyumplanner.home.profile.presenter.ProfilePresenterImp;
 
 import com.example.yumyumplanner.model.data.UserProfile;
 import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
+import com.google.firebase.auth.FirebaseAuth;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -121,7 +122,9 @@ public class ProfileFragment extends Fragment implements ProfileView{
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logOutSuccessMessage();
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(getContext(), "Logout Successfully", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), AuthenticationActivity.class));
                 //clear room
                 MealDatabase.getInstance(getContext()).clearAllData();
             }
