@@ -123,16 +123,6 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <TextView
-        android:id="@+id/Reset_Password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/reset_password"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/password_input"
-        app:layout_constraintTop_toBottomOf="@id/password_input"
-        />
 
     <Button
         android:id="@+id/login_btn"
@@ -169,7 +159,7 @@
         android:layout_marginStart="90dp"
         android:text="@string/don_t_have_an_account"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Reset_Password"
+        app:layout_constraintTop_toBottomOf="@id/password_input"
          />
 
     <TextView
@@ -203,10 +193,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:src="@drawable/google_icon"
         android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="@+id/or"
+        android:contentDescription="@string/google_input"
+        android:src="@drawable/google_icon"
         app:layout_constraintEnd_toEndOf="@+id/or"
-        app:layout_constraintTop_toBottomOf="@id/or"
-        android:contentDescription="@string/google_input" />
+        app:layout_constraintStart_toStartOf="@+id/text_do_not_have_account"
+        app:layout_constraintTop_toBottomOf="@id/or" />
+
+    <ImageButton
+        android:id="@+id/twitter_icon_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/twitter_login"
+        android:src="@drawable/twitter_icon"
+        app:layout_constraintStart_toEndOf="@+id/google_icon_btn"
+        app:layout_constraintTop_toTopOf="@id/google_icon_btn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

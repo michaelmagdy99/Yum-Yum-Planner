@@ -70,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
     private void goToAuthenticationActivity() {
         Intent intent = new Intent(SplashActivity.this, AuthenticationActivity.class);
         startActivity(intent);
-       // finish();
+        finish();
     }
 
     private void setSplashScreenTimeOut() {
