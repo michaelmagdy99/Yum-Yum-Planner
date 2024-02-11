@@ -1,7 +1,9 @@
 package com.example.yumyumplanner.home.favourite.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.yumyumplanner.R;
+import com.example.yumyumplanner.authentication.AuthenticationActivity;
 import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.favourite.presenter.FavouritePresenter;
 import com.example.yumyumplanner.model.data.MealsItem;
@@ -124,7 +127,7 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
 
     @Override
     public void onItemClick(MealsItem mealsItem) {
-        deleteMeals(mealsItem);
+        showFavMessage(mealsItem);
     }
     @Override
     public void onDetailsItemClick(MealsItem mealsItem) {
@@ -132,5 +135,23 @@ public class FavouriteFragment extends Fragment implements OnClickFavListener, F
                 FavouriteFragmentDirections.actionFavouriteToMealDetailsFragment();
         action.setMealDetails(mealsItem);
         Navigation.findNavController(view).navigate(action);
+    }
+
+    public void showFavMessage(MealsItem mealsItem) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Are You Sure to remove Item From Your Favourite ?");
+        builder.setMessage("");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            deleteMeals(mealsItem);
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 }
