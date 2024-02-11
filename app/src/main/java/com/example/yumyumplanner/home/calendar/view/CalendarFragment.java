@@ -2,6 +2,7 @@ package com.example.yumyumplanner.home.calendar.view;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -24,6 +25,7 @@ import com.example.yumyumplanner.database.MealsLocalDataSourceImp;
 import com.example.yumyumplanner.home.calendar.presenter.CalenderPresenter;
 import com.example.yumyumplanner.home.favourite.view.FavouriteFragmentDirections;
 import com.example.yumyumplanner.model.data.MealCalendar;
+import com.example.yumyumplanner.model.data.MealsItem;
 import com.example.yumyumplanner.model.meals_repo.HomeRepositryImp;
 import com.example.yumyumplanner.remote.api.MealsRemoteDataSourceImp;
 import com.example.yumyumplanner.remote.firebase.backup.BackUpDataSourceImp;
@@ -124,6 +126,24 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
         return view;
     }
 
+    public void showPlanMessage(MealCalendar mealsItem) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Are You Sure to remove Item From Your Calender ?");
+        builder.setMessage("");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            deleteMeals(mealsItem);
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
 
     @Override
     public void showData(List<MealCalendar> allMealsCaleander) {
@@ -158,8 +178,7 @@ public class CalendarFragment extends Fragment implements CalenderViewInterface,
 
     @Override
     public void onItemClick(MealCalendar mealsItem) {
-        deleteMeals(mealsItem);
-        Toast.makeText(getContext(), "removed", Toast.LENGTH_SHORT).show();
+        showPlanMessage(mealsItem);
     }
 
     @Override
